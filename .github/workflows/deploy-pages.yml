@@ -1,11 +1,3 @@
-# Save this file as: .github/workflows/deploy-pages.yml
-#
-# Builds two things into one GitHub Pages deployment:
-# / -> the hand-written landing page (index.html, assets/)
-# /basic-flow/ -> the LikeC4 model in basic-flow/, built to a static site
-#
-# Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch")
-
 name: Deploy Pages
 
 on:
