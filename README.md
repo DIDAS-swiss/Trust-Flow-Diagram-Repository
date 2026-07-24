@@ -22,7 +22,7 @@ The reference model. It shows the trust infrastructure end-to-end — onboarding
 
 This flow is modeled with [LikeC4](https://likec4.dev) and published as an interactive diagram:
 
-**👉 Live diagram: https://<your-github-username>.github.io/trust-flows-e-id/**
+**👉 Live diagram: https://github.com/julian-lev/Trust-Flow-Diagram-Repository/basic-flow/**
 
 (replace with your actual GitHub Pages URL once it's live — see [`basic-flow/README.md`](./basic-flow/README.md) for how it's built and deployed)
 
