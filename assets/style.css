@@ -1,0 +1,204 @@
+:root {
+  --red: #c61623;
+  --ink: #212934;
+  --body: #4a5261;
+  --line: #e4e8ec;
+  --bg-soft: #f8f9fb;
+}
+
+* { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  color: var(--ink);
+  background: #fff;
+  line-height: 1.6;
+}
+
+a { color: var(--red); text-decoration: none; }
+a:hover { text-decoration: underline; }
+a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
+
+.wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+/* Header */
+header.site {
+  border-bottom: 1px solid var(--line);
+}
+header.site .wrap {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 22px;
+  padding-bottom: 22px;
+}
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-weight: 700;
+  font-size: 15px;
+  color: var(--ink);
+}
+.brand .divider {
+  width: 1px;
+  height: 20px;
+  background: var(--line);
+}
+.affiliation {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 12px;
+  color: var(--body);
+}
+.affiliation img { height: 20px; width: auto; display: block; }
+nav.site a {
+  color: var(--body);
+  font-size: 14px;
+  margin-left: 4px;
+}
+
+/* Hero */
+.hero {
+  padding: 56px 0 40px;
+}
+.eyebrow {
+  display: inline-block;
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--red);
+  margin-bottom: 14px;
+}
+h1 {
+  font-size: clamp(28px, 4vw, 38px);
+  line-height: 1.2;
+  margin: 0 0 16px;
+  letter-spacing: -0.01em;
+}
+.lede {
+  font-size: 16.5px;
+  color: var(--body);
+  max-width: 640px;
+  margin: 0 0 4px;
+}
+.rule {
+  width: 40px;
+  height: 3px;
+  background: var(--red);
+  border-radius: 2px;
+  margin: 22px 0 0;
+}
+
+/* Sections */
+section { padding: 36px 0; border-top: 1px solid var(--line); }
+h2 {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--body);
+  margin: 0 0 20px;
+}
+
+/* Flow cards */
+.flows { display: flex; flex-direction: column; gap: 0; }
+.flow {
+  display: grid;
+  grid-template-columns: 160px 1fr auto;
+  gap: 20px;
+  align-items: start;
+  padding: 22px 0;
+  border-top: 1px solid var(--line);
+}
+.flow:first-child { border-top: none; }
+.flow-tag {
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--red);
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding-top: 2px;
+}
+.flow-body h3 { margin: 0 0 6px; font-size: 16px; }
+.flow-body p { margin: 0; color: var(--body); font-size: 14.5px; }
+.flow-body ul { margin: 8px 0 0; padding-left: 18px; color: var(--body); font-size: 14px; }
+.flow-body li { margin-bottom: 2px; }
+.flow-link {
+  font-size: 13.5px;
+  font-weight: 600;
+  white-space: nowrap;
+  padding-top: 2px;
+}
+.status {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+  border-radius: 20px;
+  background: var(--bg-soft);
+  color: var(--body);
+  border: 1px solid var(--line);
+  margin-top: 8px;
+}
+
+/* Back link on subpage */
+.back-link { font-size: 13.5px; font-weight: 600; }
+
+/* Diagram embed area */
+.diagram-frame {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  overflow: hidden;
+  background: var(--bg-soft);
+}
+.diagram-frame iframe {
+  width: 100%;
+  height: 640px;
+  border: 0;
+  display: block;
+  background: #fff;
+}
+.diagram-cta {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 18px;
+  border-top: 1px solid var(--line);
+  font-size: 13.5px;
+  color: var(--body);
+  background: #fff;
+}
+
+/* Footer */
+footer.site {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+}
+footer.site .wrap {
+  padding: 28px 24px 40px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  font-size: 13px;
+  color: var(--body);
+}
+footer.site a { color: var(--body); }
+
+@media (max-width: 640px) {
+  .flow { grid-template-columns: 1fr; gap: 8px; }
+  .flow-link { justify-self: start; }
+}

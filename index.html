@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Trust Flows · Swiss e-ID</title>
+<meta name="description" content="How trust and data move in real-world use cases of the Swiss e-ID — worked diagrams for onboarding, issuance, and verification.">
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+
+<header class="site">
+  <div class="wrap">
+    <div class="brand">
+      Trust Flows
+      <span class="divider"></span>
+      <span style="font-weight:400;color:var(--body)">Swiss e-ID</span>
+    </div>
+    <div style="display:flex;align-items:center;gap:20px;">
+      <div class="affiliation">
+        with
+        <a href="https://www.didas.swiss" target="_blank" rel="noopener">
+          <img src="https://www.didas.swiss/wp-content/uploads/2021/02/logo.png" alt="DIDAS">
+        </a>
+      </div>
+      <nav class="site">
+        <a href="https://github.com/YOUR-USERNAME/trust-flows-e-id" target="_blank" rel="noopener">GitHub ↗</a>
+      </nav>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <section class="hero" style="border-top:none;">
+    <span class="eyebrow">Reference diagrams</span>
+    <h1>How trust and data move in the Swiss e-ID</h1>
+    <p class="lede">
+      The Swiss e-ID trust infrastructure looks similar on paper across use cases —
+      issue a credential, hold it in a wallet, present it, verify it — but the details
+      differ a lot depending on context. This repo collects concrete, worked examples
+      so that <em>"how does trust actually flow here"</em> has a diagram to point to,
+      instead of a vague description.
+    </p>
+    <div class="rule"></div>
+  </section>
+
+  <section>
+    <h2>Flows</h2>
+    <div class="flows">
+
+      <div class="flow">
+        <div class="flow-tag">Reference</div>
+        <div class="flow-body">
+          <h3>Basic flow</h3>
+          <p>
+            The trust infrastructure itself, end-to-end: onboarding, issuance, and
+            verification, including the underlying data, protocols, and cryptography.
+            Every other flow below abstracts steps that are spelled out in full here.
+          </p>
+        </div>
+        <div class="flow-link"><a href="basic-flow/">View diagram →</a></div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-tag">Banking</div>
+        <div class="flow-body">
+          <h3>KYC &amp; re-identification</h3>
+          <ul>
+            <li>KYC onboarding</li>
+            <li>Re-identification</li>
+            <li>Re-identification of a user onboarded as a minor, now turned 18</li>
+          </ul>
+          <span class="status">In progress</span>
+        </div>
+        <div class="flow-link"><a href="https://github.com/YOUR-USERNAME/trust-flows-e-id/tree/main/banking" target="_blank" rel="noopener">View on GitHub →</a></div>
+      </div>
+
+      <div class="flow">
+        <div class="flow-tag">Education</div>
+        <div class="flow-body">
+          <h3>Issuance &amp; onboarding</h3>
+          <ul>
+            <li>Issuance of a Maturitätszeugnis</li>
+            <li>University onboarding using the e-ID and Maturitätszeugnis VC</li>
+          </ul>
+          <span class="status">In progress</span>
+        </div>
+        <div class="flow-link"><a href="https://github.com/YOUR-USERNAME/trust-flows-e-id/tree/main/education" target="_blank" rel="noopener">View on GitHub →</a></div>
+      </div>
+
+    </div>
+  </section>
+
+  <section>
+    <h2>About this repository</h2>
+    <p style="color:var(--body); font-size:14.5px; max-width:640px;">
+      This is a community contribution in the spirit of DIDAS's
+      <a href="https://www.didas.swiss/resources/trust-flows/" target="_blank" rel="noopener">Trust Flow Diagrams</a>
+      initiative — a shared, worked-example repository for the Swiss Trust Infrastructure.
+      Flows are modeled with <a href="https://likec4.dev" target="_blank" rel="noopener">LikeC4</a>
+      where possible so they stay machine-readable and versioned alongside the source.
+    </p>
+  </section>
+
+</div>
+
+<footer class="site">
+  <div class="wrap">
+    <span>trust-flows-e-id</span>
+    <span><a href="https://github.com/YOUR-USERNAME/trust-flows-e-id" target="_blank" rel="noopener">Source on GitHub</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
