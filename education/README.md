@@ -3,10 +3,8 @@
 Trust flows for the education domain: issuance of a Maturitätszeugnis (upper-secondary
 school leaving certificate) and university onboarding using the e-ID and Maturitätszeugnis VC.
 
-> **Disclaimer:** These are not official flows of the swiyu team or any other authority,
-> and are published without warranty. This is a work in progress, for discussion purposes
-> only — diagrams may be updated and republished over time as discussions continue and the
-> trust flows evolve.
+> Not an official flow of the swiyu team or any other authority — published without
+> warranty. Work in progress, for discussion purposes only.
 
 ## Contributors
 
@@ -16,3 +14,17 @@ school leaving certificate) and university onboarding using the e-ID and Maturit
 - Axel Schild
 - Julian Levkov
 - Nora Sleumer
+
+---
+
+## High School Certificate Issuance
+
+<img src="./High school Certificate Issuance.svg" width="100%">
+
+[Open full size ↗](./High%20school%20Certificate%20Issuance.svg)
+
+## University Immatriculation
+
+<img src="./University immatriculation.svg" width="100%">
+
+[Open full size ↗](./University%20immatriculation.svg)
