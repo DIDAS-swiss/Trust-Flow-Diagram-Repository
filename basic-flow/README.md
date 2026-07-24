@@ -1,5 +1,7 @@
 # Verifiable Credential Trust Infrastructure — LikeC4 Model
 
+**👉 Live diagram: https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/basic-flow/**
+
 `credential-flow.likec4` models a generic verifiable-credential ecosystem: how a credential gets issued to a Holder's wallet, and how a Verifier later checks a single claim from it. The "is this person over 18?" check is used throughout as a concrete, easy-to-follow example, but nothing in the model is tied to a specific country, document, or standard body — the same shape works for a diploma, a professional license, a membership card, or any other verifiable credential.
 
 ## Actors
