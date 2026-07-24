@@ -1,0 +1,66 @@
+
+# Save this file as: .github/workflows/deploy-pages.yml
+#
+# Builds two things into one GitHub Pages deployment:
+# / -> the hand-written landing page (index.html, assets/)
+# /basic-flow/ -> the LikeC4 model in basic-flow/, built to a static site
+#
+# Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch")
+
+name: Deploy Pages
+
+on:
+push:
+branches: ["main"]
+workflow_dispatch:
+
+permissions:
+contents: read
+pages: write
+id-token: write
+
+concurrency:
+group: "pages"
+cancel-in-progress: false
+
+jobs:
+build-pages:
+runs-on: ubuntu-latest
+steps:
+- name: Checkout
+uses: actions/checkout@v5
+
+- name: Setup Pages
+id: pages
+uses: actions/configure-pages@v4
+
+- name: Assemble static output
+run: |
+mkdir -p dist
+cp index.html dist/
+cp -r assets dist/
+
+- name: Build basic-flow diagram (LikeC4)
+uses: likec4/actions@v1
+with:
+action: build
+path: basic-flow
+output: dist/basic-flow
+base: "${{ steps.pages.outputs.base_path }}/basic-flow/"
+likec4-version: latest
+
+- name: Upload artifact
+uses: actions/upload-pages-artifact@v3
+with:
+path: ./dist
+
+deploy-pages:
+environment:
+name: github-pages
+url: ${{ steps.deployment.outputs.page_url }}
+runs-on: ubuntu-latest
+needs: build-pages
+steps:
+- name: Deploy to GitHub Pages
+id: deployment
+uses: actions/deploy-pages@v4
