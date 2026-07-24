@@ -2,6 +2,8 @@
 
 This repository shows **how trust and data move** in different real-world use cases of the Swiss e-ID. Each flow visualizes who exchanges what with whom, which protocols are used, and where trust decisions actually happen (wallet, verifier, relying party, identity provider etc.).
 
+**Disclaimer:** These are not official flows of the swiyu team or any other authority. This applies in particular to the Basic Flow. This is a work in progress, for discussion purposes only — diagrams may be updated and republished over time as discussions continue and the trust flows evolve.
+
 ## Why this repo exists
 
 The Swiss e-ID trust infrastructure looks similar on paper across use cases — issue a credential, hold it in a wallet, present it, verify it — but the details differ a lot depending on context. This repo collects concrete, worked examples so that "how does trust actually flow here and how do we implement the end-points" has a diagram to point to instead of a vague description.
