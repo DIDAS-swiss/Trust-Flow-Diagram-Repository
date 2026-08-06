@@ -108,6 +108,4 @@ The discussion and development involved representatives from approximately
 
 [Open full size ↗](./QES%20for%2018%20year%20old%20re-identification.svg)
 
-> **Note:** rename the file to `QES for 18 year old re-identification.svg` (no trailing
-> space before `.svg`) — the current filename has a trailing space, which can break links
-> and cause the file to look "missing" depending on how it's referenced.
+
