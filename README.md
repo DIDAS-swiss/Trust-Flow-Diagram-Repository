@@ -1,5 +1,7 @@
 # trust-flows-e-id
 
+Link to the Website [Trust Flow Diagram Repository](https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/)
+
 This repository shows **how trust and data move** in different real-world use cases of the Swiss e-ID. Each flow visualizes who exchanges what with whom, which protocols are used, and where trust decisions actually happen (wallet, verifier, relying party, identity provider etc.).
 
 **Disclaimer:** These are not official flows of the swiyu team or any other authority. This applies in particular to the Basic Flow. This is a work in progress, for discussion purposes only — diagrams may be updated and republished over time as discussions continue and the trust flows evolve.
