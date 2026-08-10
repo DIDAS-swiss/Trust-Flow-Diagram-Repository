@@ -7,8 +7,11 @@ Trust flows for KYC credential issuance and verification with focus on a KYC wal
 
 ## Contributors
 
-- Eva Selamlar
+#### Eurospider
+- Eva Selamlar 
 - Peter Schauble
+
+#### Swiss Informatics
 - Nora Sleumer
 
 
