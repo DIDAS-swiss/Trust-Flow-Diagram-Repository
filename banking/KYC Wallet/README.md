@@ -1,4 +1,4 @@
-# KYC Credential
+# KYC Wallet
 
 Trust flows for KYC credential issuance and verification with focus on a KYC wallet.
 
