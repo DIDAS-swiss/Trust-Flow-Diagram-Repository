@@ -1,5 +1,7 @@
 # KYC Wallet
 
+Approval pending.
+
 Trust flows for KYC credential issuance and verification with focus on a KYC wallet.
 
 > Not an official flow of the swiyu team or any other authority — published without
@@ -19,14 +21,14 @@ Trust flows for KYC credential issuance and verification with focus on a KYC wal
 
 ## KYC Credential Issuance
 
-<img src="./KYC Wallet and Credential Issuance.svg" width="100%">
+<img src="./KYC Wallet and Credential Issuance.png" width="100%">
 
-[Open full size ↗](./KYC%Wallet%and%Credential%Issuance.svg)
+[Open full size ↗](./KYC%Wallet%and%Credential%Issuance.png)
 
 ## KYC Credential Verification
 
-<img src="./KYC Wallet and Credential Verification.svg" width="100%">
+<img src="./KYC Wallet and Credential Verification.png" width="100%">
 
-[Open full size ↗](./KYC%Wallet%and%Credential%Verification.svg)
+[Open full size ↗](./KYC%Wallet%and%Credential%Verification.png)
 
 
