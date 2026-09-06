@@ -28,11 +28,31 @@ This flow is modeled with [LikeC4](https://likec4.dev) and published as an inter
 
 **👉 Live diagram: https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/basic-flow/**
 
-(replace with your actual GitHub Pages URL once it's live — see [`basic-flow/README.md`](./basic-flow/README.md) for how it's built and deployed)
+See [`basic-flow/README.md`](./basic-flow/README.md) for what the model contains and how it's built and deployed.
 
 ### [`banking/`](./banking)
 Flows for KYC onboarding, re-identification, and re-identification of a user who was onboarded as a minor and has since turned 18.
 
 ### [`education/`](./education)
 Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC.
+
+## License
+
+| What | License |
+|---|---|
+| The diagrams and models — the LikeC4 model in [`basic-flow/`](./basic-flow), the diagrams under [`banking/`](./banking) and [`education/`](./education), and the README prose | [CC BY 4.0](./LICENSE-CONTENT) |
+| The software — GitHub Actions workflows, `index.html`, `assets/style.css`, build configuration | [MIT](./LICENSE) |
+
+Reuse the diagrams freely, including commercially and in modified form, as long
+as you attribute:
+
+> DIDAS Trust Flow Diagrams, DIDAS — Digital Identity and Data Sovereignty Association, https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository
+
+LikeC4 model files are treated as content rather than software: they are
+diagrams-as-code, and the creative work in them is the flow itself.
+
+The flows are derived from external specifications (swiyu, OID4VCI/OID4VP,
+SD-JWT VC, W3C VC/DID), and the generated site under
+`basic-flow/likec4-basic-flow/` bundles third-party code and fonts. Those
+sources and their terms are listed in [NOTICE.md](./NOTICE.md).
 
