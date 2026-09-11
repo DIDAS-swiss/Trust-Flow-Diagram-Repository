@@ -24,14 +24,14 @@ commit `4fba24d`, step by step.
 | Trust statement returned, identity verified | `trustRegistry -> issuer` *Trust Statement issued* | reused |
 | The verifier side of all three | the three `verifier ->` steps | reused |
 | Publishing the verification query and its purpose (vqPS) | *defines what data he will request for which purpose*, in the verifier accreditation step | reused |
-| Registering as a business partner on the Service Portal | — | added |
-| A health governance body granting **role-scoped** authorisation (`gucaTM` per credential type) | — | **does not map** |
+| Registering as a business partner on the Service Portal | n/a | added |
+| A health governance body granting **role-scoped** authorisation (`gucaTM` per credential type) | n/a | **does not map** |
 
 The reference model has one Trust Authority issuing one kind of statement:
-"this DID belongs to this accredited organisation, and it may issue
-credentials." Health needs a statement one level more specific — "this DID is a
-practice authorised to vaccinate" — granted by a body that can check the
-cantonal authorisation, the MedReg entry and the GLN, and it needs one
+"this DID belongs to this accredited organisation, which may issue
+credentials." Health needs a statement one level more specific: "this DID is a
+practice authorised to vaccinate", granted by a body that can check the
+cantonal authorisation, the MedReg entry and the GLN. It needs one
 organisation to hold several such roles at once. Raised as
 [Trust-Flow-Diagram-Repository#3](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/issues/3).
 
@@ -45,16 +45,16 @@ organisation to hold several such roles at once. Raised as
 | Credential request and issuance | *Request the credential* / *Issue the credential* | reused |
 | Status list entry | `issuer -> baseRegistry` *Publish revocation status entry* | reused, reordered |
 | The vaccinator's own identification of the patient | `holder -> issuer` *Verify identity* | reused |
-| `reviewIssuance()` before an offer exists | — | added |
-| Fetching Type Metadata and the OCA bundle over `vct_metadata_uri#integrity` | — | **does not map** |
-| DPoP nonce, DPoP-bound token, key attestation | — | **does not map** |
+| `reviewIssuance()` before an offer exists | n/a | added |
+| Fetching Type Metadata and the OCA bundle over `vct_metadata_uri#integrity` | n/a | **does not map** |
+| DPoP nonce, DPoP-bound token, key attestation | n/a | **does not map** |
 
-Two orderings differ, and the Swiss Profile is what decides them, so they hold
+Two orderings differ and the Swiss Profile is what decides them, so they hold
 for any swiyu use case. The reference model publishes the status entry after issuance;
 `swiss-profile-issuance:1.0.0` requires the status list to exist first, because
 the credential references it at creation. And between the offer and the token
 request, a swiyu wallet fetches signed issuer metadata, then Type Metadata, then
-the OCA bundle it renders the credential from — three steps with no counterpart
+the OCA bundle it renders the credential from. Those are three steps with no counterpart
 in the reference flow. Raised as
 [Trust-Flow-Diagram-Repository#4](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/issues/4).
 
@@ -69,8 +69,8 @@ This one maps almost exactly, including the parts that are easy to leave out.
 | Wallet checks the verifier's accreditation and its declared purpose | `holder -> trustRegistry` *checks if the requested data corresponds with the declared purpose* | reused |
 | Encrypted response carrying only the entitled claims | `holder -> verifier` *Send proof (only "over 18")* | reused |
 | Issuer signature, status list, issuer accreditation | the three closing `verifier ->` steps | reused |
-| `reviewRequest()` before the query is built | — | added |
-| The holder declining, as a recorded outcome | — | **does not map** |
+| `reviewRequest()` before the query is built | n/a | added |
+| The holder declining, as a recorded outcome | n/a | **does not map** |
 
 The reference flow's age check *is* our disclosure case with a different claim
 name, which is why F-03 describes what the travel clinic may ask for and leaves
@@ -83,7 +83,7 @@ as [Trust-Flow-Diagram-Repository#5](https://github.com/DIDAS-swiss/Trust-Flow-D
 
 ## The remaining flows
 
-F-04 through F-10 compose the three reference views, and add no protocol steps
+F-04 through F-10 compose the three reference views and add no protocol steps
 of their own:
 
 | Flow | Composition |
@@ -95,6 +95,7 @@ of their own:
 | F-08 patient summary | many `verification` runs across credential types |
 | F-09 secondary use | `verification` with an unusual verifier and a consent object |
 | F-10 continuous data | `issuance`, with an open question about who authors the claim |
+| F-11 coverage survey | `verification`, with the sample drawn outside the trust infrastructure |
 
 Where one of these needs a step the reference model has no shape for, the note
 is in that flow's own **Standardisation constraints** section.

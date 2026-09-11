@@ -1,6 +1,6 @@
 ---
 id: F-03
-title: Proving protection, and nothing else
+title: Proving protection and nothing else
 status: implemented
 roadmap_step: 1
 actors:
@@ -20,23 +20,23 @@ basis: basic-flow/verification
 preconditions:
   - F-02
 produces:
-  - A yes/no answer about protection, and a governance journal entry
+  - A yes/no answer about protection and a governance journal entry
 ---
 
-# F-03 · Proving protection, and nothing else
+# F-03 · Proving protection and nothing else
 
 The flow that justifies the architecture. A travel clinic needs to know whether
 the person in front of them is protected against a disease. It does not need to
 know the vaccine brand, the batch number, the vaccinating physician, the clinic,
-or — arguably — the patient's name, which it already has from the appointment.
+or, arguably, the patient's name, which it already has from the appointment.
 
 This is the `verification` view of the reference model with a different claim
-name: the reference flow's "is this person over 18?" and this flow's "is this
+name. The reference flow asks "is this person over 18?"; this flow asks "is this
 person protected against diphtheria?" are the same exchange. The mechanics are
 therefore left to the [reference
 diagram](https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/basic-flow/)
 and what follows is about what a travel clinic may ask for. One step here has no
-counterpart there — the holder declining
+counterpart there is the holder declining
 ([#5](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/issues/5)).
 
 ## What is actually different here
@@ -49,8 +49,8 @@ holder can answer a narrow question narrowly.
 
 The credential carries eighteen claims. The travel clinic's entitlement permits
 four. The remaining fourteen are not redacted after the fact and not filtered by
-the verifier's good behaviour — they are never disclosed, because the wallet
-only reveals the claim paths the DCQL query names, and the query is constructed
+the verifier's good behaviour. They are never disclosed, because the wallet
+only reveals the claim paths the DCQL query names and the query is constructed
 from the entitlement.
 
 ```mermaid
@@ -83,7 +83,7 @@ sequenceDiagram
     GV-->>W: Signed JAR (oauth-authz-req+jwt, ES256)
     W->>W: Resolve client_id → verifier DID; check the trust statement
     W->>W: Show the purpose and the four claims to the holder
-    W-->>W: Holder consents — or declines, which is a valid outcome
+    W-->>W: Holder consents, or declines, which is a valid outcome
     W->>GV: POST the encrypted response (direct_post.jwt, vp_token + KB-JWT)
     GV->>BR: Resolve the status list; is the credential still valid?
     GV->>TR: Evaluate the issuer's trust markers
@@ -93,7 +93,7 @@ sequenceDiagram
 
 ## Governance constraints
 
-- **The entitlement is the ceiling, and it is enforced before the request is
+- **The entitlement is the ceiling. It is enforced before the request is
   built.** `reviewRequest()` refuses a query for claims outside the role's
   entitlement, so an over-broad request never reaches the patient. Enforcing
   minimisation at the wallet or at the verifier's conscience is too late: once
@@ -103,31 +103,31 @@ sequenceDiagram
   they consent and registered at the transparency service. A verifier that wants
   to ask a different question has to say so under a different scope.
 - **Declining is a first-class outcome.** `client_rejected` is a normal answer,
-  not an error, and the flow must work when the patient says no — which for a
-  travel clinic means falling back to the paper booklet, and care continues.
+  not an error and the flow must work when the patient says no, which for a
+  travel clinic means falling back to the paper booklet and care continues.
 - **The verifier keeps the conclusion.** The retention rule
   on this credential type is explicit: a travel clinic needs to record that the
   series was confirmed. The governance journal
   records claim *names*, never values.
 - **Trust runs both ways.** The holder's wallet checks the verifier's trust
   statement before showing the consent screen. A verifier without `viTM` asking
-  for health data is exactly the case the Trust Protocol exists for, and the
-  wallet is where that check has to happen.
+  for health data is the case the Trust Protocol is designed to catch and the
+  wallet is the only place that check can happen before the data moves.
 
 ## Standardisation constraints
 
 - **`response_mode` must be `direct_post.jwt`.** The presentation response is
   always encrypted; cleartext `direct_post` is not an option under the profile.
 - **The authorization request must be a signed JAR.** `client_id` is the
-  verifier's DID, optionally prefixed `decentralized_identifier:`, and must match
+  verifier's DID, optionally prefixed `decentralized_identifier:` and must match
   the `kid` of the signature without its fragment.
 - **One credential per verification.** DCQL `multiple` is not supported, so a
-  question spanning several credentials needs several queries in one request —
+  question spanning several credentials needs several queries in one request,
   or, for the immunization series, F-08.
 - **Trusted authorities are DID-based.** The DCQL trusted-authority types in the
   base OID4VP specification do not apply; the Swiss Profile defines a `did` type
   carrying a list of accepted issuer DIDs.
-- **The Key Binding JWT's `aud` must be the verifier's `client_id`**, and the
+- **The Key Binding JWT's `aud` must be the verifier's `client_id`** and the
   wallet must first satisfy itself that the `client_id` belongs to the entity
   that signed the JAR. This is the anti-impersonation check; skipping it makes
   every other control decorative.
@@ -140,17 +140,21 @@ sequenceDiagram
 1. **"Protected against X" is an inference.** The credential says
    which diseases a dose targets and when it was given. Whether that amounts to
    protection depends on the schedule, the number of doses and elapsed time. Who
-   is accountable for that inference — the verifier's software, a published rule
-   set, or the clinician — is unresolved, and it is a clinical-safety question
+   is accountable for that inference is unresolved: the verifier's software, a
+   published rule set, or the clinician. It is a clinical-safety question
    for the sector to settle.
 2. **Unlinkability across presentations.** A credential presented twice is the
    same credential; batch issuance mitigates this but is not used here, because
    with a series of dose credentials the claim values themselves are close to
-   identifying. This flow is linkable, and stating so is part of the record.
-3. **Herd-level reporting.** Public health needs coverage statistics that a
-   fully decentralised record does not produce as a side effect. F-09 sketches
-   consent-based secondary use; it is not a substitute for surveillance, and
-   pretending otherwise would be the weakest claim in this blueprint.
+   identifying. This flow is linkable and stating so is part of the record.
+3. **Enumerating the susceptible.** Coverage *measurement* is less affected
+   than it looks: the Swiss National Vaccination Coverage Survey samples
+   households and reads the record the family holds, so it never queried a
+   register. What a decentralised record removes is the ability to find the
+   individuals who are behind: outbreak response and catch-up campaigns. F-09
+   sketches consent-based secondary use, which is research with consent rather
+   than surveillance, because a self-selected sample is biased in ways a
+   prevalence estimate cannot correct for. See `docs/public-health.md`.
 
 ## Implementation status
 

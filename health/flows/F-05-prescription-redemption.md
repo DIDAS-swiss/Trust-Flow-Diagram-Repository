@@ -25,7 +25,7 @@ produces:
 
 A prescription is an authorisation that must be usable exactly once. This flow
 is included because it is the case where "put it in a wallet" is *not* obviously
-sufficient — a credential can be presented any number of times — and the answer
+sufficient, because a credential can be presented any number of times. The answer
 turns out to be interesting.
 
 ## Single use without a central register
@@ -36,7 +36,7 @@ Registry; every later presentation fails. Three properties follow:
 
 - **No register of who was prescribed what.** The status list records that a
   credential is no longer valid. It contains no patient, no medication, no
-  pharmacy — the privacy improvement over a central e-prescription service is
+  pharmacy. The privacy improvement over a central e-prescription service is
   structural: the status list is the only place the single-use property is
   recorded, so the guarantee holds for every verifier that checks it.
 - **Only the issuer can revoke.** The pharmacy cannot flip the bit itself, so
@@ -76,7 +76,7 @@ sequenceDiagram
 - **Only a prescriber may issue.** MedBG/LPMéd; enforced through `issuerRole`
   and, in a real deployment, `gucaTM`.
 - **Revocation here means "used up".** The same mechanism
-  serves both, and the status list cannot distinguish them. The distinction has
+  serves both and the status list cannot distinguish them. The distinction has
   to live in the issuer's own record, which is why the redemption request is
   journalled with its reason.
 - **`repeats_authorized` is not implemented as repeat dispensing.** The claim is
@@ -91,12 +91,12 @@ sequenceDiagram
 ## Standardisation constraints
 
 - The medication list is a selectively disclosable array of objects, using
-  array-element and recursive disclosures — both required of wallets by the
+  array-element and recursive disclosures, both required of wallets by the
   profile and recommended for exactly this shape.
 - `credential_refresh_disabled` is set: allowing the wallet to silently re-fetch
   a prescription from the credential endpoint would undo the redemption model.
 - `exp` is set to the prescription's validity. Past `exp` the credential cannot
-  be presented at all — stricter than `expiry_date`, which only warns the holder
+  be presented at all. That is stricter than `expiry_date`, which only warns the holder
   and leaves the decision to the verifier.
 - FHIR `MedicationRequest` (CH EMED) and openEHR
   `openEHR-EHR-INSTRUCTION.medication_order.v3` bindings per claim; the
@@ -107,7 +107,7 @@ sequenceDiagram
 1. **The double-dispensing window.** Options: the pharmacy revokes through a
    delegated authorisation from the issuer; the issuer suspends on presentation
    and revokes on confirmation; or the ecosystem accepts a window no worse than
-   paper's. Unresolved, and the most substantive gap in this flow.
+   paper's. Unresolved and the most substantive gap in this flow.
 2. **Partial dispensing.** Handing over one of three prescribed items has no
    representation: revocation is all-or-nothing.
 3. **Who revokes when the practice has closed?** A prescription outlives its

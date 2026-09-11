@@ -32,12 +32,12 @@ produces:
 Everything else in this blueprint assumes the answer to one question: *why
 should anyone believe that the entity behind this DID is a medical practice?*
 This flow is that answer. It is listed first because it is the flow most often
-skipped in prototypes, and the one whose absence makes every later flow
+skipped in prototypes and the one whose absence makes every later flow
 decorative.
 
 The key publication, the accreditation request and the trust statement that
-comes back are the `registration` view of the reference model, and this flow
-takes them as given — see the [reference
+comes back are the `registration` view of the reference model. This flow
+takes them as given. See the [reference
 diagram](https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/basic-flow/)
 for what happens inside each. What it adds is the layer above: a health
 governance body granting role-scoped authorisation, which the reference model
@@ -73,15 +73,15 @@ sequenceDiagram
 
 ## Three layers, often collapsed into one
 
-"Onboarding" names three different things here, and conflating them is why this
+"Onboarding" names three different things here and conflating them is why this
 flow is usually misjudged as blocked when two thirds of it are available today:
 
 | Layer | What it establishes | Available? |
 | --- | --- | --- |
-| Organisation | An ePortal account, a business partner, API access | **Yes** — self-service, chargeable per DID |
-| Identity | A `did:webvh` on the Base Registry, proven by possession → `viTM` | **Yes** — self-service |
-| Transparency | A Verification Query Public Statement: this verifier, this scope, this DCQL query, published | **Yes** — self-service, per verifier per query |
-| Entitlement | `gucaTM`: this DID may issue *this credential type* in health | **No** — nobody can issue it |
+| Organisation | An ePortal account, a business partner, API access | **Yes**, self-service, chargeable per DID |
+| Identity | A `did:webvh` on the Base Registry, proven by possession → `viTM` | **Yes**, self-service |
+| Transparency | A Verification Query Public Statement: this verifier, this scope, this DCQL query, published | **Yes**, self-service, per verifier per query |
+| Entitlement | `gucaTM`: this DID may issue *this credential type* in health | **No**, nobody can issue it |
 
 Only the last layer is blocked. A pilot runs on the first three plus explicitly
 listed `accepted_issuer_dids`, which is what this project does.
@@ -91,9 +91,9 @@ listed `accepted_issuer_dids`, which is what this project does.
 - **A role is granted by someone.** The health domain needs a
   governance body that decides which organisations hold which roles and issues
   the corresponding trust statement. This project models the roles
-  (`ROLE` in `@didas/swiyu`) and the entitlements attached to them, and assumes
+  (`ROLE` in `@didas/swiyu`) and the entitlements attached to them and assumes
   such a body exists. **It does not exist yet.** That is the single largest gap
-  between this blueprint and a deployable system, and no amount of code closes
+  between this blueprint and a deployable system. No amount of code closes
   it.
 - **Role grants must be checkable against existing registers.** Inventing a register for
   this ecosystem: the cantonal authorisation to practise, the MedReg entry, the
@@ -103,7 +103,7 @@ listed `accepted_issuer_dids`, which is what this project does.
   that may verify a prescription does not thereby gain the right to issue one.
   The entitlement model keeps these apart (`issuerRole` versus `verifierRoles`).
 - **Protected fields need their own grant.** Under `swiss-profile-trust:1.0`,
-  `personal_administrative_number` — the AHV number — requires an explicit
+  `personal_administrative_number`, the AHV number, requires an explicit
   authorization marker regardless of which credential carries it. A practice
   needs it to bill; a pharmacy does not; both are health actors. The grant is
   per claim.
@@ -126,7 +126,7 @@ listed `accepted_issuer_dids`, which is what this project does.
 - **One signature algorithm.** ES256, everywhere, in all four profiles.
 - **Environment separation is enforced.** CD-001 separates the Sandbox from
   production: the swiyu Wallet talks only to production, the swiyu Sandbox
-  Wallet only to the Sandbox, and a Sandbox DID may no longer be hosted on a
+  Wallet only to the Sandbox and a Sandbox DID may no longer be hosted on a
   private registry. An actor needs a distinct onboarding per environment.
 
 ## Open questions

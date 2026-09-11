@@ -44,23 +44,23 @@ access to their own vaccination history at once. The lesson usually drawn is
 "that platform was badly built". The more useful lesson is that a design in
 which one database holds everyone's record has a failure mode that no amount of
 careful engineering removes: the database can be breached, defunded, or simply
-switched off, and when it is, everyone loses at once.
+switched off and when it is, everyone loses at once.
 
 Three design decisions follow, each weighed against an obvious
 choice:
 
 - **One credential per dose.** A dose is an event with a
-  single author — whoever administered it. Issuing one credential per dose keeps
-  authorship intact, lets each issuer revoke only their own assertion, and means
+  single author, whoever administered it. Issuing one credential per dose keeps
+  authorship intact, lets each issuer revoke only their own assertion and means
   the patient's history is assembled in the wallet, under the patient's control.
   The cost is that "is this series complete?" becomes a question about several
   credentials instead of a lookup, which F-03 and F-08 have to handle.
 - **The credential outlives its issuer.** A practice that closes cannot take the
   record with it. This is the property a registry cannot offer and a paper
-  vaccination booklet can — the architecture is closer to the booklet than to
+  vaccination booklet can. The architecture is closer to the booklet than to
   the platform, deliberately.
 - **No expiry on the event.** A vaccination that happened stays happened, so
-  `exp` is set far out, and the credential is not
+  `exp` is set far out and the credential is not
   refreshable: there is nothing for a refresh to fetch.
 
 ## Sequence
@@ -92,23 +92,23 @@ sequenceDiagram
     P->>GI: (later, on a recording error only) PATCH …/status?credentialStatus=REVOKED
 ```
 
-Steps 8–14 are entirely the generic issuer's work. The business application
-does steps 1–5 and, rarely, the last one. That division is the point of using
-the generic components: DPoP, key attestation, mandatory response encryption and
-signed metadata are where conformance is won or lost, and none of it belongs in
-a practice management system.
+Steps 8 to 14 are entirely the generic issuer's work. The business application does
+steps 1 to 5 and, rarely, the last one. That division is the reason for using the
+generic components: DPoP, key attestation, mandatory response encryption and
+signed metadata are where conformance is decided and implementing them inside a
+practice management system would place that burden on every vendor.
 
 ## Governance constraints
 
 - **Only an authorised vaccinator may issue.** `reviewIssuance()` refuses before
-  any request reaches the issuer, and the refusal is journalled. The underlying
+  any request reaches the issuer and the refusal is journalled. The underlying
   grant is `gucaTM` naming this credential type; the legal basis is EpG/LEp plus
   the cantonal authorisation to vaccinate.
 - **Revocation corrects, it does not retract.** The only legitimate reason to
-  revoke a dose credential is that it records something that did not happen —
+  revoke a dose credential is that it records something that did not happen:
   wrong patient, wrong vaccine, duplicate entry. Revoking to express "we no
   longer recognise this vaccination" would make the status list a policy
-  instrument, and a patient's record would become contestable by whoever issued
+  instrument and a patient's record would become contestable by whoever issued
   it. This is a governance rule with no technical enforcement: the status list
   cannot tell the two motives apart, so it has to be written down and audited.
 - **The patient is not asked to consent to issuance**, because they asked for
@@ -129,7 +129,7 @@ a practice management system.
   non-disclosable business claims outright, which is what makes F-03 possible.
 - **Encryption is mandatory in both directions**, and
   `encryption_required` must be `true` in the metadata.
-- **Batch size ≥ 10** where batch issuance is used — a privacy floor, and a
+- **Batch size ≥ 10** where batch issuance is used. It is a privacy floor and a
   tuning parameter: a small batch forces frequent refreshes and hands the issuer
   telemetry about when the credential is used.
 - **Model reuse without a repository.** Claims carry FHIR element paths (CH VACD
@@ -148,14 +148,14 @@ a practice management system.
    that cannot see dose 1. Today `dose_number` and `doses_in_series` are asserted
    by whoever administers, which means a wallet holding two "dose 1 of 3"
    credentials is possible. Resolving this needs either a presentation at
-   administration time (the wallet shows what it holds) or a series identifier —
-   both are F-08 territory.
+   administration time (the wallet shows what it holds) or a series identifier.
+   Both are F-08 territory.
 2. **Vaccine coding.** SNOMED CT product codes here; CH VACD also permits ATC
-   and national codes, and IPS has its own expectations. Picking one is a
+   and national codes and IPS has its own expectations. Picking one is a
    governance decision with interoperability consequences.
 3. **Paediatric and representative-held credentials.** A child's vaccinations
    belong in whose wallet? The trust infrastructure has no representation model
-   yet, and this blocks the largest real population for immunization records.
+   yet. This blocks the largest real population for immunization records.
 
 ## Implementation status
 
