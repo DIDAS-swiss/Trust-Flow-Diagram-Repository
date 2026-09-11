@@ -129,6 +129,22 @@ h2 {
   letter-spacing: 0.04em;
   padding-top: 2px;
 }
+.flow-noga {
+  display: block;
+  margin-top: 4px;
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  text-transform: none;
+  color: var(--body);
+  opacity: 0.75;
+}
+.section-note {
+  margin: -8px 0 18px;
+  font-size: 14px;
+  color: var(--body);
+  max-width: 68ch;
+}
 .flow-body h3 { margin: 0 0 6px; font-size: 16px; }
 .flow-body p { margin: 0; color: var(--body); font-size: 14.5px; }
 .flow-body ul { margin: 8px 0 0; padding-left: 18px; color: var(--body); font-size: 14px; }

@@ -1,0 +1,41 @@
+# Checks that the classification stays coherent as sectors and flows are added.
+#
+# A convention nobody checks drifts. This runs on every pull request that
+# touches a sector, so a contributor who forgets a sector.yaml, mistypes a
+# status or claims a NOGA division another sector already holds finds out here
+# rather than in review.
+#
+# It reads metadata only. It does not build or render anything.
+name: classification
+
+on:
+  pull_request:
+    paths:
+      - '*/sector.yaml'
+      - '*/README.md'
+      - 'sector.template.yaml'
+      - 'CLASSIFICATION.md'
+      - 'scripts/check-classification.py'
+      - '.github/workflows/classification.yml'
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install PyYAML
+        run: python3 -m pip install --quiet pyyaml
+
+      - name: Check the classification
+        run: python3 scripts/check-classification.py
