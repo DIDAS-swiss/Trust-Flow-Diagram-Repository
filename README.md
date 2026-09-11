@@ -15,8 +15,9 @@ The Swiss e-ID trust infrastructure looks similar on paper across use cases — 
 ```
 trust-flows-e-id/
 ├── basic-flow/     reference flow: the trust infrastructure itself
-├── banking/         KYC, re-identification, 18-year-old re-identification
-└── education/      issuance of a Maturitätszeugnis, university onboarding
+├── banking/        KYC, re-identification, 18-year-old re-identification
+├── education/      issuance of a Maturitätszeugnis, university onboarding
+└── health/         vaccination records, consultation, prescription
 ```
 
 ### [`basic-flow/`](./basic-flow)
@@ -35,6 +36,9 @@ Flows for KYC onboarding, re-identification, and re-identification of a user who
 
 ### [`education/`](./education)
 Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC.
+
+### [`health/`](./health)
+Flows for vaccination records held in the patient's wallet: issuing a dose, proving protection while disclosing four claims out of eighteen, check-in against an e-ID and an insurance card, a prescription redeemed once, and correcting a record. Modelled in LikeC4 and bound to the eHealth Suisse exchange formats.
 
 ## License
 

@@ -1,0 +1,26 @@
+sector: health
+title: Health
+noga:
+  division: "86"
+  division_title: Human health activities
+  section: R
+  section_title: Human health and social work activities
+  scheme: NOGA 2025
+families:
+  - id: immunization
+    title: Immunization and vaccination records
+    directory: likec4-health
+    status: in-progress
+    flows:
+      - id: F-01
+        title: Becoming an actor in the health trust domain
+      - id: F-02
+        title: Recording an administered dose
+      - id: F-03
+        title: Proving protection, and nothing else
+      - id: F-04
+        title: Check-in at the practice
+      - id: F-05
+        title: Redeeming a prescription, exactly once
+      - id: F-06
+        title: Correcting a recorded dose
