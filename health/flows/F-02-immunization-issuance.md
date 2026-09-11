@@ -88,7 +88,7 @@ sequenceDiagram
     GI-->>W: access_token
     W->>GI: POST /oid4vci/api/credential (proof of possession, encrypted)
     GI-->>W: Encrypted SD-JWT VC
-    W->>W: Store; render from the OCA bundle
+    W->>W: Store and render from the OCA bundle
     P->>GI: (later, on a recording error only) PATCH …/status?credentialStatus=REVOKED
 ```
 

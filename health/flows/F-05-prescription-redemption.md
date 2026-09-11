@@ -67,7 +67,7 @@ sequenceDiagram
     Ph->>Ph: Hand over the medication
     Ph->>P: Redemption request
     P->>GI: PATCH …/status?credentialStatus=REVOKED
-    GI->>BR: Publish; bit → INVALID
+    GI->>BR: Publish, bit → INVALID
     Note over W: The credential remains in the wallet<br/>and no longer verifies
 ```
 

@@ -81,11 +81,11 @@ sequenceDiagram
     T-->>W: QR code (swiyu-verify://?client_id=…&request_uri=…)
     W->>GV: GET the request object
     GV-->>W: Signed JAR (oauth-authz-req+jwt, ES256)
-    W->>W: Resolve client_id → verifier DID; check the trust statement
+    W->>W: Resolve client_id to the verifier DID, then check the trust statement
     W->>W: Show the purpose and the four claims to the holder
     W-->>W: Holder consents, or declines, which is a valid outcome
     W->>GV: POST the encrypted response (direct_post.jwt, vp_token + KB-JWT)
-    GV->>BR: Resolve the status list; is the credential still valid?
+    GV->>BR: Resolve the status list. Is the credential still valid?
     GV->>TR: Evaluate the issuer's trust markers
     GV-->>T: SUCCESS + disclosed claims + credential_evaluation
     Note over T: reviewPresentation(): status first,<br/>then trust markers, then act
