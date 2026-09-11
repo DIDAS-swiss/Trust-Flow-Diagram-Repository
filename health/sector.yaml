@@ -1,0 +1,66 @@
+sector: health
+title: Health
+noga:
+  division: "86"
+  division_title: Human health activities
+  section: R
+  section_title: Human health and social work activities
+  scheme: NOGA 2025
+families:
+  - id: immunization
+    title: Immunization and vaccination records
+    directory: likec4-health
+    status: in-progress
+    flows:
+      - id: F-01
+        title: Becoming an actor in the health trust domain
+        status: partial
+        diagram: diagrams/F-01-becoming-an-actor.png
+      - id: F-02
+        title: Recording an administered dose
+        status: implemented
+        diagram: diagrams/F-02-recording-a-dose.png
+      - id: F-03
+        title: Proving protection and nothing else
+        status: implemented
+        diagram: diagrams/F-03-proving-protection.png
+      - id: F-04
+        title: Check-in at the practice
+        status: implemented
+        diagram: diagrams/F-04-practice-check-in.png
+      - id: F-05
+        title: Redeeming a prescription, exactly once
+        status: implemented
+        diagram: diagrams/F-05-prescription-redemption.png
+      - id: F-06
+        title: Correcting a recorded dose
+        status: partial
+        diagram: diagrams/F-06-correction.png
+      - id: F-07
+        title: Projecting a presented credential into FHIR and openEHR
+        status: implemented
+      - id: F-08
+        title: Assembling an International Patient Summary
+        status: roadmap
+      - id: F-09
+        title: Secondary use under revocable consent
+        status: roadmap
+      - id: F-10
+        title: Wearables and continuous data
+        status: roadmap
+
+  # A coverage survey runs under a statistical mandate rather than the Human
+  # Research Act. It samples rather than recruits and it needs no identifying
+  # claim, because its own sampling frame already supplies age and canton. That
+  # is a different legal basis, a different entitlement and a different
+  # retention rule, so it is a family of its own rather than a flow inside
+  # immunization.
+  - id: public-health-statistics
+    title: Population health statistics
+    directory: likec4-health
+    status: specified
+    flows:
+      - id: F-11
+        title: Answering the national coverage survey
+        status: roadmap
+        diagram: diagrams/F-11-coverage-survey.png
