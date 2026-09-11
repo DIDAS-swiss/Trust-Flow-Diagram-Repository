@@ -19,6 +19,12 @@ trust-flows-e-id/
 └── education/      issuance of a Maturitätszeugnis, university onboarding
 ```
 
+Sector directories are named after their [NOGA
+2025](https://www.kubb-tool.bfs.admin.ch/en) division, so that "banking",
+"finance" and "financial services" cannot become three directories for one
+sector. [`CLASSIFICATION.md`](./CLASSIFICATION.md) describes the convention and
+the `sector.yaml` each sector carries.
+
 ### [`basic-flow/`](./basic-flow)
 The reference model. It shows the trust infrastructure end-to-end — onboarding, issuance, and verification — including the underlying data, protocols, and cryptography.
 

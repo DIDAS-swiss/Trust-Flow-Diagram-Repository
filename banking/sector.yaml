@@ -1,0 +1,34 @@
+sector: banking
+title: Banking
+noga:
+  division: "64"
+  division_title: Financial service activities, except insurance and pension funding
+  section: L
+  section_title: Financial and insurance activities
+  scheme: NOGA 2025
+families:
+  - id: kyc-credential
+    title: KYC credential
+    directory: KYC Credential
+    status: in-progress
+    flows:
+      - id: kyc-onboarding
+        title: Online onboarding and KYC credential issuance
+      - id: kyc-sharing
+        title: KYC credential sharing
+      - id: re-kyc
+        title: Re-KYC periodic reevaluation
+  - id: re-identification-forgotten-password
+    title: Re-identification after a forgotten password
+    directory: Re-Identification After Forgotten Password
+    status: in-progress
+    flows:
+      - id: online-banking-reidentification
+        title: Online banking re-identification
+  - id: re-identification-age-of-majority
+    title: Re-identification at the age of majority
+    directory: Re-Identification at Age of Majority
+    status: in-progress
+    flows:
+      - id: qes-18
+        title: QES for 18-year-old re-identification
