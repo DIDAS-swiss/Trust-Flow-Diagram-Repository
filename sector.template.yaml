@@ -1,0 +1,34 @@
+# Copy this to <your-sector>/sector.yaml and fill it in.
+#
+# Two lookups and you are done:
+#   1. The NOGA division, from https://www.kubb-tool.bfs.admin.ch/en
+#   2. Whether your flows join an existing family or start a new one
+#
+# Then run: python3 scripts/check-classification.py
+#
+# See CLASSIFICATION.md for what each field means and why the division number
+# rather than the section letter is the thing to key on.
+
+sector: example              # the directory name, exactly
+title: Example               # what the portal shows
+
+noga:
+  division: "00"             # quoted, because leading zeros matter
+  division_title: The division title, copied from KUBB
+  section: X
+  section_title: The section title, copied from KUBB
+  scheme: NOGA 2025          # the version you read, so a later reader knows
+
+families:
+  - id: example-family       # kebab-case, stable, referenced from elsewhere
+    title: Example family    # what the portal shows
+    # directory: Example Family
+    #   Only when the family has its own subdirectory. A sector with one family
+    #   may keep its flows directly under the sector directory.
+    status: draft            # draft | specified | in-progress | stable
+    flows:
+      - id: F-01             # or a slug, as long as it is unique in the sector
+        title: What this flow shows
+        status: draft        # draft | specified | roadmap | partial | implemented | in-progress | stable
+        # diagram: diagrams/F-01-example.png
+        #   Optional. Checked for existence if given.
