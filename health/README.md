@@ -170,10 +170,12 @@ of Public Health and all 26 cantons. It samples randomly selected households of
 post a copy of the child's vaccination record.
 
 The data source is therefore already the record the family holds. This flow
-replaces the photocopy. Of the eleven flows here it is the one where a
-credential presentation discloses **less** than the procedure it would replace.
-The survey receives five claims and no identifier, because it drew the household
-from the population register and already holds the age band and the canton.
+replaces the photocopy. That photocopy shows every dose, every date, the
+vaccinating physician and usually the child's name. A presentation sends five
+claims and no name, because the survey drew the household from the population
+register and already holds the age band and the canton. Of the eleven flows
+here, this is the only one that sends a verifier **less** than it already
+receives.
 
 It is a separate use case family because it runs under a statistical mandate
 rather than the Human Research Act. Different legal basis, different entitlement,

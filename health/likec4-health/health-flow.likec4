@@ -287,7 +287,7 @@ views {
 
         `purpose_name` is capped at 40 characters here. The verifier
         management API allows 50; the Trust Registry caps the vqPS entry at
-        40 and the stricter limit is the one that has to hold.
+        40, so 40 is the limit that has to hold.
 
         This is the reference model's "defines what data he will request for
         which purpose". It is self-service today.
@@ -599,7 +599,8 @@ views {
 
     survey -> populationRegister 'Draw a random sample' {
       notes '''
-        **The sample is drawn here. That is the point.**
+        **The sample is drawn from the population register, not from the
+        wallet.**
 
         The Swiss National Vaccination Coverage Survey, coordinated by the
         Epidemiology, Biostatistics and Prevention Institute (EBPI) at the
@@ -660,9 +661,9 @@ views {
         the immunization id and the next dose due. That is thirteen of eighteen
         claims, including every one that identifies a person or a practitioner.
 
-        A photocopied booklet discloses all of it. This flow is the one case in
-        the set where selective disclosure reduces disclosure below what the
-        paper process already required.
+        The photocopied booklet families post today shows all of it. Five
+        coded claims and no name is less than that. This is the only flow in
+        the set that sends a verifier less than it already receives.
 
         The invitation credential travels in the same proof, contributing the
         stratum. The survey learns "a household in this canton with an
@@ -727,9 +728,9 @@ views {
         replaced or corrected entry in another document.
 
         CH VACD already models supersession. This project does not yet
-        carry it. Adopting the same reference shape is the fix: the corrected
-        credential names what it replaces, so a verifier holding both can
-        tell which one stands.
+        carry it. The CH VACD `relatesTo` shape is the fix: the corrected
+        credential names the credential it supersedes, so a verifier holding
+        both can tell which of the two stands.
 
         CH VACD also defines `CHVACDExtensionMergingConflictEntryReference`
         for merge conflicts, which is the shape this project needs for the

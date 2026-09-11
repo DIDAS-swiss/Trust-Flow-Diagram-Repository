@@ -24,8 +24,10 @@ produces:
 
 # F-11 · Answering the national coverage survey (roadmap, 2027)
 
-Of the eleven flows in this set, this is the one where a credential presentation
-discloses less than the procedure it would replace.
+Today a family posts a photocopy of the child's vaccination booklet, which shows
+every dose, every date, the vaccinating physician and usually the child's name.
+A presentation sends five claims and no name. Of the eleven flows in this set,
+this is the only one that sends a verifier less than it already receives.
 
 Switzerland measures vaccination coverage with the Swiss National Vaccination
 Coverage Survey, coordinated by the **Epidemiology, Biostatistics and
@@ -45,7 +47,8 @@ coverage survey differs in four respects. Each of them removes a difficulty
 the other flows have to address.
 
 - **Consent is already the model.** Households are invited and may refuse. The
-  flow does not introduce a consent step; it replaces a postal one.
+  flow adds no consent step, because the survey already asks and already takes
+  no for an answer.
 - **No identity is needed.** The survey drew the household from the population
   register, so it already knows the age band and the canton. What it cannot
   know is the clinical fact.
@@ -270,5 +273,5 @@ batch issuance and a zero-knowledge presentation, are unused and unavailable
 respectively.
 
 Of the uses described in this repository, this one has the clearest
-public-interest rationale and the lowest cost to pilot, because the procedure it
-would replace is a photocopy sent by post.
+public-interest rationale and the lowest cost to pilot. The survey already
+collects these data by asking families to post a photocopy.
