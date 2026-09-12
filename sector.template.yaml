@@ -1,8 +1,16 @@
 # Copy this to <your-sector>/sector.yaml and fill it in.
 #
-# Two lookups and you are done:
-#   1. The NOGA division, from https://www.kubb-tool.bfs.admin.ch/en
-#   2. Whether your flows join an existing family or start a new one
+# Two questions and you are done:
+#   1. Which NOGA division describes the relying party's industry?
+#   2. Do your flows join an existing family or start a new one?
+#
+# For the first, search the codified entries and paste what it prints:
+#
+#     python3 scripts/check-classification.py --noga retail
+#
+# If your division is missing from noga-2025.yaml, read its title from
+# https://www.kubb-tool.bfs.admin.ch/en and add the row in the same pull
+# request.
 #
 # Then run: python3 scripts/check-classification.py
 #
@@ -12,11 +20,12 @@
 sector: example              # the directory name, exactly
 title: Example               # what the portal shows
 
+# The whole block below is what `--noga <search>` prints for a single match.
 noga:
   division: "00"             # quoted, because leading zeros matter
-  division_title: The division title, copied from KUBB
+  division_title: The division title, from noga-2025.yaml
   section: X
-  section_title: The section title, copied from KUBB
+  section_title: The section title, from noga-2025.yaml
   scheme: NOGA 2025          # the version you read, so a later reader knows
 
 families:
