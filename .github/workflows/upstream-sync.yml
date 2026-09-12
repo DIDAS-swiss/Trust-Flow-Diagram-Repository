@@ -1,0 +1,45 @@
+# SPDX-License-Identifier: MIT
+
+# functions.yaml, value-streams.yaml and states.yaml are local copies of
+# vocabularies maintained in DIDAS-swiss/industry-function-graph. The
+# classification check only compares sector.yaml files against those copies, so
+# it would never notice the copies themselves going stale. This does.
+#
+# The weekly run is the one that matters: drift usually arrives because
+# something changed upstream, which is a change no pull request here touches.
+
+name: upstream sync
+
+on:
+  pull_request:
+    paths:
+      - 'functions.yaml'
+      - 'value-streams.yaml'
+      - 'states.yaml'
+      - 'scripts/check-upstream-sync.py'
+      - '.github/workflows/upstream-sync.yml'
+  schedule:
+    # Mondays, early. Nothing here is urgent enough to want it more often.
+    - cron: '17 6 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install PyYAML
+        run: pip install pyyaml
+
+      - name: Compare the synced catalogues with the published graph
+        run: python3 scripts/check-upstream-sync.py

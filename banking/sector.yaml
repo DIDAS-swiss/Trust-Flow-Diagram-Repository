@@ -1,0 +1,53 @@
+sector: banking
+title: Banking
+noga:
+  division: "64"
+  division_title: Financial service activities, except insurance and pension funding
+  section: L
+  section_title: Financial and insurance activities
+  scheme: NOGA 2025
+families:
+  - id: kyc-credential
+    title: KYC credential
+    directory: KYC Credential
+    status: in-progress
+    value_stream: order-to-cash
+    states:
+      requires: [eid-held]
+      establishes: [kyc-attestation-held, customer-relationship-open]
+    functions:
+      primary: customer-onboarding
+      supporting: [identity-proofing, regulatory-compliance]
+    flows:
+      - id: kyc-onboarding
+        title: Online onboarding and KYC credential issuance
+      - id: kyc-sharing
+        title: KYC credential sharing
+      - id: re-kyc
+        title: Re-KYC periodic reevaluation
+  - id: re-identification-forgotten-password
+    title: Re-identification after a forgotten password
+    directory: Re-Identification After Forgotten Password
+    status: in-progress
+    states:
+      requires: [customer-relationship-open, eid-held]
+      establishes: [access-granted]
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [customer-service, access-management]
+    flows:
+      - id: online-banking-reidentification
+        title: Online banking re-identification
+  - id: re-identification-age-of-majority
+    title: Re-identification at the age of majority
+    directory: Re-Identification at Age of Majority
+    status: in-progress
+    states:
+      requires: [customer-relationship-open, eid-held]
+      establishes: [legal-capacity-established]
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [eligibility-verification, regulatory-compliance]
+    flows:
+      - id: qes-18
+        title: QES for 18-year-old re-identification

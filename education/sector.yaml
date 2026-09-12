@@ -1,0 +1,29 @@
+sector: education
+title: Education
+noga:
+  division: "85"
+  division_title: Education
+  section: Q
+  section_title: Education
+  scheme: NOGA 2025
+families:
+  # One family so far, so the flows sit directly under the sector directory.
+  - id: certificates-and-enrolment
+    title: Certificates and enrolment
+    status: in-progress
+    states:
+      # Two establishes because two kinds of work share this family: the school
+      # issues, the university enrols. Splitting the family would split these.
+      requires: [eid-held]
+      establishes: [secondary-education-credential-held, tertiary-enrolment-established]
+    functions:
+      # Two kinds of work in one family: the school issues a certificate,
+      # the university onboards a student. If this family is ever split,
+      # the second half takes customer-onboarding as its primary.
+      primary: certification-and-attestation
+      supporting: [customer-onboarding, eligibility-verification, identity-proofing, records-management]
+    flows:
+      - id: high-school-certificate-issuance
+        title: High school certificate issuance
+      - id: university-immatriculation
+        title: University immatriculation
