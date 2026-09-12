@@ -39,6 +39,14 @@ scheme:
   full_name: General Classification of Economic Activities
   publisher: Federal Statistical Office
   derives_from: NACE Rev. 2.1, which derives from ISIC Rev. 5
+  # Stronger than "derives from", and the reason a division number is usable
+  # outside Switzerland: the section letters and division numbers below are
+  # identical to ISIC Rev. 5. Checked against the UN Statistics Division's
+  # published ISIC Rev. 5 structure file - all 22 sections and all 23 divisions
+  # codified here agree, with three section titles differing in spelling only.
+  # The equivalence stops at division level, where NACE and NOGA add detail
+  # ISIC does not have.
+  equivalent_to: ISIC Rev. 5 at section and division level
   lookup: https://www.kubb-tool.bfs.admin.ch/en
   code_url: https://www.kubb-tool.bfs.admin.ch/en/noga/2025/{code}
   retrieved: 2026-09-12

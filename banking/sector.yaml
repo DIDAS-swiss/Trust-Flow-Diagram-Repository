@@ -11,6 +11,9 @@ families:
     title: KYC credential
     directory: KYC Credential
     status: in-progress
+    functions:
+      primary: customer-onboarding
+      supporting: [identity-proofing, regulatory-compliance]
     flows:
       - id: kyc-onboarding
         title: Online onboarding and KYC credential issuance
@@ -22,6 +25,9 @@ families:
     title: Re-identification after a forgotten password
     directory: Re-Identification After Forgotten Password
     status: in-progress
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [customer-service, access-management]
     flows:
       - id: online-banking-reidentification
         title: Online banking re-identification
@@ -29,6 +35,9 @@ families:
     title: Re-identification at the age of majority
     directory: Re-Identification at Age of Majority
     status: in-progress
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [eligibility-verification, regulatory-compliance]
     flows:
       - id: qes-18
         title: QES for 18-year-old re-identification

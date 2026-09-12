@@ -1,0 +1,109 @@
+# Business functions, codified for this repository
+#
+# The second axis. A sector says which industry the relying party is in. A
+# function says what kind of work the flow is. Re-KYC, university matriculation
+# and patient admission sit in three sectors; two of them are the same work.
+#
+# Pick a family's functions from this file instead of inventing a label:
+#
+#     python3 scripts/check-classification.py --functions identity
+#     python3 scripts/check-classification.py --functions            # the whole list
+#
+# A search that matches exactly one function prints the `functions:` block to
+# paste into your `sector.yaml`.
+#
+# Why a local copy rather than a link: the same reason noga-2025.yaml exists.
+# Classifying should be a choice from a list, and the checker has to work
+# offline. The upstream scheme is industry-function-graph; a function added
+# there should be copied here in the pull request that first uses it.
+#
+# Functions are not exclusive. Two sectors performing the same function is the
+# point of having the axis, so unlike a NOGA division, a function is not
+# "claimed" by one directory.
+
+scheme:
+  name: IFM business functions
+  publisher: DIDAS
+  source: https://github.com/DIDAS-swiss/industry-function-graph
+  lookup: https://didas-swiss.github.io/industry-function-graph/
+  aligned_to: UN CBF and APQC PCF, recorded upstream as SKOS mapping relations
+  retrieved: 2026-09-12
+
+functions:
+  - id: identity-proofing
+    title: Identity proofing
+    definition: >-
+      Establishing to a stated level of assurance that a claimed identity
+      corresponds to a real subject.
+
+  - id: identity-lifecycle-management
+    title: Identity lifecycle management
+    broader: identity-proofing
+    definition: >-
+      Maintaining an established identity relationship over time:
+      re-verification, recovery, attribute updates, revocation.
+
+  - id: customer-onboarding
+    title: Customer onboarding
+    definition: >-
+      Establishing a new customer or member relationship, including the due
+      diligence that regulation attaches to it.
+
+  - id: eligibility-verification
+    title: Eligibility verification
+    definition: >-
+      Checking whether a subject meets a stated condition - age, residency,
+      licence, membership - without necessarily identifying them.
+
+  - id: access-management
+    title: Access management
+    definition: >-
+      Granting, restricting and revoking access to systems, premises or
+      services.
+
+  - id: certification-and-attestation
+    title: Certification and attestation
+    definition: >-
+      Issuing an authoritative statement about a subject, a product or a
+      process - a diploma, a certificate, an accreditation.
+
+  - id: regulatory-compliance
+    title: Regulatory compliance
+    definition: >-
+      Meeting statutory and regulatory obligations, including record-keeping
+      and supervisory reporting.
+
+  - id: sourcing-and-procurement
+    title: Sourcing and procurement
+    definition: >-
+      Selecting, qualifying and contracting suppliers, and running the
+      purchase-to-pay process.
+
+  - id: supply-chain-traceability
+    title: Supply chain traceability
+    broader: sourcing-and-procurement
+    definition: >-
+      Establishing provenance and chain of custody for goods and their inputs.
+
+  - id: human-capital-management
+    title: Human capital management
+    definition: >-
+      Hiring, employing and offboarding people, and administering their
+      qualifications and entitlements.
+
+  - id: customer-service
+    title: Customer service
+    definition: >-
+      Handling requests, incidents and complaints from an existing customer
+      relationship.
+
+  - id: service-delivery
+    title: Service delivery
+    definition: >-
+      Performing and delivering the service the organisation exists to provide.
+
+  - id: records-management
+    title: Records management
+    definition: >-
+      Maintaining an authoritative register or record and answering queries
+      against it.

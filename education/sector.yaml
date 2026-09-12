@@ -11,6 +11,12 @@ families:
   - id: certificates-and-enrolment
     title: Certificates and enrolment
     status: in-progress
+    functions:
+      # Two kinds of work in one family: the school issues a certificate,
+      # the university onboards a student. If this family is ever split,
+      # the second half takes customer-onboarding as its primary.
+      primary: certification-and-attestation
+      supporting: [customer-onboarding, eligibility-verification, identity-proofing, records-management]
     flows:
       - id: high-school-certificate-issuance
         title: High school certificate issuance

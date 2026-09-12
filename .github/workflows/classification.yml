@@ -15,9 +15,11 @@ on:
       - '*/README.md'
       - 'sector.template.yaml'
       - 'noga-2025.yaml'
+      - 'functions.yaml'
       - 'CLASSIFICATION.md'
       - 'scripts/check-classification.py'
       - '.github/workflows/classification.yml'
+      - '.github/pull_request_template.md'
   push:
     branches: [main]
   workflow_dispatch:
