@@ -179,6 +179,67 @@ A family without a `functions` block is a note, not a failure — the same
 treatment an uncodified division gets. A family naming a function that does not
 exist **is** a failure, because that is a typo or an invention and both spread.
 
+## Composability: value streams and states
+
+Sector and function say where a family belongs. They do not say where it sits in
+an end-to-end sequence, or what has to be true before it can run — and that is
+what lets one family plug into another.
+
+**Value stream**, optional, one per family. Where the work sits end to end:
+
+```yaml
+    value_stream: order-to-cash
+```
+
+The concept follows [ArchiMate's Value Stream
+element](https://pubs.opengroup.org/architecture/archimate32-doc/) — a sequence
+of activities creating an overall result. There is no openly licensed catalogue
+of value streams, so [`value-streams.yaml`](value-streams.yaml) is ours, synced
+from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph)
+and marked provisional. Search it with `--streams <query>`.
+
+**States**, the interface. What a family needs, and what it leaves behind:
+
+```yaml
+    states:
+      requires: [eid-held]
+      establishes: [kyc-attestation-held, customer-relationship-open]
+```
+
+Ids come from [`states.yaml`](states.yaml), searchable with `--states <query>`.
+The check then **derives** the composition — nobody draws these arrows:
+
+```
+basic-flow/trust-infrastructure
+    -> banking/kyc-credential                        via eid-held
+    -> education/certificates-and-enrolment          via eid-held
+banking/kyc-credential
+    -> banking/re-identification-forgotten-password  via customer-relationship-open
+    -> banking/re-identification-age-of-majority     via customer-relationship-open
+```
+
+`basic-flow/` requires nothing and establishes `eid-held`, which is why it comes
+out as the root of the graph rather than being declared one.
+
+Two more things fall out of the same data. A state some family requires and no
+family establishes is a **flow this repository has not written down yet**, and
+the check names them. Two families with the same requires and establishes are
+probably **one family**, and it says that too.
+
+States are deliberately coarse — `secondary-education-credential-held`, not
+`gymnasiale-maturitaet-2026-held`. An interface with one implementor is not an
+interface, and the point is that flows nobody has written yet plug into the same
+sockets as the ecosystem iterates.
+
+### What is deliberately not here
+
+`industry-function-graph` also records value drivers, transformation modes,
+trust roles and what evidence a credential replaces. Those are an analytical
+layer for reasoning about where credentials pay off. They are not asked for
+here, because this repository classifies diagrams and a contributor adding a
+flow should not have to fill in a research instrument. Sector, function, stream
+and states are the minimum that makes a flow findable and composable.
+
 ## `sector.yaml`
 
 One file per sector directory, so the classification is machine-readable and
@@ -323,6 +384,9 @@ It fails on:
 - a malformed row in `functions.yaml` itself: a function with no title, no
   definition, or a `broader` that is not in the list
 - a `directory:` or `diagram:` that points at a file that is not there
+- a `value_stream` that is not in `value-streams.yaml`
+- a malformed `states` block, one that establishes nothing, or one naming a
+  state that is not in `states.yaml`
 - an issue form whose dropdowns no longer match the catalogues, because a
   dropdown's options are fixed when the file is written and nothing else would
   catch the drift

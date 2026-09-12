@@ -70,6 +70,18 @@ body:
     validations:
       required: true
   - type: dropdown
+    id: stream
+    attributes:
+      label: "Value stream"
+      description: "Where this sits in an end-to-end sequence. Leave as not-part-of-one if it is infrastructure rather than a step in a chain."
+      options:
+        - "procure-to-pay — Procure to pay"
+        - "order-to-cash — Order to cash"
+        - "hire-to-retire — Hire to retire"
+        - "not part of one"
+    validations:
+      required: true
+  - type: dropdown
     id: function
     attributes:
       label: "Primary function"
@@ -117,9 +129,3 @@ body:
     attributes:
       label: "Anything you are unsure about"
       description: "Uncertain about the division or the function? Say so rather than guessing quietly. Picking the wrong one is cheap to fix now and expensive once other flows have copied it."
-  - type: checkboxes
-    id: acknowledgements
-    attributes:
-      label: "Before submitting"
-      options:
-        - label: "I ran python3 scripts/check-classification.py, or this flow has no sector.yaml change yet"

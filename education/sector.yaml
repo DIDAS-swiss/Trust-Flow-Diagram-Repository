@@ -11,6 +11,11 @@ families:
   - id: certificates-and-enrolment
     title: Certificates and enrolment
     status: in-progress
+    states:
+      # Two establishes because two kinds of work share this family: the school
+      # issues, the university enrols. Splitting the family would split these.
+      requires: [eid-held]
+      establishes: [secondary-education-credential-held, tertiary-enrolment-established]
     functions:
       # Two kinds of work in one family: the school issues a certificate,
       # the university onboards a student. If this family is ever split,
