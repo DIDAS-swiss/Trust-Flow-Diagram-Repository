@@ -23,7 +23,13 @@ Sector directories are named after their [NOGA
 2025](https://www.kubb-tool.bfs.admin.ch/en) division, so that "banking",
 "finance" and "financial services" cannot become three directories for one
 sector. [`CLASSIFICATION.md`](./CLASSIFICATION.md) describes the convention and
-the `sector.yaml` each sector carries.
+the `sector.yaml` each sector carries. The divisions themselves are codified in
+[`noga-2025.yaml`](./noga-2025.yaml), so classifying a new sector is a search
+rather than a transcription:
+
+```bash
+python3 scripts/check-classification.py --noga insurance
+```
 
 ### [`basic-flow/`](./basic-flow)
 The reference model. It shows the trust infrastructure end-to-end — onboarding, issuance, and verification — including the underlying data, protocols, and cryptography.

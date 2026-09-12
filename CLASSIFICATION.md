@@ -57,6 +57,56 @@ wrong within a year of being written.
 A directory name stays short and readable. `health/`, not `human-health-activities/`.
 The NOGA code lives in the metadata below, where precision belongs.
 
+## The codified entries
+
+[`noga-2025.yaml`](noga-2025.yaml) holds the classification itself, so that
+classifying a sector is a choice from a list rather than a transcription from a
+website.
+
+| Part of the file | What is in it |
+| --- | --- |
+| `scheme` | Which classification this is, who publishes it, where to look a code up and when the entries were read |
+| `sections` | All 22 section letters with their titles, complete |
+| `divisions` | The divisions this repository uses, plus the ones a trust flow is most likely to need, each with its section and, where the choice between two divisions is easy to get wrong, a note |
+
+Search it from the command line:
+
+```bash
+python3 scripts/check-classification.py --noga            # everything
+python3 scripts/check-classification.py --noga insurance  # by title
+python3 scripts/check-classification.py --noga 86         # by code
+```
+
+A search that matches one division prints the block ready to paste:
+
+```
+$ python3 scripts/check-classification.py --noga 86
+NOGA 2025 divisions codified here
+------------------------------------------------------------------------
+  86  Human health activities   (section R)   [claimed by health/]
+
+Paste this into <your-sector>/sector.yaml:
+
+noga:
+  division: "86"
+  division_title: Human health activities
+  section: R
+  section_title: Human health and social work activities
+  scheme: NOGA 2025
+```
+
+The section list is complete, so the check treats a section letter outside it
+as an error. The division list is a working subset: transcribing all 87
+divisions would add rows that no trust flow will claim, each carrying a title
+that has to be right. A division that is in the file is checked against it. A
+division that is missing is accepted and the check asks for the row to be added
+in the same pull request, which is how the file grows.
+
+Every row was read from the KUBB page for that code,
+`https://www.kubb-tool.bfs.admin.ch/en/noga/2025/<code>`. Titles are recorded in
+sentence case. KUBB prints section titles in capitals, which is a rendering
+choice rather than part of the name.
+
 ## `sector.yaml`
 
 One file per sector directory, so the classification is machine-readable and
@@ -121,10 +171,14 @@ python3 scripts/check-classification.py
 
 ## Adding a sector
 
-1. Look the activity up in [KUBB](https://www.kubb-tool.bfs.admin.ch/en) and
-   take the **division**.
+1. Find the **division** with
+   `python3 scripts/check-classification.py --noga <search>`. If nothing
+   matches, look the activity up in [KUBB](https://www.kubb-tool.bfs.admin.ch/en),
+   take the division and add its row to
+   [`noga-2025.yaml`](noga-2025.yaml) in the same pull request.
 2. Create `<sector>/` with a short directory name and copy
-   [`sector.template.yaml`](sector.template.yaml) into it as `sector.yaml`.
+   [`sector.template.yaml`](sector.template.yaml) into it as `sector.yaml`,
+   pasting the `noga:` block the search printed.
 3. Add a `README.md` naming the flows and their contributors, as `banking/` and
    `education/` do.
 4. Add a card to the portal in `index.html`, with the division beside the sector
@@ -158,10 +212,19 @@ It fails on:
 - a missing or malformed NOGA entry, unless the sector is the reference model
 - a `division` that is not a quoted string of digits, because `"08"` and `8` are
   different divisions
+- a `section` letter that is not one of the 22 in [`noga-2025.yaml`](noga-2025.yaml)
+- a `section_title` or `division_title` that differs from the codified title
+- a division that sits in a different section from the one the sector claims
+- a malformed row in `noga-2025.yaml` itself: a division that is not two digits,
+  listed twice, untitled, or filed under a section letter that does not exist
 - two sectors claiming the same division
 - a family or flow status outside the vocabulary above
 - a duplicate flow id inside one sector
 - a `directory:` or `diagram:` that points at a file that is not there
+
+It notes, without failing, a division that is not yet codified and a `scheme`
+that names a classification other than the codified one. Both are things a
+reviewer should see and neither is a reason to block a pull request.
 
 It prints a table of sectors, divisions, families and flow counts, so running it
 is also the quickest way to see what the repository currently holds.
