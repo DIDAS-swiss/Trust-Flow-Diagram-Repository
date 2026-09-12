@@ -76,8 +76,8 @@ body:
       description: "What kind of work this is, independent of the sector. The one thing the family exists to do; supporting functions go in sector.yaml."
       options:
         - "identity-proofing — Identity proofing"
-        - "identity-lifecycle-management — Identity lifecycle management"
         - "customer-onboarding — Customer onboarding"
+        - "identity-lifecycle-management — Identity lifecycle management"
         - "eligibility-verification — Eligibility verification"
         - "access-management — Access management"
         - "certification-and-attestation — Certification and attestation"
@@ -88,6 +88,21 @@ body:
         - "customer-service — Customer service"
         - "service-delivery — Service delivery"
         - "records-management — Records management"
+        - "contracting-and-signing — Contracting and signing"
+        - "invoicing-and-settlement — Invoicing and settlement"
+        - "credit-and-risk-assessment — Credit and risk assessment"
+        - "claims-handling — Claims handling"
+        - "quality-assurance — Quality assurance"
+        - "audit-and-assurance — Audit and assurance"
+        - "product-compliance — Product compliance"
+        - "customs-and-trade-facilitation — Customs and trade facilitation"
+        - "asset-lifecycle-management — Asset lifecycle management"
+        - "sustainability-reporting — Sustainability reporting"
+        - "tax-administration — Tax administration"
+        - "consent-management — Consent management"
+        - "data-sharing-and-provenance — Data sharing and provenance"
+        - "entitlement-administration — Entitlement administration"
+        - "research-and-development — Research and development"
     validations:
       required: true
   - type: textarea

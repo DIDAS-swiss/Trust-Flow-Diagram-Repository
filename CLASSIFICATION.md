@@ -146,6 +146,20 @@ not claimed by one directory. Nor are they derived from the sector: "quality
 audit" is the same function in automotive and in pharma, and it stays the same
 function here.
 
+The list is also deliberately wider than the flows this repository holds today.
+A verifiable credential carries any signed, structured, machine-checkable claim,
+and identity is the most familiar payload rather than the only valuable one — a
+test certificate, a customs declaration, a conformity statement, an emissions
+figure, a consent record and an invoice are all structured assertions worth
+checking without ringing the issuer. Most of the 28 functions have no flow here
+yet, which is the point: the axis should not need widening every time the
+repository grows sideways.
+
+Two rules keep it from sprawling. A function is **work, not a credential type** —
+"diploma" is a credential, "certification and attestation" is the function that
+issues one. And a function is **sector-independent** — if it cannot be stated
+without naming an industry, it belongs in a flow instead.
+
 The vocabulary is maintained in
 [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph),
 which keys its functions to the same division numbers used here and links its
