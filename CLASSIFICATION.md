@@ -231,6 +231,26 @@ States are deliberately coarse — `secondary-education-credential-held`, not
 interface, and the point is that flows nobody has written yet plug into the same
 sockets as the ecosystem iterates.
 
+### Keeping the copies honest
+
+`functions.yaml`, `value-streams.yaml` and `states.yaml` are copies of
+vocabularies maintained in
+[industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph).
+Copies drift, and nothing in the classification check would notice: it compares
+`sector.yaml` files against the local copies, which is exactly how two
+repositories end up quietly disagreeing about what `identity-proofing` means.
+
+`scripts/check-upstream-sync.py` reads the published graph and compares ids and
+titles against the three files. It runs on pull requests that touch them and,
+more usefully, **weekly** — because drift normally arrives from a change
+upstream, which is a change no pull request here touches.
+
+Being unable to reach the upstream graph is reported and passed. That is not a
+contributor's fault. Disagreeing with it is a failure.
+
+To change a shared vocabulary: change it upstream first, then sync the copy
+here in a pull request that says so.
+
 ### What is deliberately not here
 
 `industry-function-graph` also records value drivers, transformation modes,
