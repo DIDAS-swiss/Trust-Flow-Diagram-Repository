@@ -16,6 +16,8 @@ on:
       - 'sector.template.yaml'
       - 'noga-2025.yaml'
       - 'functions.yaml'
+      - 'value-streams.yaml'
+      - 'states.yaml'
       - 'CLASSIFICATION.md'
       - 'scripts/check-classification.py'
       - '.github/workflows/classification.yml'

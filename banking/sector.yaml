@@ -11,6 +11,10 @@ families:
     title: KYC credential
     directory: KYC Credential
     status: in-progress
+    value_stream: order-to-cash
+    states:
+      requires: [eid-held]
+      establishes: [kyc-attestation-held, customer-relationship-open]
     functions:
       primary: customer-onboarding
       supporting: [identity-proofing, regulatory-compliance]
@@ -25,6 +29,9 @@ families:
     title: Re-identification after a forgotten password
     directory: Re-Identification After Forgotten Password
     status: in-progress
+    states:
+      requires: [customer-relationship-open, eid-held]
+      establishes: [access-granted]
     functions:
       primary: identity-lifecycle-management
       supporting: [customer-service, access-management]
@@ -35,6 +42,9 @@ families:
     title: Re-identification at the age of majority
     directory: Re-Identification at Age of Majority
     status: in-progress
+    states:
+      requires: [customer-relationship-open, eid-held]
+      establishes: [legal-capacity-established]
     functions:
       primary: identity-lifecycle-management
       supporting: [eligibility-verification, regulatory-compliance]

@@ -1,0 +1,127 @@
+# Value streams, codified for this repository
+#
+# A function says what kind of work a family is. A value stream says where that
+# work sits in an end-to-end sequence - supplier qualification only means
+# something once you know it is the front of procure-to-pay.
+#
+#     python3 scripts/check-classification.py --streams procure
+#
+# The concept follows ArchiMate's Value Stream element: a sequence of activities
+# creating an overall result, the what rather than the how. There is no openly
+# licensed catalogue of value streams - APQC publishes end-to-end maps under its
+# own terms and the SAP naming is proprietary - so this one is ours, synced from
+# industry-function-graph and marked provisional.
+#
+# Stages are ordering only. Real stages overlap.
+
+scheme:
+  name: IFM value streams
+  source: https://github.com/DIDAS-swiss/industry-function-graph
+  concept_standard: https://pubs.opengroup.org/architecture/archimate32-doc/
+  retrieved: 2026-09-12
+
+streams:
+  - id: procure-to-pay
+    title: Procure to pay
+    also_known_as: source-to-pay; purchase-to-pay
+    code_status: provisional
+    definition: >-
+      From identifying a need for goods or services through to settling the
+      supplier invoice and retaining the evidence.
+    stages:
+      - position: 1
+        function: sourcing-and-procurement
+        label: Source and qualify
+      - position: 2
+        function: identity-proofing
+        label: Establish the supplier is a real legal entity
+      - position: 3
+        function: credit-and-risk-assessment
+        label: Assess counterparty and financial risk
+      - position: 4
+        function: audit-and-assurance
+        label: Check accreditations and audit reports
+      - position: 5
+        function: product-compliance
+        label: Check conformity of what will be supplied
+      - position: 6
+        function: contracting-and-signing
+        label: Agree and sign
+      - position: 7
+        function: supply-chain-traceability
+        label: Establish provenance through delivery
+      - position: 8
+        function: customs-and-trade-facilitation
+        label: Clear the border
+      - position: 9
+        function: quality-assurance
+        label: Goods receipt against specification
+      - position: 10
+        function: invoicing-and-settlement
+        label: Invoice and payment
+      - position: 11
+        function: tax-administration
+        label: Substantiate the tax position
+      - position: 12
+        function: records-management
+        label: Retain the audit trail
+
+  - id: order-to-cash
+    title: Order to cash
+    also_known_as: lead-to-cash; quote-to-cash
+    code_status: provisional
+    definition: >-
+      From a customer order through to collected payment and the record of
+      it.
+    stages:
+      - position: 1
+        function: customer-onboarding
+        label: Establish the customer relationship
+      - position: 2
+        function: identity-proofing
+        label: Establish who the customer is
+      - position: 3
+        function: credit-and-risk-assessment
+        label: Decide the terms to offer
+      - position: 4
+        function: contracting-and-signing
+        label: Agree and sign
+      - position: 5
+        function: service-delivery
+        label: Deliver
+      - position: 6
+        function: invoicing-and-settlement
+        label: Invoice and collect
+      - position: 7
+        function: customer-service
+        label: Handle what goes wrong
+      - position: 8
+        function: records-management
+        label: Retain the audit trail
+
+  - id: hire-to-retire
+    title: Hire to retire
+    also_known_as: recruit-to-retire
+    code_status: provisional
+    definition: >-
+      From an open role through to a former employee whose entitlements and
+      records are closed out.
+    stages:
+      - position: 1
+        function: human-capital-management
+        label: Recruit and employ
+      - position: 2
+        function: identity-proofing
+        label: Establish who the candidate is
+      - position: 3
+        function: eligibility-verification
+        label: Check right to work and qualifications
+      - position: 4
+        function: contracting-and-signing
+        label: Agree and sign the employment contract
+      - position: 5
+        function: access-management
+        label: Provision and later revoke access
+      - position: 6
+        function: records-management
+        label: Retain the employment record

@@ -60,6 +60,12 @@ FUNCTIONS_PATH = ROOT / "functions.yaml"
 # is stale, the way it fails on any other incoherence.
 ISSUE_FORM_PATH = ROOT / ".github" / "ISSUE_TEMPLATE" / "new-flow.yml"
 
+# The composability pair. A value stream says where a family sits in an
+# end-to-end sequence; states say what it needs and what it leaves behind, which
+# is what lets one family plug into another without anyone drawing the arrow.
+STREAMS_PATH = ROOT / "value-streams.yaml"
+STATES_PATH = ROOT / "states.yaml"
+
 # Directories at the repository root that are not sectors.
 NOT_SECTORS = {".git", ".github", "assets", "scripts", "node_modules"}
 
@@ -171,6 +177,73 @@ def load_functions(errors: list[str]) -> Functions | None:
                 f"which is not in the list"
             )
     return functions
+
+
+def load_simple(path, key, errors: list[str]) -> dict | None:
+    """Load one of the flat synced catalogues: {id: entry}."""
+    if not path.exists():
+        errors.append(f"{path.name}: missing. It is synced from industry-function-graph")
+        return None
+    try:
+        data = yaml.safe_load(path.read_text())
+    except yaml.YAMLError as exc:
+        errors.append(f"{path.name}: not valid YAML: {exc}")
+        return None
+    entries = {
+        str(entry["id"]): entry
+        for entry in (data or {}).get(key) or []
+        if isinstance(entry, dict) and entry.get("id")
+    }
+    if not entries:
+        errors.append(f"{path.name}: `{key}` is empty")
+        return None
+    for ident, entry in entries.items():
+        if not entry.get("title"):
+            errors.append(f"{path.name}: {ident} has no title")
+    return entries
+
+
+def check_states_block(where: str, family: dict, states: dict | None,
+                       errors: list[str], notes: list[str]) -> None:
+    """Check a family's `states` block. Absent is a note; wrong is an error."""
+    block = family.get("states")
+    if block is None:
+        notes.append(
+            f"{where}: no `states` block, so nothing can be composed with this family. "
+            f"Pick from `python3 scripts/check-classification.py --states`"
+        )
+        return
+    if not isinstance(block, dict):
+        errors.append(f"{where}: `states` must be a mapping with `requires` and `establishes`")
+        return
+
+    establishes = block.get("establishes") or []
+    if not isinstance(establishes, list) or not establishes:
+        errors.append(
+            f"{where}: `states.establishes` must list at least one state. A family that "
+            f"leaves nothing true cannot be composed with anything"
+        )
+    requires = block.get("requires") or []
+    if not isinstance(requires, list):
+        errors.append(f"{where}: `states.requires` must be a list")
+        requires = []
+
+    if states is None:
+        return
+    for field, values in (("requires", requires), ("establishes", establishes)):
+        if not isinstance(values, list):
+            continue
+        for value in values:
+            if str(value) not in states:
+                errors.append(
+                    f"{where}: `states.{field}` names {value!r}, which is not in "
+                    f"{STATES_PATH.name}. Run "
+                    f"`python3 scripts/check-classification.py --states` for the list"
+                )
+    both = set(map(str, requires)) & set(map(str, establishes))
+    if both:
+        notes.append(f"{where}: {', '.join(sorted(both))} is both required and "
+                     f"established. Deliberate for a refresh, a mistake otherwise")
 
 
 def check_functions_block(where: str, family: dict, functions: Functions | None,
@@ -472,7 +545,7 @@ def scaffold(name: str, division: str | None, catalogue: Catalogue | None) -> in
 
 
 def render_issue_form(catalogue: Catalogue, functions: Functions,
-                      manifests: dict[str, dict]) -> str:
+                      manifests: dict[str, dict], streams: dict | None = None) -> str:
     """Build the "Propose a new flow" issue form from the codified entries.
 
     GitHub renders dropdowns in issue forms but not in pull request templates,
@@ -553,6 +626,13 @@ def render_issue_form(catalogue: Catalogue, functions: Functions,
         "family", "Family",
         "A family groups flows that share a trigger and a set of actors. Pick the one this joins, or say it starts a new one.",
         families)
+    if streams:
+        lines += dropdown(
+            "stream", "Value stream",
+            "Where this sits in an end-to-end sequence. Leave as not-part-of-one if it "
+            "is infrastructure rather than a step in a chain.",
+            [f"{key} — {entry.get('title')}" for key, entry in streams.items()]
+            + ["not part of one"])
     lines += dropdown(
         "function", "Primary function",
         "What kind of work this is, independent of the sector. The one thing the family exists to do; supporting functions go in sector.yaml.",
@@ -570,12 +650,6 @@ def render_issue_form(catalogue: Catalogue, functions: Functions,
         "    attributes:",
         f"      label: {q('Anything you are unsure about')}",
         f"      description: {q('Uncertain about the division or the function? Say so rather than guessing quietly. Picking the wrong one is cheap to fix now and expensive once other flows have copied it.')}",
-        "  - type: checkboxes",
-        "    id: acknowledgements",
-        "    attributes:",
-        f"      label: {q('Before submitting')}",
-        "      options:",
-        f"        - label: {q('I ran python3 scripts/check-classification.py, or this flow has no sector.yaml change yet')}",
         "",
     ]
     return "\n".join(lines)
@@ -598,6 +672,7 @@ def sector_dirs() -> list[Path]:
 
 
 def check_sector(path: Path, catalogue: Catalogue | None, functions: Functions | None,
+                 streams: dict | None, states: dict | None,
                  errors: list[str], notes: list[str]) -> dict | None:
     manifest = path / "sector.yaml"
     if not manifest.exists():
@@ -671,6 +746,13 @@ def check_sector(path: Path, catalogue: Catalogue | None, functions: Functions |
         # The reference model is not a sector, so it does not do sector work.
         if not data.get("reference_model"):
             check_functions_block(fam_where, family, functions, errors, notes)
+        check_states_block(fam_where, family, states, errors, notes)
+        stream = family.get("value_stream")
+        if stream is not None and streams is not None and str(stream) not in streams:
+            errors.append(
+                f"{fam_where}: `value_stream` is {stream!r}, which is not in "
+                f"{STREAMS_PATH.name}. Run "
+                f"`python3 scripts/check-classification.py --streams` for the list")
 
         directory = family.get("directory")
         if directory and not (path / directory).exists():
@@ -716,6 +798,8 @@ def main(argv: list[str]) -> int:
 
     catalogue = load_catalogue(errors)
     functions = load_functions(errors)
+    streams = load_simple(STREAMS_PATH, "streams", errors)
+    states = load_simple(STATES_PATH, "states", errors)
 
     if argv and argv[0] == "--noga":
         if catalogue is None:
@@ -729,6 +813,32 @@ def main(argv: list[str]) -> int:
                 print(f"  - {error}")
             return 1
         return print_functions(functions, argv[1] if len(argv) > 1 else None)
+    if argv and argv[0] in ("--streams", "--states"):
+        table = streams if argv[0] == "--streams" else states
+        label = "value streams" if argv[0] == "--streams" else "states"
+        if table is None:
+            for error in errors:
+                print(f"  - {error}")
+            return 1
+        query = argv[1].casefold() if len(argv) > 1 else None
+        shown = [e for e in table.values()
+                 if not query or query in str(e["id"]).casefold()
+                 or query in str(e.get("title", "")).casefold()
+                 or query in " ".join(str(e.get("definition", "")).split()).casefold()]
+        if not shown:
+            print(f"Nothing in {label} matches {argv[1]!r}.")
+            return 1
+        print(f"Codified {label}")
+        print("-" * 72)
+        for entry in shown:
+            print(f"  {str(entry['id']):<34}{entry.get('title')}")
+            definition = " ".join(str(entry.get("definition", "")).split())
+            if definition:
+                print(f"      {definition}")
+            for stage in entry.get("stages") or []:
+                print(f"      {stage['position']:>2}. {stage['label']}  "
+                      f"[{stage['function']}]")
+        return 0
     if argv and argv[0] == "--issue-form":
         if catalogue is None or functions is None:
             for error in errors:
@@ -737,11 +847,13 @@ def main(argv: list[str]) -> int:
         scratch: list[str] = []
         manifests = {}
         for path in sector_dirs():
-            data = check_sector(path, catalogue, functions, scratch, scratch)
+            data = check_sector(path, catalogue, functions, streams, states,
+                                scratch, scratch)
             if data:
                 manifests[path.name] = data
         ISSUE_FORM_PATH.parent.mkdir(parents=True, exist_ok=True)
-        ISSUE_FORM_PATH.write_text(render_issue_form(catalogue, functions, manifests))
+        ISSUE_FORM_PATH.write_text(
+            render_issue_form(catalogue, functions, manifests, streams))
         print(f"Wrote {ISSUE_FORM_PATH.relative_to(ROOT)}.")
         return 0
     if argv and argv[0] == "--new":
@@ -752,8 +864,8 @@ def main(argv: list[str]) -> int:
     if argv:
         print(
             f"Unknown argument {argv[0]!r}. Usage: check-classification.py "
-            f"[--noga [search] | --functions [search] | --new <sector> [division] "
-            f"| --issue-form]"
+            f"[--noga [search] | --functions [search] | --streams [search] "
+            f"| --states [search] | --new <sector> [division] | --issue-form]"
         )
         return 1
 
@@ -763,7 +875,7 @@ def main(argv: list[str]) -> int:
         return 1
 
     for path in sectors:
-        data = check_sector(path, catalogue, functions, errors, notes)
+        data = check_sector(path, catalogue, functions, streams, states, errors, notes)
         if data:
             manifests[path.name] = data
 
@@ -781,10 +893,46 @@ def main(argv: list[str]) -> int:
                 f"One division, one directory"
             )
 
+    # Composition. Nobody draws these arrows: a family follows another when
+    # something the first establishes is something the second requires.
+    interfaces = {}
+    for name, data in manifests.items():
+        for family in data.get("families") or []:
+            if not isinstance(family, dict) or not family.get("id"):
+                continue
+            block = family.get("states") or {}
+            interfaces[f"{name}/{family['id']}"] = (
+                set(map(str, block.get("requires") or [])),
+                set(map(str, block.get("establishes") or [])))
+
+    chain = []
+    for source, (_, establishes) in sorted(interfaces.items()):
+        for target, (requires, _) in sorted(interfaces.items()):
+            if source != target and establishes & requires:
+                chain.append((source, target, sorted(establishes & requires)))
+
+    produced = {st for _, establishes in interfaces.values() for st in establishes}
+    needed = {st for requires, _ in interfaces.values() for st in requires}
+    open_sockets = sorted(needed - produced)
+    if open_sockets:
+        notes.append(
+            f"{len(open_sockets)} state(s) are required by a family and established by "
+            f"none: {', '.join(open_sockets)}. Each is a flow this repository has not "
+            f"written down yet")
+
+    signatures: dict[tuple, list[str]] = {}
+    for key, (requires, establishes) in interfaces.items():
+        if establishes:
+            signatures.setdefault((frozenset(requires), frozenset(establishes)), []).append(key)
+    for members in signatures.values():
+        if len(members) > 1:
+            notes.append(f"same interface, so possibly one family rather than "
+                         f"{len(members)}: {', '.join(sorted(members))}")
+
     # The issue form's dropdowns are fixed when the file is written, so the only
     # thing keeping them honest is regenerating it whenever a catalogue changes.
     if catalogue is not None and functions is not None:
-        expected = render_issue_form(catalogue, functions, manifests)
+        expected = render_issue_form(catalogue, functions, manifests, streams)
         if not ISSUE_FORM_PATH.exists():
             errors.append(
                 f"{ISSUE_FORM_PATH.relative_to(ROOT)}: missing. Generate it with "
@@ -824,6 +972,14 @@ def main(argv: list[str]) -> int:
         f"{len(manifests)} sectors, {total_flows} flows, "
         f"{classified}/{total_families} families carry a function"
     )
+
+    if chain:
+        print()
+        print("Composition (derived from the state interfaces)")
+        print("-" * 52)
+        for source, target, via in chain:
+            print(f"  {source}")
+            print(f"      -> {target}   via {', '.join(via)}")
 
     if notes:
         print()

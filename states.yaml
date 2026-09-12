@@ -1,0 +1,103 @@
+# States, codified for this repository
+#
+# What is true, or what a party holds, before and after a family of flows runs.
+# States are the interface that makes flows composable: one family's
+# `establishes` is another's `requires`, so the chain between them is computed
+# rather than drawn by hand.
+#
+#     python3 scripts/check-classification.py --states credential
+#
+# States are deliberately coarse. An interface with one implementor is not an
+# interface, and the point is that flows nobody has written yet plug into the
+# same sockets. Synced from industry-function-graph.
+
+scheme:
+  name: IFM states
+  source: https://github.com/DIDAS-swiss/industry-function-graph
+  retrieved: 2026-09-12
+
+states:
+  - id: eid-held
+    title: Electronic identity held
+    definition: >-
+      The subject holds a government-issued electronic identity credential.
+
+  - id: identity-verified
+    title: Identity verified
+    definition: >-
+      The subject's identity has been established to a stated level of
+      assurance by the relying party.
+
+  - id: kyc-attestation-held
+    title: KYC attestation held
+    definition: >-
+      The subject holds a reusable attestation that customer due diligence
+      was completed.
+
+  - id: kyc-attestation-current
+    title: KYC attestation current
+    definition: >-
+      The due diligence behind the attestation has been re-evaluated within
+      its validity period.
+
+  - id: customer-relationship-open
+    title: Customer relationship open
+    definition: >-
+      A contractual relationship exists between the subject and the
+      organisation.
+
+  - id: legal-capacity-established
+    title: Legal capacity established
+    definition: >-
+      The subject's capacity to contract in their own right has been
+      established.
+
+  - id: access-granted
+    title: Access granted
+    definition: >-
+      The subject can reach the service or premises the relationship
+      entitles them to.
+
+  - id: age-attribute-proven
+    title: Age attribute proven
+    definition: >-
+      A threshold age has been demonstrated without disclosing identity.
+
+  - id: secondary-education-credential-held
+    title: Secondary education credential held
+    definition: >-
+      The subject holds a verifiable school-leaving certificate.
+
+  - id: tertiary-enrolment-established
+    title: Tertiary enrolment established
+    definition: >-
+      The subject is enrolled at a higher education institution.
+
+  - id: employment-relationship-open
+    title: Employment relationship open
+    definition: >-
+      An employment contract is in force between the subject and an
+      employer.
+
+  - id: supplier-accreditation-held
+    title: Supplier accreditation held
+    definition: >-
+      The supplier holds current quality, conformity or sector
+      accreditations in verifiable form.
+
+  - id: supplier-qualified
+    title: Supplier qualified
+    definition: >-
+      The buying organisation has accepted the supplier as eligible to be
+      contracted.
+
+  - id: patient-record-linked
+    title: Patient record linked
+    definition: >-
+      The person in front of the clinician is bound to the correct medical
+      record.
+
+  - id: service-entitlement-established
+    title: Service entitlement established
+    definition: >-
+      The subject's entitlement to a public service has been demonstrated.

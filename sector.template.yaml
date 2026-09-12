@@ -46,6 +46,14 @@ families:
       # supporting. Ids come from functions.yaml.
       primary: identity-proofing
       supporting: []
+    # value_stream: order-to-cash
+    #   Optional. Where this sits end to end. `--streams <search>` lists them.
+    states:
+      # The interface. What has to be true first, and what is true afterwards.
+      # These are what let another family plug into this one, so the composition
+      # is computed rather than drawn. `--states <search>` lists them.
+      requires: [eid-held]
+      establishes: []
     flows:
       - id: F-01             # or a slug, as long as it is unique in the sector
         title: What this flow shows
