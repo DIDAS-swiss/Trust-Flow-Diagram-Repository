@@ -20,6 +20,20 @@
 # Functions are not exclusive. Two sectors performing the same function is the
 # point of having the axis, so unlike a NOGA division, a function is not
 # "claimed" by one directory.
+#
+# The list is deliberately wider than the flows this repository holds today. A
+# verifiable credential carries any signed, structured, machine-checkable claim,
+# and identity is the most familiar payload rather than the only valuable one -
+# a test certificate, a customs declaration, a conformity statement, an
+# emissions figure, a consent record and an invoice are all structured
+# assertions worth checking without calling the issuer. Most of these functions
+# have no flow here yet. That is the point: the axis should not have to be
+# widened every time the repository grows sideways.
+#
+# Two rules keep it from sprawling. A function is work, not a credential type:
+# "diploma" is a credential, "certification and attestation" is the function
+# that issues one. And a function is sector-independent: if it cannot be stated
+# without naming an industry, it belongs in a flow instead.
 
 scheme:
   name: IFM business functions
@@ -36,24 +50,24 @@ functions:
       Establishing to a stated level of assurance that a claimed identity
       corresponds to a real subject.
 
-  - id: identity-lifecycle-management
-    title: Identity lifecycle management
-    broader: identity-proofing
-    definition: >-
-      Maintaining an established identity relationship over time:
-      re-verification, recovery, attribute updates, revocation.
-
   - id: customer-onboarding
     title: Customer onboarding
     definition: >-
       Establishing a new customer or member relationship, including the due
       diligence that regulation attaches to it.
 
+  - id: identity-lifecycle-management
+    title: Identity lifecycle management
+    broader: identity-proofing
+    definition: >-
+      Maintaining an established identity relationship over time: re-
+      verification, recovery, attribute updates, revocation.
+
   - id: eligibility-verification
     title: Eligibility verification
     definition: >-
-      Checking whether a subject meets a stated condition - age, residency,
-      licence, membership - without necessarily identifying them.
+      Checking whether a subject meets a stated condition — age, residency,
+      licence, membership — without necessarily identifying them.
 
   - id: access-management
     title: Access management
@@ -65,7 +79,7 @@ functions:
     title: Certification and attestation
     definition: >-
       Issuing an authoritative statement about a subject, a product or a
-      process - a diploma, a certificate, an accreditation.
+      process — a diploma, a certificate, an accreditation.
 
   - id: regulatory-compliance
     title: Regulatory compliance
@@ -100,10 +114,98 @@ functions:
   - id: service-delivery
     title: Service delivery
     definition: >-
-      Performing and delivering the service the organisation exists to provide.
+      Performing and delivering the service the organisation exists to
+      provide.
 
   - id: records-management
     title: Records management
     definition: >-
       Maintaining an authoritative register or record and answering queries
       against it.
+
+  - id: contracting-and-signing
+    title: Contracting and signing
+    definition: >-
+      Concluding an agreement and applying a signature that binds the parties
+      to it.
+
+  - id: invoicing-and-settlement
+    title: Invoicing and settlement
+    definition: >-
+      Billing for goods or services delivered, and settling the payment that
+      follows.
+
+  - id: credit-and-risk-assessment
+    title: Credit and risk assessment
+    definition: >-
+      Judging the creditworthiness or risk of a counterparty before committing
+      to a transaction or a relationship.
+
+  - id: claims-handling
+    title: Claims handling
+    definition: >-
+      Assessing and settling a claim made under a policy, a warranty or a
+      guarantee.
+
+  - id: quality-assurance
+    title: Quality assurance
+    definition: >-
+      Inspecting and testing that output conforms to a specification before it
+      leaves the organisation.
+
+  - id: audit-and-assurance
+    title: Audit and assurance
+    definition: >-
+      Examining records, processes or claims against a standard, independently
+      of whoever produced them.
+
+  - id: product-compliance
+    title: Product compliance
+    definition: >-
+      Demonstrating that a product meets the regulatory and standards
+      requirements of the markets it is placed on.
+
+  - id: customs-and-trade-facilitation
+    title: Customs and trade facilitation
+    definition: >-
+      Declaring goods to an authority and clearing them across a border.
+
+  - id: asset-lifecycle-management
+    title: Asset lifecycle management
+    definition: >-
+      Registering, maintaining, servicing and transferring a physical asset
+      over its life.
+
+  - id: sustainability-reporting
+    title: Sustainability reporting
+    definition: >-
+      Measuring and disclosing environmental and social performance, to a
+      regulator or to the market.
+
+  - id: tax-administration
+    title: Tax administration
+    definition: >-
+      Determining, declaring and substantiating a tax obligation.
+
+  - id: consent-management
+    title: Consent management
+    definition: >-
+      Obtaining, recording and honouring a subject's permission for data about
+      them to be used.
+
+  - id: data-sharing-and-provenance
+    title: Data sharing and provenance
+    definition: >-
+      Releasing data to another party with its origin, integrity and permitted
+      use demonstrable.
+
+  - id: entitlement-administration
+    title: Entitlement administration
+    definition: >-
+      Granting and maintaining a benefit, subsidy or allowance once
+      eligibility has been established.
+
+  - id: research-and-development
+    title: Research and development
+    definition: >-
+      Systematic work to create new knowledge, products or processes.
