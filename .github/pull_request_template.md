@@ -22,6 +22,10 @@ already in the list under a different name:
     python3 scripts/check-classification.py --functions <search>
 
 New sector? `--new <sector> <division>` writes the sector.yaml for you.
+
+Prefer to pick from a list? Open a "Propose a new flow" issue instead: its
+dropdowns are generated from the same catalogues, so they cannot offer you
+anything the check will reject.
 -->
 
 - **Sector directory:**

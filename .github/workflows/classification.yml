@@ -20,6 +20,7 @@ on:
       - 'scripts/check-classification.py'
       - '.github/workflows/classification.yml'
       - '.github/pull_request_template.md'
+      - '.github/ISSUE_TEMPLATE/new-flow.yml'
   push:
     branches: [main]
   workflow_dispatch:

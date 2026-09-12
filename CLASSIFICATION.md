@@ -210,6 +210,13 @@ Most contributions add a flow to a sector that already exists. That is four
 questions and one file. The pull request template asks for the answers, so the
 classification is settled while the flow is fresh rather than chased in review.
 
+If you would rather pick than type, open a **Propose a new flow** issue. Its
+dropdowns are generated from `noga-2025.yaml`, `functions.yaml` and the
+`sector.yaml` files, so they cannot offer an option the check will reject — and
+the check fails if the form drifts from the catalogues. GitHub renders dropdowns
+in issue forms but not in pull request templates, which is why the pickable
+version lives there.
+
 1. **Which sector?** The industry the *relying party* operates in, not the
    industry of whoever wrote the flow. A bank verifying a school certificate is
    a banking flow.
@@ -302,6 +309,9 @@ It fails on:
 - a malformed row in `functions.yaml` itself: a function with no title, no
   definition, or a `broader` that is not in the list
 - a `directory:` or `diagram:` that points at a file that is not there
+- an issue form whose dropdowns no longer match the catalogues, because a
+  dropdown's options are fixed when the file is written and nothing else would
+  catch the drift
 
 It notes, without failing, a division that is not yet codified, a family with no
 `functions` block yet, and a `scheme` that names a classification other than the
