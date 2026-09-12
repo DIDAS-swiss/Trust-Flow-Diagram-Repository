@@ -35,6 +35,14 @@ implementation of the European NACE Rev. 2.1, which derives from the UN's ISIC
 Rev. 5, so a sector named here is a sector a Swiss authority, an EU body and a
 UN statistical office all recognise.
 
+"Derives from" understates it at the levels this repository uses. The section
+letters and division numbers are *identical* to ISIC Rev. 5 — checked against
+the UN Statistics Division's published structure file, all 22 sections and all
+23 divisions codified here agree, with three section titles differing in
+spelling only. `noga-2025.yaml` records that as `equivalent_to`. It stops at
+division level, where NACE and NOGA add detail ISIC does not have, which is
+another reason to key on the division.
+
 The reason to anchor to a published classification is narrow and practical.
 "Banking", "finance", "fintech" and "financial services" are four names for one
 sector. A repository that accumulates flows from many contributors will
@@ -107,6 +115,56 @@ Every row was read from the KUBB page for that code,
 sentence case. KUBB prints section titles in capitals, which is a rendering
 choice rather than part of the name.
 
+## The second axis: business function
+
+A sector says which industry the relying party is in. It does not say what kind
+of work the flow is. Re-KYC, university matriculation and patient admission sit
+in three different sectors, and two of them are the same work — establishing
+that a person is who they claim before a relationship starts or resumes.
+
+Sector alone cannot express that, so a reader looking for "how is identity
+proofing done here" has to open every sector and guess. Each family therefore
+also names a **function**:
+
+```yaml
+    functions:
+      primary: customer-onboarding
+      supporting: [identity-proofing, regulatory-compliance]
+```
+
+One primary — the thing the family exists to do — and any number of supporting.
+The ids come from [`functions.yaml`](functions.yaml), searchable the same way
+the divisions are:
+
+```bash
+python3 scripts/check-classification.py --functions onboarding
+```
+
+Functions are deliberately **not** exclusive. Two sectors performing the same
+function is the entire point of the axis, so unlike a division, a function is
+not claimed by one directory. Nor are they derived from the sector: "quality
+audit" is the same function in automotive and in pharma, and it stays the same
+function here.
+
+The vocabulary is maintained in
+[industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph),
+which keys its functions to the same division numbers used here and links its
+use cases back to the flows in this repository. `functions.yaml` is a local copy
+for the same reason `noga-2025.yaml` is: classifying should be a choice from a
+list, and the check has to work offline.
+
+**A family whose flows have different primary functions is a family worth
+splitting.** `education/` is the current example: the school issues a
+certificate and the university onboards a student, which are two kinds of work
+in one family. The `functions` block records the dominant one and says so in a
+comment rather than quietly picking a side.
+
+### Adoption is gradual
+
+A family without a `functions` block is a note, not a failure — the same
+treatment an uncodified division gets. A family naming a function that does not
+exist **is** a failure, because that is a typo or an invention and both spread.
+
 ## `sector.yaml`
 
 One file per sector directory, so the classification is machine-readable and
@@ -126,6 +184,9 @@ families:
   - id: immunization
     title: Immunization and vaccination records
     status: in-progress
+    functions:
+      primary: service-delivery
+      supporting: [identity-proofing, records-management]
     flows:
       - id: F-01
         title: Becoming an actor in the health trust domain
@@ -137,6 +198,7 @@ families:
 | `title` | What the portal shows |
 | `noga` | The classification entry, with the scheme version that was read |
 | `families[]` | Use-case families, each with its flows |
+| `functions` | What kind of work the family is: one `primary`, any number of `supporting` |
 | `status` | Where the work has got to. The vocabulary is below |
 
 Kept deliberately small. A schema nobody fills in is worse than a convention
@@ -144,8 +206,9 @@ nobody wrote down.
 
 ## Adding a flow
 
-Most contributions add a flow to a sector that already exists. That is three
-questions and one file.
+Most contributions add a flow to a sector that already exists. That is four
+questions and one file. The pull request template asks for the answers, so the
+classification is settled while the flow is fresh rather than chased in review.
 
 1. **Which sector?** The industry the *relying party* operates in, not the
    industry of whoever wrote the flow. A bank verifying a school certificate is
@@ -153,7 +216,11 @@ questions and one file.
 2. **Which family?** Does it share a trigger and a set of actors with a family
    that is already there? If yes, add it to that family's `flows:` list. If no,
    add a family. A family is cheap. Getting one wrong is not.
-3. **What state is it in?** Pick a status from the vocabulary below and be
+3. **What kind of work is it?** If the flow starts a new family, give the family
+   a `functions` block — `--functions <search>` prints one ready to paste. If it
+   joins an existing family and does something materially different, that is a
+   sign it is a new family.
+4. **What state is it in?** Pick a status from the vocabulary below and be
    honest. `roadmap` is a useful answer.
 
 Then add four lines to `<sector>/sector.yaml` and run the check:
@@ -176,14 +243,23 @@ python3 scripts/check-classification.py
    matches, look the activity up in [KUBB](https://www.kubb-tool.bfs.admin.ch/en),
    take the division and add its row to
    [`noga-2025.yaml`](noga-2025.yaml) in the same pull request.
-2. Create `<sector>/` with a short directory name and copy
-   [`sector.template.yaml`](sector.template.yaml) into it as `sector.yaml`,
-   pasting the `noga:` block the search printed.
-3. Add a `README.md` naming the flows and their contributors, as `banking/` and
+2. Create `<sector>/` and let the script write the file:
+
+   ```bash
+   python3 scripts/check-classification.py --new retail 47
+   ```
+
+   That writes `retail/sector.yaml` with the whole `noga:` block filled in from
+   the codified entry, and a family stub waiting for its functions. Without the
+   division it writes the stub and tells you which two searches to run. Copying
+   [`sector.template.yaml`](sector.template.yaml) by hand does the same job.
+3. Fill in the family's **functions** with
+   `python3 scripts/check-classification.py --functions <search>`.
+4. Add a `README.md` naming the flows and their contributors, as `banking/` and
    `education/` do.
-4. Add a card to the portal in `index.html`, with the division beside the sector
+5. Add a card to the portal in `index.html`, with the division beside the sector
    name as the existing cards have.
-5. Run `python3 scripts/check-classification.py`.
+6. Run `python3 scripts/check-classification.py`.
 
 If two contributors reach for the same sector under different names, the
 division number settles it: one division, one directory. The check enforces
@@ -220,14 +296,21 @@ It fails on:
 - two sectors claiming the same division
 - a family or flow status outside the vocabulary above
 - a duplicate flow id inside one sector
+- a `functions` block that is malformed, has no `primary`, names a function that
+  is not in [`functions.yaml`](functions.yaml), or lists the same function as
+  both primary and supporting
+- a malformed row in `functions.yaml` itself: a function with no title, no
+  definition, or a `broader` that is not in the list
 - a `directory:` or `diagram:` that points at a file that is not there
 
-It notes, without failing, a division that is not yet codified and a `scheme`
-that names a classification other than the codified one. Both are things a
-reviewer should see and neither is a reason to block a pull request.
+It notes, without failing, a division that is not yet codified, a family with no
+`functions` block yet, and a `scheme` that names a classification other than the
+codified one. All three are things a reviewer should see and none is a reason to
+block a pull request.
 
-It prints a table of sectors, divisions, families and flow counts, so running it
-is also the quickest way to see what the repository currently holds.
+It prints a table of sectors, divisions, families and flow counts, plus how many
+families carry a function, so running it is also the quickest way to see what the
+repository currently holds and how far the second axis has got.
 
 ## How the portal shows it
 

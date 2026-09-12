@@ -5,11 +5,12 @@ A convention nobody checks drifts. This runs in CI and locally:
 
     python3 scripts/check-classification.py
 
-It answers five questions a reviewer would otherwise have to answer by hand.
+It answers six questions a reviewer would otherwise have to answer by hand.
 Does every sector directory carry a sector.yaml? Does every sector.yaml carry a
 NOGA division, unless it is the reference model? Does the classification it
 carries match the codified NOGA entry in noga-2025.yaml? Do two sectors claim
-the same division? Does every file a sector.yaml points at actually exist?
+the same division? Does every family name functions that exist in
+functions.yaml? Does every file a sector.yaml points at actually exist?
 
 It also looks codes up, so that adding a sector does not mean transcribing a
 classification by hand:
@@ -17,6 +18,13 @@ classification by hand:
     python3 scripts/check-classification.py --noga            # the whole list
     python3 scripts/check-classification.py --noga health     # search
     python3 scripts/check-classification.py --noga 86         # one division
+    python3 scripts/check-classification.py --functions       # the whole list
+    python3 scripts/check-classification.py --functions kyc   # search
+
+And it writes the file for you, so a new sector starts from something valid:
+
+    python3 scripts/check-classification.py --new retail      # a stub
+    python3 scripts/check-classification.py --new retail 47   # with the division filled in
 
 Exit code 0 means the classification is coherent. Exit code 1 lists what is not.
 """
@@ -36,6 +44,10 @@ ROOT = Path(__file__).resolve().parent.parent
 # The codified NOGA 2025 entries. Sections are complete, divisions are the
 # working subset described in the file's own header.
 CATALOGUE_PATH = ROOT / "noga-2025.yaml"
+
+# The codified business functions. The second axis: a sector says which
+# industry, a function says what kind of work.
+FUNCTIONS_PATH = ROOT / "functions.yaml"
 
 # Directories at the repository root that are not sectors.
 NOT_SECTORS = {".git", ".github", "assets", "scripts", "node_modules"}
@@ -86,6 +98,118 @@ class Catalogue:
             if needle in code or needle in str(entry.get("title", "")).casefold()
         ]
         return sections, divisions
+
+
+class Functions:
+    """The codified business functions, indexed for lookup and for checking."""
+
+    def __init__(self, data: dict):
+        self.scheme = data.get("scheme") or {}
+        self.entries = {
+            str(entry["id"]): entry
+            for entry in data.get("functions") or []
+            if isinstance(entry, dict) and entry.get("id")
+        }
+
+    @property
+    def scheme_name(self) -> str:
+        return str(self.scheme.get("name") or "IFM business functions")
+
+    def search(self, query: str) -> list[dict]:
+        needle = query.casefold()
+        return [
+            entry
+            for key, entry in self.entries.items()
+            if needle in key.casefold()
+            or needle in str(entry.get("title", "")).casefold()
+            or needle in str(entry.get("definition", "")).casefold()
+        ]
+
+
+def load_functions(errors: list[str]) -> Functions | None:
+    if not FUNCTIONS_PATH.exists():
+        errors.append(f"{FUNCTIONS_PATH.name}: missing. It is the codified business functions")
+        return None
+    try:
+        data = yaml.safe_load(FUNCTIONS_PATH.read_text())
+    except yaml.YAMLError as exc:
+        errors.append(f"{FUNCTIONS_PATH.name}: not valid YAML: {exc}")
+        return None
+    if not isinstance(data, dict):
+        errors.append(f"{FUNCTIONS_PATH.name}: expected a mapping at the top level")
+        return None
+
+    functions = Functions(data)
+    if not functions.entries:
+        errors.append(f"{FUNCTIONS_PATH.name}: `functions` is empty")
+        return None
+
+    # The catalogue checks the sectors, so something has to check the catalogue.
+    for key, entry in functions.entries.items():
+        if not entry.get("title"):
+            errors.append(f"{FUNCTIONS_PATH.name}: function {key} has no title")
+        if not entry.get("definition"):
+            errors.append(
+                f"{FUNCTIONS_PATH.name}: function {key} has no definition. A function "
+                f"nobody can define will be used to mean two things"
+            )
+        broader = entry.get("broader")
+        if broader and str(broader) not in functions.entries:
+            errors.append(
+                f"{FUNCTIONS_PATH.name}: function {key} names broader {broader!r}, "
+                f"which is not in the list"
+            )
+    return functions
+
+
+def check_functions_block(where: str, family: dict, functions: Functions | None,
+                          errors: list[str], notes: list[str]) -> bool:
+    """Check a family's `functions` block. Absence is a note, not an error.
+
+    Adoption is gradual - the same treatment an uncodified NOGA division gets.
+    A function that does not exist is another matter: it is a typo or an
+    invention, and both are worth failing for.
+    """
+    block = family.get("functions")
+    if block is None:
+        notes.append(
+            f"{where}: no `functions` block. Pick one with "
+            f"`python3 scripts/check-classification.py --functions <search>`"
+        )
+        return False
+    if not isinstance(block, dict):
+        errors.append(f"{where}: `functions` must be a mapping with `primary` and `supporting`")
+        return False
+
+    primary = block.get("primary")
+    if not primary:
+        errors.append(f"{where}: `functions.primary` is required. A family does one thing first")
+    supporting = block.get("supporting") or []
+    if not isinstance(supporting, list):
+        errors.append(f"{where}: `functions.supporting` must be a list")
+        supporting = []
+
+    if functions is None:
+        return True
+
+    for role, value in [("primary", primary)] + [("supporting", item) for item in supporting]:
+        if value and str(value) not in functions.entries:
+            errors.append(
+                f"{where}: `functions.{role}` is {value!r}, which is not in "
+                f"{FUNCTIONS_PATH.name}. Run "
+                f"`python3 scripts/check-classification.py --functions` for the list, "
+                f"and add the row in this pull request if it is genuinely missing"
+            )
+    if primary and str(primary) in [str(item) for item in supporting]:
+        errors.append(
+            f"{where}: {primary!r} is both the primary and a supporting function"
+        )
+    seen: set[str] = set()
+    for item in supporting:
+        if str(item) in seen:
+            errors.append(f"{where}: supporting function {item!r} is listed twice")
+        seen.add(str(item))
+    return True
 
 
 def load_catalogue(errors: list[str]) -> Catalogue | None:
@@ -229,6 +353,113 @@ def print_noga(catalogue: Catalogue, query: str | None) -> int:
     return 0
 
 
+def print_functions(functions: Functions, query: str | None) -> int:
+    """Print the codified functions, or the ones matching a query."""
+    entries = functions.search(query) if query else list(functions.entries.values())
+    if not entries:
+        print(f"Nothing in {FUNCTIONS_PATH.name} matches {query!r}.")
+        print(f"The upstream scheme is {functions.scheme.get('source')}.")
+        return 1
+
+    print(f"{functions.scheme_name}")
+    print("-" * 72)
+    for entry in entries:
+        key = str(entry["id"])
+        under = f"   (under {entry['broader']})" if entry.get("broader") else ""
+        print(f"  {key:<32}{entry.get('title')}{under}")
+        definition = " ".join(str(entry.get("definition", "")).split())
+        if definition:
+            print(f"      {definition}")
+    print()
+
+    # One match is an answer rather than a list, so print what goes in the file.
+    if query and len(entries) == 1:
+        print("Paste this into the family in <your-sector>/sector.yaml:")
+        print()
+        print("    functions:")
+        print(f"      primary: {entries[0]['id']}")
+        print("      supporting: []")
+        print()
+
+    print(f"Source: {functions.scheme.get('source')}")
+    return 0
+
+
+def scaffold(name: str, division: str | None, catalogue: Catalogue | None) -> int:
+    """Write a sector.yaml that is already valid, so a contributor edits rather
+    than authors. Everything the checker can fill in, it fills in."""
+    if not name or not name.replace("-", "").isalnum():
+        print(f"{name!r} is not a directory name. Use the sector directory, for example `retail`.")
+        return 1
+
+    noga_block = [
+        '  division: "00"             # quoted, because leading zeros matter',
+        "  division_title: ...        # run --noga <search> and paste what it prints",
+        "  section: X",
+        "  section_title: ...",
+        "  scheme: NOGA 2025",
+    ]
+    if division and catalogue is not None:
+        entry = catalogue.divisions.get(str(division))
+        if entry is None:
+            print(f"Division {division} is not in {CATALOGUE_PATH.name}.")
+            print(f"Read its title from {catalogue.code_url(str(division))} and add the row,")
+            print("or run `--noga <search>` to find the right one.")
+            return 1
+        letter = str(entry.get("section"))
+        noga_block = [
+            f'  division: "{entry["code"]}"',
+            f"  division_title: {entry.get('title')}",
+            f"  section: {letter}",
+            f"  section_title: {catalogue.sections.get(letter, '')}",
+            f"  scheme: {catalogue.scheme_name}",
+        ]
+
+    body = "\n".join([
+        f"sector: {name}",
+        f"title: {name.replace('-', ' ').title()}",
+        "noga:",
+        *noga_block,
+        "families:",
+        "  - id: example-family       # kebab-case, stable, referenced from elsewhere",
+        "    title: Example family",
+        "    status: draft            # draft | specified | in-progress | stable",
+        "    functions:",
+        "      primary: ...           # run --functions <search> and paste what it prints",
+        "      supporting: []",
+        "    flows:",
+        "      - id: F-01",
+        "        title: What this flow shows",
+        "        status: draft",
+        "",
+    ])
+
+    target = ROOT / name / "sector.yaml"
+    if target.exists():
+        print(f"{target.relative_to(ROOT)} already exists. Not overwriting it. Here is the shape:")
+        print()
+        print(body)
+        return 1
+    if not target.parent.exists():
+        print(f"{name}/ does not exist yet, so here is the file to put in it:")
+        print()
+        print(body)
+        return 0
+
+    target.write_text(body)
+    print(f"Wrote {target.relative_to(ROOT)}.")
+    print()
+    print("Next:")
+    if not (division and catalogue is not None):
+        print("  1. python3 scripts/check-classification.py --noga <search>      pick the division")
+        print("  2. python3 scripts/check-classification.py --functions <search> pick the functions")
+        print("  3. python3 scripts/check-classification.py                      check it")
+    else:
+        print("  1. python3 scripts/check-classification.py --functions <search> pick the functions")
+        print("  2. python3 scripts/check-classification.py                      check it")
+    return 0
+
+
 def sector_dirs() -> list[Path]:
     """Every root directory that looks like a sector.
 
@@ -245,8 +476,8 @@ def sector_dirs() -> list[Path]:
     return found
 
 
-def check_sector(path: Path, catalogue: Catalogue | None, errors: list[str],
-                 notes: list[str]) -> dict | None:
+def check_sector(path: Path, catalogue: Catalogue | None, functions: Functions | None,
+                 errors: list[str], notes: list[str]) -> dict | None:
     manifest = path / "sector.yaml"
     if not manifest.exists():
         errors.append(
@@ -316,6 +547,10 @@ def check_sector(path: Path, catalogue: Catalogue | None, errors: list[str],
                 f"{fam_where}: `status` is {status!r}; expected one of {sorted(FAMILY_STATUS)}"
             )
 
+        # The reference model is not a sector, so it does not do sector work.
+        if not data.get("reference_model"):
+            check_functions_block(fam_where, family, functions, errors, notes)
+
         directory = family.get("directory")
         if directory and not (path / directory).exists():
             errors.append(f"{fam_where}: `directory` points at {directory!r}, which does not exist")
@@ -359,6 +594,7 @@ def main(argv: list[str]) -> int:
     manifests: dict[str, dict] = {}
 
     catalogue = load_catalogue(errors)
+    functions = load_functions(errors)
 
     if argv and argv[0] == "--noga":
         if catalogue is None:
@@ -366,8 +602,22 @@ def main(argv: list[str]) -> int:
                 print(f"  - {error}")
             return 1
         return print_noga(catalogue, argv[1] if len(argv) > 1 else None)
+    if argv and argv[0] == "--functions":
+        if functions is None:
+            for error in errors:
+                print(f"  - {error}")
+            return 1
+        return print_functions(functions, argv[1] if len(argv) > 1 else None)
+    if argv and argv[0] == "--new":
+        if len(argv) < 2:
+            print("Usage: check-classification.py --new <sector> [division]")
+            return 1
+        return scaffold(argv[1], argv[2] if len(argv) > 2 else None, catalogue)
     if argv:
-        print(f"Unknown argument {argv[0]!r}. Usage: check-classification.py [--noga [search]]")
+        print(
+            f"Unknown argument {argv[0]!r}. Usage: check-classification.py "
+            f"[--noga [search] | --functions [search] | --new <sector> [division]]"
+        )
         return 1
 
     sectors = sector_dirs()
@@ -376,7 +626,7 @@ def main(argv: list[str]) -> int:
         return 1
 
     for path in sectors:
-        data = check_sector(path, catalogue, errors, notes)
+        data = check_sector(path, catalogue, functions, errors, notes)
         if data:
             manifests[path.name] = data
 
@@ -406,7 +656,21 @@ def main(argv: list[str]) -> int:
         total_flows += flows
         print(f"{name:<16} {division:<10} {len(families):<10} {flows}")
     print("-" * 52)
-    print(f"{len(manifests)} sectors, {total_flows} flows")
+    classified = 0
+    total_families = 0
+    for name, data in manifests.items():
+        if data.get("reference_model"):
+            continue
+        for family in data.get("families") or []:
+            if not isinstance(family, dict):
+                continue
+            total_families += 1
+            if isinstance(family.get("functions"), dict):
+                classified += 1
+    print(
+        f"{len(manifests)} sectors, {total_flows} flows, "
+        f"{classified}/{total_families} families carry a function"
+    )
 
     if notes:
         print()

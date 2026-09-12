@@ -1,12 +1,17 @@
 # Copy this to <your-sector>/sector.yaml and fill it in.
 #
-# Two questions and you are done:
-#   1. Which NOGA division describes the relying party's industry?
-#   2. Do your flows join an existing family or start a new one?
+# Or skip the copying: `--new <sector>` writes this file for you, and
+# `--new <sector> <division>` fills the NOGA block in as well.
 #
-# For the first, search the codified entries and paste what it prints:
+# Three questions and you are done:
+#   1. Which NOGA division describes the relying party's industry?
+#   2. What kind of work is it? That is the function.
+#   3. Do your flows join an existing family or start a new one?
+#
+# For the first two, search the codified entries and paste what they print:
 #
 #     python3 scripts/check-classification.py --noga retail
+#     python3 scripts/check-classification.py --functions onboarding
 #
 # If your division is missing from noga-2025.yaml, read its title from
 # https://www.kubb-tool.bfs.admin.ch/en and add the row in the same pull
@@ -35,6 +40,12 @@ families:
     #   Only when the family has its own subdirectory. A sector with one family
     #   may keep its flows directly under the sector directory.
     status: draft            # draft | specified | in-progress | stable
+    functions:
+      # What kind of work this family is, independent of the sector. One
+      # primary - the thing the family exists to do - and any number of
+      # supporting. Ids come from functions.yaml.
+      primary: identity-proofing
+      supporting: []
     flows:
       - id: F-01             # or a slug, as long as it is unique in the sector
         title: What this flow shows
