@@ -22,9 +22,14 @@
 #              against this file. A division that is missing is accepted, and
 #              the checker asks you to add its row in the same pull request.
 #
-# Every row was read from the KUBB page for that code. To add one, open
-# https://www.kubb-tool.bfs.admin.ch/en/noga/2025/<code>, copy the title, and
-# put the row in numeric order.
+# Every row carries the title KUBB gives that code. To add one, open
+# https://www.kubb-tool.bfs.admin.ch/en/noga/2025/<code>, copy the title and put
+# the row in numeric order.
+#
+# Two rows came from this repository's own sector.yaml files rather than from a
+# KUBB page: division 64, which KUBB served in German, and division 85, whose
+# page did not come back at all. Both predate this file and both are already
+# used by a sector. Anyone who can open KUBB should confirm the two titles.
 #
 # Titles are recorded in sentence case. KUBB prints section titles in capitals,
 # which is a rendering choice rather than part of the name.
