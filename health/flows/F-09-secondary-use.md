@@ -1,8 +1,15 @@
 ---
 id: F-09
 title: Secondary use under revocable research consent
+kind: flow
+interaction_scope: multi-party
+composition: atomic
+data_mode: discrete
 status: roadmap
 roadmap_step: 2
+profile_status: beyond-current-profile
+profile_gaps:
+  - GP-03
 actors:
   - ch.didas.health.role.research
   - holder
@@ -26,6 +33,17 @@ produces:
 
 Roadmap step 2. The entitlement model is implemented and tested; the flow around
 it is not built.
+
+> **Beyond the current Swiss Profiles.** This flow explores a holder-controlled
+> authorisation object with its own lifecycle and withdrawal semantics. The
+> current Swiss Profiles do not define a holder-as-issuer consent-credential
+> pattern, nor the governance model that would accompany one. Recorded as
+> [GP-03](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-03--holder-originated-authorisation-object).
+>
+> Four things stay distinct throughout this document and none is shorthand for
+> another: the wallet asking the holder to approve or decline a presentation
+> request; protocol authorisation, which decides what a verifier may request;
+> legal consent; and research consent under the Human Research Act.
 
 Research access to health data is normally a negotiation between institutions
 about a dataset the patient is not party to. Selective disclosure changes the
