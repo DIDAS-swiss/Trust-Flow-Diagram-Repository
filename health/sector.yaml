@@ -11,6 +11,13 @@ families:
     title: Immunization and vaccination records
     directory: likec4-health
     status: in-progress
+    # The family's core act is a vaccinator issuing an authoritative statement
+    # about an administered dose. What the travel clinic and the pharmacy then
+    # do with it is eligibility verification, and the check-in and dispensing
+    # flows sit inside delivering care.
+    functions:
+      primary: certification-and-attestation
+      supporting: [eligibility-verification, service-delivery]
     flows:
       - id: F-01
         title: Becoming an actor in the health trust domain
@@ -59,6 +66,12 @@ families:
     title: Population health statistics
     directory: likec4-health
     status: specified
+    # A coverage survey runs under a statistical mandate: it is systematic work
+    # to produce knowledge about a population, and the exchange releases data
+    # with its origin demonstrable.
+    functions:
+      primary: research-and-development
+      supporting: [data-sharing-and-provenance]
     flows:
       - id: F-11
         title: Answering the national coverage survey
