@@ -1,6 +1,6 @@
 ---
 id: F-09
-title: Secondary use under revocable consent
+title: Secondary use under revocable research consent
 status: roadmap
 roadmap_step: 2
 actors:
@@ -19,10 +19,10 @@ preconditions:
   - F-02
   - F-03
 produces:
-  - A de-identified contribution, with consent that can be withdrawn
+  - A minimised contribution, under a research consent that can be withdrawn
 ---
 
-# F-09 · Secondary use under revocable consent (roadmap, 2027)
+# F-09 · Secondary use under revocable research consent (roadmap, 2027)
 
 Roadmap step 2. The entitlement model is implemented and tested; the flow around
 it is not built.
@@ -46,19 +46,21 @@ built, before the patient is ever asked.
   status list mechanism as everything else, is the obvious shape. It inverts
   the usual direction of issuance, which the trust infrastructure does not
   currently contemplate.
-- **Withdrawal semantics.** Revoking consent stops future presentations. It does
-  not recall data already contributed and a design that implies otherwise is
-  dishonest. What withdrawal can guarantee needs stating in the consent text
-  itself.
-- **Re-identification risk.** Four LOINC-coded findings with dates are not
-  anonymous. A minimisation envelope is not de-identification and claiming
-  otherwise would be the weakest argument in this blueprint. k-anonymity, date
-  coarsening or aggregate-only queries belong here.
-- **HFG/LRH compliance.** The Swiss Human Research Act governs this whole area
-  and has its own consent requirements, which a technical consent mechanism must
-  satisfy: the consent object and the minimisation envelope are evidence a
-  review board can inspect and the board still has to approve the study.
-- **Aggregation without a collector.** If the point is to avoid a central
+- **Withdrawal semantics.** Revoking the research consent credential causes
+  later presentations to fail the status check. It does not recall data already
+  contributed, and the consent text has to state that distinction rather than
+  leave a reader to assume recall.
+- **Re-identification risk.** Four LOINC-coded findings carrying dates are not
+  anonymised data. Restricting which claims may be requested reduces what is
+  disclosed; it does not reduce the identifying power of the values that are
+  disclosed. k-anonymity, date coarsening or aggregate-only queries belong
+  here.
+- **HFG/LRH compliance.** The Swiss Human Research Act governs this area and
+  sets its own requirements for research consent, which a credential-based
+  mechanism has to satisfy rather than replace. The consent credential and the
+  claim restriction are artefacts a review board can inspect, and the board
+  still has to approve the study.
+- **Aggregation without a collector.** Where the objective is to avoid a central
   repository, the destination of a research contribution needs thought: a study
   database is a central repository. Federated analysis or local computation over
   presented data is the coherent answer and is substantially harder.

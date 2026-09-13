@@ -61,7 +61,7 @@ stateDiagram-v2
   the wallet and stops working. Whether the holder is told and by whom, is
   unspecified by the standards and needs a policy: silently dead credentials are
   a poor experience and, for a vaccination record, potentially a clinical risk.
-- **Publication to the registry is public.** The Swiss Profile says so plainly:
+- **Publication to the registry is public.** The Swiss Profile states it directly:
   information on a status list is public information. A suspension is therefore a
   disclosure, which is a reason to prefer revocation-on-correction over
   suspension-on-suspicion for sensitive credential types.
@@ -76,10 +76,18 @@ stateDiagram-v2
 - `iat` must be within the last 24 hours and `exp` must be in the future for the
   registry to accept an upload, so a status list must be re-signed and
   republished regularly even when nothing changes.
-- The status provider must be the registry, never the issuer. This is what
-  prevents an issuer from learning where its credentials are presented and it
-  is a requirement: any deployment that omits it loses the only record of why
-  a credential was revoked.
+- The status provider must be the registry provided by FOITT rather than the
+  issuer (`swiss-profile-vc:1.0.0` §12.1). A verifier resolving status against
+  the registry therefore does not contact the issuer at presentation time, which
+  reduces what the issuer can observe about where and when its credentials are
+  used. It does not make presentations unobservable in general: the registry
+  sees the request, and other channels may still correlate.
+- **The status list does not encode a reason.** Each entry carries a status
+  value and no accompanying reason, so "recorded in error", "used up" and "no
+  longer recognised" are indistinguishable to a verifier reading the entry. The reason is
+  recorded on the issuer side, in the governance journal and the lifecycle
+  policy, which is why the governance rules above have to be written down and
+  audited rather than inferred from the list.
 
 ## Open questions
 

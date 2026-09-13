@@ -11,21 +11,23 @@ coverage survey.
 > progress, for discussion purposes only. Diagrams may be updated and
 > republished over time as discussions continue and the trust flows evolve.
 
-**NOGA 2025:** division 86, Human health activities (section R). See
-[`../CLASSIFICATION.md`](../CLASSIFICATION.md). Two use case families sit under
-that division here. [`sector.yaml`](sector.yaml) records both.
+**NOGA 2025:** division 86, Human health activities (section R), the Federal
+Statistical Office's classification. Two use case families sit under that
+division here. [`sector.yaml`](sector.yaml) records both.
 
 ## The showcase
 
 A vaccination is administered. Whoever administered it issues one credential per
-dose into the patient's wallet. A travel clinic later confirms the patient is
-protected and receives **four claims out of the eighteen** the credential holds.
-The other fourteen are never transmitted, because the wallet releases only the
-claim paths the query names and the query is built from the verifier's
-registered entitlement.
+dose into the patient's wallet. A travel clinic later sends a presentation
+request that selects **four claims of the eighteen** the credential type defines.
+The wallet opens the commitments for the claim paths the query names and leaves
+the others closed, so the remaining claims are not included in the presentation.
+The query is built from the verifier's registered entitlement, and a query naming
+a claim outside it is rejected before the request is sent.
 
-No registry sits in the middle. The only shared infrastructure is a status list
-of two bits per credential, carrying no patient data.
+No clinical repository sits in the middle. The shared infrastructure is a status
+list carrying one entry per credential, with no clinical payload and no patient
+attributes.
 
 <img src="./diagrams/landscape.png" width="100%">
 
@@ -79,18 +81,21 @@ and the wallet fetches signed metadata, Type Metadata and an OCA bundle between
 the offer and the token request. See
 [#4](https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository/issues/4).
 
-### F-03 · Proving protection and nothing else
+### F-03 · Presenting vaccination evidence with minimal disclosure
 
-<img src="./diagrams/F-03-proving-protection.png" width="100%">
+<img src="./diagrams/F-03-minimal-disclosure.png" width="100%">
 
-[Open full size ↗](./diagrams/F-03-proving-protection.png) ·
+[Open full size ↗](./diagrams/F-03-minimal-disclosure.png) ·
 [Flow document](./flows/F-03-immunization-minimal-disclosure.md)
 
-This *is* `basic-flow`'s `verification` view with a different claim name. The
-reference model asks "is this person over 18?". This asks "is this person
-protected against diphtheria?". Same exchange, same seven steps, including the
-two that are easy to leave out, where the wallet checks the verifier's
-accreditation and compares the request against its declared purpose.
+This *is* `basic-flow`'s `verification` view with different claims. The
+reference model requests an over-18 attestation. This requests four claims about
+doses administered against a named disease. Whether the patient is protected is
+an inference over the schedule, the elapsed time and clinical judgement, which
+this flow does not perform and names no party accountable for. Same exchange,
+same seven steps, including the two that are easy to leave out, where the wallet
+checks the verifier's accreditation and compares the request against its declared
+purpose.
 
 The one step with no counterpart there is the holder declining, which is an
 ordinary thing for a patient to do. The clinic falls back to the paper booklet
@@ -171,32 +176,36 @@ post a copy of the child's vaccination record.
 
 The data source is therefore already the record the family holds. This flow
 replaces the photocopy. That photocopy shows every dose, every date, the
-vaccinating physician and usually the child's name. A presentation sends five
-claims and no name, because the survey drew the household from the population
-register and already holds the age band and the canton. Of the eleven flows
-here, this is the only one that sends a verifier **less** than it already
-receives.
+vaccinating physician and usually the child's name. The presentation request
+modelled here selects five coded claims and no name. The stratum the analysis
+needs, the age band and the canton, arrives inside the invitation credential the
+survey issued, so the request does not name a person identifier. Of the eleven
+flows here, this is the one whose presentation discloses **less** than the
+procedure it would replace.
 
 It is a separate use case family because it runs under a statistical mandate
 rather than the Human Research Act. Different legal basis, different entitlement,
 different retention, so a `statistics` role rather than a reuse of `research`.
 
-**Unlinkability is the property that matters here.** The invitation posted to the
-household carries a single-use credential holding the stratum (age band, canton,
-cycle) and no household identifier. It is presented together with the dose claims
-in one combined proof and revoked once the response is accepted, using the same
-two bits on a public status list that make a prescription single-use in F-05. The
-survey therefore learns that a household in a given canton with an 8-year-old
-reported a given set of doses. It holds no identifier it could join that record
-to.
+**Which correlation surfaces the design closes, and which it leaves open.** The
+invitation posted to the household carries a single-use credential holding the
+stratum (age band, canton, cycle) and no household identifier. It is presented
+together with the dose claims in one combined response and revoked once the
+response is accepted, using the same status-list mechanism that makes a
+prescription single-use in F-05. What the survey receives is therefore a set of
+dose claims attributed to a canton and an age band, with no person identifier
+among the disclosed claims.
 
-Two leaks remain and both are technical rather than procedural. The survey
-issues the invitation and revokes it, so a retained mapping from invitation index
-to posted address would re-link a response by timing. The same dose credentials
-presented in two cycles are linkable to each other. Closing either requires batch
-issuance or a zero-knowledge presentation. Neither is in place. Until then
-the flow is unlinkable by governance rule rather than by construction, which is
-the weaker guarantee and is named as such in the flow document.
+Two correlation surfaces stay open, and both are technical rather than
+procedural. The survey issues the invitation and revokes it, so an invitation
+index retained alongside the posted address would allow a response to be
+associated with that address by timing. The same dose credentials presented in
+two cycles expose stable credential-level information, so the two presentations
+may be correlatable to each other. Closing the first requires batch issuance;
+closing the second requires a presentation format that does not expose a stable
+credential identifier. Neither is in place here. Until then the property rests on
+the operator's retention rules rather than on the protocol, which the flow
+document states rather than claiming the property outright.
 
 ## The model
 

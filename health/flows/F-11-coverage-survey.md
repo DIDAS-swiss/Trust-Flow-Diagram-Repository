@@ -26,8 +26,9 @@ produces:
 
 Today a family posts a photocopy of the child's vaccination booklet, which shows
 every dose, every date, the vaccinating physician and usually the child's name.
-A presentation sends five claims and no name. Of the eleven flows in this set,
-this is the only one that sends a verifier less than it already receives.
+The presentation request modelled here selects five claims and no name. Of the
+eleven flows in this set, this is the one whose presentation discloses less than
+the procedure it would replace.
 
 Switzerland measures vaccination coverage with the Swiss National Vaccination
 Coverage Survey, coordinated by the **Epidemiology, Biostatistics and
@@ -46,12 +47,13 @@ organisation acting in its own interest: a clinic, a pharmacy, an insurer. A
 coverage survey differs in four respects. Each of them removes a difficulty
 the other flows have to address.
 
-- **Consent is already the model.** Households are invited and may refuse. The
-  flow adds no consent step, because the survey already asks and already takes
-  no for an answer.
-- **No identity is needed.** The survey drew the household from the population
-  register, so it already knows the age band and the canton. What it cannot
-  know is the clinical fact.
+- **Declining is already part of the method.** Households are invited by letter
+  and may refuse. The flow adds no new approval step beyond the holder
+  confirming the presentation request in the wallet.
+- **No person identifier is requested.** The stratum the analysis needs, the age
+  band and the canton, arrives inside the invitation credential the survey
+  issued. What the survey does not hold is the clinical fact, which is what the
+  response supplies.
 - **The purpose is public and stable.** "National vaccination coverage
   monitoring" is exactly what a Verification Query Public Statement is for, and
   it stays true across cycles.
@@ -78,31 +80,37 @@ sequenceDiagram
     Note over W: It carries the stratum (age band, canton,<br/>cycle) and no household identifier.
     W->>W: Show the purpose and every claim requested
     W-->>W: Consent, or decline and the paper path stands
-    W->>S: One combined proof: invitation (stratum) + doses (clinical)
+    W->>S: One presentation: invitation (stratum) + doses (clinical)
     Note over S: Nothing in the response names the household.<br/>The stratum arrives in the credential, so there is<br/>nothing to join back to.
     S->>BR: Revoke the invitation credential
     Note over BR: Single use. A second response cannot be made,<br/>and no register of who replied is kept.
 ```
 
-## Unlinkability
+## Linkability analysis
 
-Unlinkability means that the party receiving the data cannot connect it to the
-person it came from and cannot connect two separate submissions to each other.
-For a coverage survey it is the property that matters most: a response that can
-be traced back to a household turns the survey into a register of who replied
-and what they replied.
+**The proposed design removes an explicit household identifier from the
+presentation. It does not yet provide protocol-enforced unlinkability, because
+issuer-side issuance and status information, and the timing of presentation, may
+permit correlation.** What follows sets out what the design achieves and where
+correlation remains possible.
 
-An earlier draft of this flow had the survey join each response to its sampling
-record by an invitation token. That token is a household identifier and holding
-it would have produced exactly that register. The design below removes the need
-for it.
+The property being sought is that the party receiving a response cannot connect
+it to the household it came from, and cannot connect two separate submissions to
+each other. For a coverage survey this matters because a response traceable to a
+household turns the survey into a register of who replied and what they replied.
+
+An earlier draft had the survey join each response to its sampling record by an
+invitation token. That token is a household identifier, and holding it would
+have produced exactly that register. The design below removes the need for it,
+which is a necessary step and not a sufficient one.
 
 **The invitation credential carries the stratum.** The QR in the posted letter
 offers a single-use credential issued by the survey, holding the age band, the
-canton and the cycle. It holds no household identifier. The household's own claims
-travel with it in one combined proof. The survey therefore learns *"a household
-in this canton with an 8-year-old reported these doses"* and has nothing to join
-back to, because there is no key to join on.
+canton and the cycle. It holds no household identifier. The wallet presents it
+together with the household's dose claims in one presentation. From that
+presentation the survey learns *"a household in this canton with an 8-year-old
+reported these doses"*, and no person identifier is disclosed that it could use
+to join the response to its sampling record.
 
 **Single use is enforced on the status list.** The invitation is revoked when
 the response is accepted, so a second response cannot be made. This is the F-05
@@ -135,16 +143,16 @@ Closing that properly needs one of two things and both are open:
 - **Batch issuance**, so the invitation presented is not the invitation issued
   to a known index. The profile supports batches of at least ten and this
   project does not use them.
-- **A zero-knowledge presentation**, so the proof reveals eligibility and
-  stratum without revealing which invitation it came from.
+- **A zero-knowledge presentation**, so the response demonstrates eligibility
+  and discloses the stratum without disclosing which invitation it came from.
   [Longfellow ZK](https://github.com/DIDAS-swiss/digital-health_swiyu/issues/10)
-  is the candidate, because it proves statements about ES256 signatures without
-  changing the credential.
+  is the candidate, because it demonstrates statements about ES256 signatures
+  without changing the credential format.
 
-Until one of them is in place, the unlinkability of this flow rests on the survey
-following its own rules. That is a weaker guarantee than one enforced by the
-protocol. This document states it as such rather than describing the flow as
-unlinkable without qualification.
+Until one of them is in place, the correlation surfaces named above remain open
+and the property rests on the survey operator following its own retention rules.
+That is weaker than a property the protocol enforces, and this document states it
+as such rather than describing the flow as unlinkable without qualification.
 
 ## What is disclosed
 
@@ -178,8 +186,8 @@ identifies a person or a practitioner.
 
 ## Governance constraints
 
-- **The sampling frame stays where it is.** The wallet improves the *response*,
-  never the *selection*. A survey that let people volunteer their credentials
+- **The sampling frame stays where it is.** The wallet changes the *response*
+  channel and not the *selection* method. A survey that let people volunteer their credentials
   would be measuring the people who volunteer, and
   [the public health view](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/public-health.md) explains why that estimate
   cannot be corrected from inside the sample. This constraint governs the whole
@@ -216,10 +224,12 @@ identifies a person or a practitioner.
   therefore N queries in one request, which is the same limitation F-04 hits
   with two credentials and is worse here.
 - **Predicate proofs do not exist in this profile.** SD-JWT discloses a claim
-  or withholds it; it cannot prove a property of a withheld claim. There is no
-  way to show "this person is 8" without disclosing the birth date. The flow
-  avoids needing one only because the sampling frame already carries the age.
-  A different survey design would hit this wall immediately.
+  or withholds it. It offers no way to demonstrate that a withheld claim
+  satisfies a condition, so "this person is 8" cannot be shown without
+  disclosing the birth date. This flow does not need one, because the age band
+  it reports arrives inside the invitation credential the survey issued rather
+  than being derived from a birth date in the wallet. A survey design that
+  derived the age band from the dose credentials would need one.
 - **CH VACD supplies the denominator of "complete".** The FOPH/EKIF vaccination
   plan defines the expected series, and
   `ch-vacd-ch-vaccination-plan-immunizations-vs` carries it as a value set. The
@@ -228,7 +238,7 @@ identifies a person or a practitioner.
 
 ## Open questions
 
-1. **Absence is ambiguous and unresolved it invalidates the estimate.** A
+1. **Absence is ambiguous, and left unresolved it biases the estimate.** A
    missing credential may mean no dose, or a dose given before credentials
    existed, or a dose from an issuer who never issued one. A coverage estimate
    that reads absence as "unvaccinated" is biased downwards by an unknown
@@ -247,10 +257,11 @@ identifies a person or a practitioner.
    - The same dose credentials presented in two cycles three years apart are
      linkable to each other.
 
-   Batch issuance or a zero-knowledge presentation closes both;
-   [issue 10](https://github.com/DIDAS-swiss/digital-health_swiyu/issues/10)
-   tracks the second. Until then this flow is unlinkable by governance and not
-   by construction, which is the weaker guarantee.
+   Batch issuance closes the first and a zero-knowledge presentation closes
+   both; [issue 10](https://github.com/DIDAS-swiss/digital-health_swiyu/issues/10)
+   tracks the second. Until then the property rests on the survey operator
+   following its retention rules rather than on the protocol preventing the
+   correlation.
 3. **Who accredits a survey.** The statistics role needs the same
    authorisation layer that does not exist for any health role
    ([F-01](F-01-actor-onboarding.md)). A verifier claiming to be a national
@@ -266,7 +277,7 @@ identifies a person or a practitioner.
 `statistics` role exists in the governance model, so a query built for this role
 is already refused the identifying claims.
 
-Nothing else is built. The invitation credential type, the combined proof, the
+Nothing else is built. The invitation credential type, the combined presentation, the
 revoke-on-acceptance step and the survey actor are all specified here and absent
 from the code. The two mechanisms that would make the unlinkability structural,
 batch issuance and a zero-knowledge presentation, are unused and unavailable

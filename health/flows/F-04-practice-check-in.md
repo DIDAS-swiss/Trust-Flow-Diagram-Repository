@@ -24,15 +24,25 @@ produces:
 
 # F-04 · Check-in at the practice
 
-Reception, in one QR code: who are you and who is paying.
+Reception obtains, from one QR code, the identity attributes it needs to open a
+consultation record and the cover attributes it needs to bill for it.
 
-## What is different from a card reader
+## Two credentials, two issuers, one presentation
 
-Two credentials from two unrelated issuers arrive in a single presentation, each
-cryptographically bound to the same wallet key. The practice learns the patient's
-identity from the Confederation's credential and their cover from the insurer's,
-and can notice when the two disagree. A card reader cannot perform that check,
-because the card asserts both and nothing corroborates it.
+Two credentials from two unrelated issuers arrive in a single presentation. The
+practice reads the identity attributes disclosed from the Confederation's
+credential and the cover attributes disclosed from the insurer's, and can
+compare the two. A difference between the name attested by the Confederation and
+the name attested by the insurer is visible to the practice, because each value
+is attested by a different party.
+
+*Not claimed:* that both credentials are bound to the same wallet key. Key
+binding is per credential — `swiss-profile-vc:1.0.0` §4.1.2 makes the `cnf`
+claim conditional on the issuer enabling it — and nothing in the profiles
+establishes that two credentials from different issuers share a holder key. The
+profile's batch-issuance guidance points the other way, since it exists where
+unlinkability across verifiers is wanted. Corroboration here rests on two
+independent issuers attesting consistent values, not on a shared key.
 
 The claim list is where the data-minimisation argument becomes concrete. The
 practice asks for ten claims about cover and three about identity and for
@@ -56,7 +66,7 @@ sequenceDiagram
     R-->>W: One QR code
     W->>GV: Fetch and verify the signed JAR
     W->>TR: Check the verifier's trust statement
-    W-->>W: Holder sees both credentials and the purpose, consents
+    W-->>W: Holder sees both credentials and the purpose, confirms
     W->>GV: Encrypted response: Beta-ID claims + insurance card claims
     GV-->>R: SUCCESS + claims keyed by query id
     R->>R: reviewPresentation() per query
@@ -78,7 +88,8 @@ sequenceDiagram
   Reception is better placed than software to decide which, so the flow raises
   the discrepancy rather than resolving it.
 - **Retention follows the billing record**: ten years under
-  OR Art. 958f for what the practice legitimately keeps. The credential itself is
+  OR Art. 958f for what the practice legitimately keeps, so far as the
+  information forms part of a record that provision covers. The credential itself is
   not stored.
 
 ## Standardisation constraints
@@ -89,9 +100,10 @@ sequenceDiagram
 - `accepted_issuer_dids` is set per query, so the Beta-ID must come from the
   Beta Credential Service and the card from the patient's insurer. Without it the
   verifier would accept any issuer, which `checkVerificationRequest()` refuses.
-- Beta-ID carries the Art. 15 BGEID attribute set. The e-ID replaces it at
-  go-live with the same attributes, so this flow does not change in 2026. Only
-  the issuer DID and the `vct` do.
+- Beta-ID carries a subset of the EID content of Art. 15 para. 1 BGEID - surname,
+  given names, date of birth, AHV number - plus the derived `age_over_18`. This
+  flow uses only claims in that subset, so it does not change in 2026 when the
+  e-ID replaces the Beta-ID. Only the issuer DID and the `vct` do.
 - The insurance card models FHIR `Coverage`; there is no openEHR archetype for
   an insurance relationship and inventing one would be worse than pointing at
   the standard that already covers it.
@@ -104,11 +116,11 @@ sequenceDiagram
 2. **Delegation.** A parent checking in a child, or a carer acting for someone
    else, has no representation model in the trust infrastructure today.
 3. **Whether the practice should receive a name at all** when the appointment
-   already establishes it. Asking for less than the entitlement permits is always
+   already establishes it. Asking for less than the entitlement permits remains
    allowed and arguably should be the default.
 
 ## Implementation status
 
 `implemented`. `PraxisService.startCheckIn` / `completeCheckIn`; covered by
-`apps/demo/test/journey.test.ts`, including the declined-consent and
+`apps/demo/test/journey.test.ts`, including the declined-confirmation and
 missing-credential paths.

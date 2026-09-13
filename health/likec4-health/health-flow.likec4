@@ -145,7 +145,7 @@ model {
 
   // ---- The incumbent --------------------------------------------------
 
-  epd = system 'EPD / DEP' 'The Swiss electronic patient record. One issuer among others in this design' {
+  epd = system 'EPD / EGD' 'The Swiss electronic patient record. How it and holder-controlled credentials interoperate is future work' {
     style {
       color muted
       opacity 15%
@@ -162,7 +162,7 @@ model {
   patient -> practice 'presents e-ID and cover at check-in' {
     navigateTo practiceCheckIn
   }
-  patient -> travelClinic 'proves protection and nothing else' {
+  patient -> travelClinic 'presents vaccination evidence, four claims of eighteen' {
     navigateTo protectionCheck
   }
   patient -> pharmacy 'presents a prescription, once' {
@@ -302,7 +302,7 @@ views {
   // =====================================================================
 
   dynamic view immunizationIssuance {
-    title 'F-02 · Recording an administered dose · Sequence'
+    title 'F-02 · Issuing an administered dose · Sequence'
 
     practice -> baseRegistry 'Create and publish a status list' {
       notes '''
@@ -337,7 +337,8 @@ views {
         **Format:** `swiyu://?credential_offer=…` as a QR code
 
         The authorization code flow is NOT SUPPORTED by
-        `swiss-profile-issuance:1.0.0`. Pre-authorized is the only flow.
+        `swiss-profile-issuance:1.0.0`, so the Pre-Authorized Code Flow is the
+        one issuance flow available under this profile.
 
         One credential per administered dose. A dose is an event with a
         single author, so each issuer revokes only its own
@@ -354,10 +355,10 @@ views {
         Trust-Flow-Diagram-Repository issue 4.
 
         `vct_metadata_uri` carries an SRI integrity hash over the exact bytes
-        served, so this is a verified fetch and a real trust step: a
-        wallet that cannot verify the hash cannot render the credential. It
-        also means changing a deployment's external URL requires
-        regenerating and re-signing.
+        served, so the wallet can check what it received against the hash the
+        credential names, and a wallet that cannot match the hash cannot render
+        the credential. It also means changing a deployment's external URL
+        requires regenerating and re-signing.
       '''
     }
 
@@ -399,11 +400,11 @@ views {
   }
 
   // =====================================================================
-  // F-03 · Proving protection and nothing else
+  // F-03 · Presenting vaccination evidence with minimal disclosure
   // =====================================================================
 
   dynamic view protectionCheck {
-    title 'F-03 · Proving protection and nothing else · Sequence'
+    title 'F-03 · Presenting vaccination evidence with minimal disclosure · Sequence'
 
     travelClinic -> travelClinic 'Check the entitlement before building the query' {
       notes '''
@@ -413,13 +414,15 @@ views {
         eighteen claims: target disease, occurrence date, dose number and
         doses in series.
 
-        The check happens where the query is **built**. After the wallet has
-        answered, the data is out and a check at the verifier is only a
-        promise. A pharmacy asking for the AHV number is refused here.
+        The check happens where the query is **built**. A check applied after
+        the response operates on claims the verifier already holds, so it
+        constrains later use rather than which claims were received. A pharmacy
+        query naming the AHV number is rejected here, before the request is
+        sent.
       '''
     }
 
-    travelClinic -> patient 'Request proof of protection' {
+    travelClinic -> patient 'Request vaccination evidence' {
       notes '''
         **Protocol:** OpenID4VP 1.0 with DCQL, request object per JAR (RFC 9101)
         **Format:** signed `oauth-authz-req+jwt`, ES256
@@ -443,9 +446,9 @@ views {
       '''
     }
 
-    patient -> patient 'Show the purpose, then consent or decline' {
+    patient -> patient 'Show the purpose, then confirm or decline' {
       notes '''
-        **Outcome:** consent, or `client_rejected`
+        **Outcome:** the holder confirms the request, or `client_rejected`
 
         Declining is a first-class outcome of OpenID4VP and an ordinary thing
         for a patient to do: the travel clinic falls back to the paper
@@ -461,10 +464,11 @@ views {
         **Protocol:** `direct_post.jwt`, encrypted with ECDH-ES
         **Format:** `vp_token` plus a Key Binding JWT
 
-        The other fourteen claims are never transmitted. They are not
-        redacted afterwards and not filtered by the verifier's good
-        behaviour: the wallet releases only the claim paths the query names,
-        and the query was built from the entitlement.
+        The other fourteen claims are not included in the presentation. They
+        are not redacted afterwards and not filtered by the verifier's good
+        behaviour: the wallet opens the commitments for the claim paths the
+        query names and leaves the others closed, and the query was built
+        from the entitlement.
 
         Cleartext `direct_post` is not an option under the profile.
       '''
@@ -474,8 +478,8 @@ views {
       notes '''
         **Governance gate:** `reviewPresentation()`. Status first, then markers
 
-        Status is checked at the Base Registry, so
-        the issuer never learns that a check happened.
+        The status request goes to the Base Registry rather than to the
+        issuer, so the issuer does not observe the check through this path.
 
         The policy keeps the profile's MUST rules under every configuration
         and records its waived SHOULDs with their reasons. A governed use
@@ -501,10 +505,11 @@ views {
 
         DCQL `multiple` is NOT SUPPORTED, so this is two queries inside one
         presentation request, each naming its own credential type and claim
-        paths. The patient consents once.
+        paths. The holder confirms the combined request once.
 
-        Two issuers in one presentation, crossing organisational boundaries,
-        is the configuration in which "verifiable" means something.
+        The two credentials come from two independent issuers, so the reception
+        desk evaluates two issuer signatures and two status entries in one
+        exchange, and can compare the values each issuer attested.
       '''
     }
 
@@ -570,8 +575,8 @@ views {
         prescribed what.
 
         Revocation here means "used up" and not "withdrawn". The status list
-        cannot tell the two apart. Only the issuer's journal separates them,
-        which is what makes the journal a governance control.
+        cannot tell the two apart. Only the issuer's journal separates them, so
+        the journal serves as a governance control.
       '''
     }
 
@@ -613,8 +618,9 @@ views {
         people who volunteer. That bias cannot be corrected from inside the
         sample.
 
-        It also means the frame already carries the age band and the canton, so
-        the credential has to disclose no demographic claim at all.
+        The stratum the analysis needs is therefore fixed when the sample is
+        drawn, and the survey carries it into the invitation credential rather
+        than requesting it from the wallet.
       '''
     }
 
@@ -662,13 +668,15 @@ views {
         claims, including every one that identifies a person or a practitioner.
 
         The photocopied booklet families post today shows all of it. Five
-        coded claims and no name is less than that. This is the only flow in
-        the set that sends a verifier less than it already receives.
+        coded claims and no name is narrower than that, which makes this the one
+        flow in the set whose presentation discloses less than the procedure it
+        would replace.
 
-        The invitation credential travels in the same proof, contributing the
-        stratum. The survey learns "a household in this canton with an
-        8-year-old reported these doses" and holds no key that would let it say
-        which household.
+        The invitation credential is presented alongside the dose claims and
+        contributes the stratum. What the survey receives is a set of doses
+        attributed to a canton and an age band, with no person identifier among
+        the disclosed claims. The invitation index it issued is a separate
+        correlation surface, recorded on the revocation step.
       '''
     }
 
@@ -687,11 +695,13 @@ views {
         timing, IP, user agent and response ordering, all identifying in a
         sample this small. That is a governance rule. It has to be auditable.
 
-        **The residual leak.** The survey issues and revokes the invitation, so
-        a retained mapping from invitation index to posted address would
-        re-link the response by timing. Batch issuance or a zero-knowledge
-        presentation closes it; neither is available here, so the unlinkability
-        of this flow currently rests on the survey behaving.
+        **The residual correlation surface.** The survey issues and revokes the
+        invitation, so a retained mapping from invitation index to posted
+        address, combined with revocation timing, would let the survey associate
+        a response with a household. Batch issuance or a zero-knowledge
+        presentation closes it. Neither is available here, so the property rests
+        on the survey operator following its retention rules rather than on the
+        protocol preventing the correlation.
 
         **Unsolved separately:** a missing credential may mean no dose, a dose
         given before credentials existed, or an issuer who never issued one.

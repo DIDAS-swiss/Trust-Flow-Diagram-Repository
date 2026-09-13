@@ -32,8 +32,7 @@ produces:
 Everything else in this blueprint assumes the answer to one question: *why
 should anyone believe that the entity behind this DID is a medical practice?*
 This flow is that answer. It is listed first because it is the flow most often
-skipped in prototypes and the one whose absence makes every later flow
-decorative.
+omitted in prototypes, and because every later flow depends on its outcome.
 
 The key publication, the accreditation request and the trust statement that
 comes back are the `registration` view of the reference model. This flow
@@ -81,7 +80,7 @@ flow is usually misjudged as blocked when two thirds of it are available today:
 | Organisation | An ePortal account, a business partner, API access | **Yes**, self-service, chargeable per DID |
 | Identity | A `did:webvh` on the Base Registry, proven by possession → `viTM` | **Yes**, self-service |
 | Transparency | A Verification Query Public Statement: this verifier, this scope, this DCQL query, published | **Yes**, self-service, per verifier per query |
-| Entitlement | `gucaTM`: this DID may issue *this credential type* in health | **No**, nobody can issue it |
+| Entitlement | `gucaTM`: this DID may issue *this credential type* in health | **No**, no health-domain governing authority exists to issue it |
 
 Only the last layer is blocked. A pilot runs on the first three plus explicitly
 listed `accepted_issuer_dids`, which is what this project does.
@@ -92,9 +91,9 @@ listed `accepted_issuer_dids`, which is what this project does.
   governance body that decides which organisations hold which roles and issues
   the corresponding trust statement. This project models the roles
   (`ROLE` in `@didas/swiyu`) and the entitlements attached to them and assumes
-  such a body exists. **It does not exist yet.** That is the single largest gap
-  between this blueprint and a deployable system. No amount of code closes
-  it.
+  such a body exists. **It does not exist yet.** That is the largest gap between
+  this blueprint and a deployable system, and it is an institutional question
+  rather than an implementation one.
 - **Role grants must be checkable against existing registers.** Inventing a register for
   this ecosystem: the cantonal authorisation to practise, the MedReg entry, the
   GLN in the Refdata index, the BAG number for insurers. A trust statement that

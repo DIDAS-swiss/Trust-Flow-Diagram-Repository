@@ -27,20 +27,23 @@ It does not have to. The credential carries the model with it.
 
 ## The architectural position
 
-openEHR and HL7 FHIR give the sector two things that are usually delivered
-together but are separable:
+HL7 FHIR and openEHR provide established models and implementation patterns for
+representing, exchanging and, in openEHR's case, persisting clinical
+information: archetypes, templates, resource profiles and terminology bindings,
+representing decades of clinical modelling work and the reason a laboratory
+result means the same thing in two systems. Verifiable credentials and the swiyu
+Trust Infrastructure address a different layer: authenticity, provenance,
+controlled presentation and trust relationships. These layers can be composed.
 
-1. **Shared information models.** Archetypes, templates, resource profiles,
-   terminology bindings. Decades of clinical modelling work and the reason a lab
-   result means the same thing in two systems.
-2. **A shared repository.** A clinical data repository or a FHIR server that
-   someone operates, that someone governs and that the patient does not control.
+This demonstrator reuses the information models and does not operate a FHIR
+server or an openEHR clinical data repository. That is a scope choice for this
+prototype, not a judgement on either architecture; a deployment composing the
+two is described in [positioning](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/positioning.md).
 
-This project reuses the first and declines the second. Every claim in every
-credential type carries the FHIR element path and, where one exists, the openEHR
-archetype path it corresponds to. At the moment of presentation, the receiving
-system rebuilds the representation it already understands, locally, from what
-the holder released, with no repository involved on either side.
+Every claim in every credential type carries the FHIR element path and, where
+one exists, the openEHR archetype path it corresponds to. At presentation, the
+receiving system can rebuild the representation it already understands, locally,
+from the claims the holder released.
 
 ```mermaid
 flowchart LR
@@ -54,11 +57,12 @@ flowchart LR
 
 ## Two properties to preserve
 
-- **A projection is derived, never authoritative.** The signed SD-JWT VC is the
-  evidence. The FHIR resource built from it carries no signature and proves
-  nothing on its own. A system that needs provenance must retain the
-  presentation. Most systems will retain the projection. That risk is worth
-  stating plainly.
+- **A projection is derived, not authoritative.** The signed SD-JWT VC is the
+  verifiable artefact. The FHIR resource built from it carries no signature, so
+  nothing about its provenance can be checked from the resource alone. A system
+  that needs to evidence provenance later has to retain the presentation
+  alongside the projection. A system that retains only the projection cannot
+  reconstruct it.
 - **A projection is legitimately partial.** After selective disclosure, a
   `DiagnosticReport` may have findings and no patient name. Receiving systems
   must tolerate that instead of treating a missing element as an error. This is
@@ -98,9 +102,16 @@ flowchart LR
    convertible back into a credential is a step-2 question, as is who would sign
    the result. Both are raised by the openEHR/HL7 joint working group's
    ambitions.
-2. **Profile conformance is claimed and never validated.** The resources assert
-   `meta.profile` but are not run through a FHIR validator in CI. That is a
-   gap and a cheap one to close.
+2. **`meta.profile` names a profile; conformance to it is not asserted.** A
+   projected resource carries `meta.profile` as a pointer to the profile it is
+   shaped towards, and this repository does not claim the resource conforms to
+   that profile. No resource has been run through a FHIR validator: the FHIR
+   package registry is unreachable from the environment this is developed in,
+   so `hl7.fhir.r4.core` and the CH IG packages cannot be obtained.
+   `packages/swiyu/test/ch-profile-conformance.test.ts` pins the constraints
+   checkable without a validator and records one known non-conformance, the
+   mandatory `CHVACDExtensionVerificationStatus` that the projection does not
+   emit. See [eHealth Suisse alignment](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/ehealth-suisse-alignment.md).
 3. **openEHR templates are sketched and unpublished.** `DIDAS.immunisation.v0`
    and its siblings are named here; real operational templates would have to be
    modelled and published for the paths to be more than plausible.

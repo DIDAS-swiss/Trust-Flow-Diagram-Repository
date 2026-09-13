@@ -34,11 +34,13 @@ The mechanism is the status list. The pharmacy dispenses and then asks the
 issuing practice to revoke; the bit flips on the list published to the Base
 Registry; every later presentation fails. Three properties follow:
 
-- **No register of who was prescribed what.** The status list records that a
-  credential is no longer valid. It contains no patient, no medication, no
-  pharmacy. The privacy improvement over a central e-prescription service is
-  structural: the status list is the only place the single-use property is
-  recorded, so the guarantee holds for every verifier that checks it.
+- **The status list carries no prescription content.** Its entry records the
+  status value the issuer published for that credential. The representation
+  carries no patient, medication or pharmacy data. The single-use property is
+  recorded in that entry and nowhere else in this design, so it applies to every
+  verifier that resolves the status before accepting a presentation. What a given
+  national e-prescription service records is a property of that service and is
+  not compared here.
 - **Only the issuer can revoke.** The pharmacy cannot flip the bit itself, so
   redemption is a request between two accountable parties. This is a feature: it
   forces the dispensing event to be visible to the prescriber, which is what the
@@ -73,7 +75,8 @@ sequenceDiagram
 
 ## Governance constraints
 
-- **Only a prescriber may issue.** MedBG/LPMéd; enforced through `issuerRole`
+- **Only a prescriber may issue.** Modelled here on MedBG/LPMéd, subject to legal
+  review; enforced through `issuerRole`
   and, in a real deployment, `gucaTM`.
 - **Revocation here means "used up".** The same mechanism
   serves both and the status list cannot distinguish them. The distinction has
@@ -110,9 +113,11 @@ sequenceDiagram
    paper's. Unresolved and the most substantive gap in this flow.
 2. **Partial dispensing.** Handing over one of three prescribed items has no
    representation: revocation is all-or-nothing.
-3. **Who revokes when the practice has closed?** A prescription outlives its
-   issuer's ability to revoke it, which is the uncomfortable mirror image of the
-   property F-02 celebrates.
+3. **Who revokes when the issuing practice has closed?** A credential the
+   holder retains can outlast the issuer's ability to revoke it. This is the
+   counterpart of the continuity property F-02 describes, and it argues in the
+   opposite direction: retention by the holder and revocability by the issuer
+   are in tension, and this flow does not resolve it.
 
 ## Implementation status
 
