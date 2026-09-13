@@ -20,6 +20,7 @@ body:
       options:
         - "banking — Banking (division 64)"
         - "education — Education (division 85)"
+        - "health — Health (division 86)"
         - "a new sector — not listed above"
     validations:
       required: true
@@ -66,6 +67,8 @@ body:
         - "banking/re-identification-age-of-majority — Re-identification at the age of majority"
         - "basic-flow/trust-infrastructure — The trust infrastructure itself"
         - "education/certificates-and-enrolment — Certificates and enrolment"
+        - "health/immunization — Immunization and vaccination records"
+        - "health/public-health-statistics — Population health statistics"
         - "a new family — described below"
     validations:
       required: true
