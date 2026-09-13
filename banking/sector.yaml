@@ -16,7 +16,7 @@ families:
       requires: [eid-held]
       establishes: [kyc-attestation-held, customer-relationship-open]
     functions:
-      primary: customer-onboarding
+      primary: relationship-onboarding
       supporting: [identity-proofing, regulatory-compliance]
     flows:
       - id: kyc-onboarding
@@ -34,7 +34,7 @@ families:
       establishes: [access-granted]
     functions:
       primary: identity-lifecycle-management
-      supporting: [customer-service, access-management]
+      supporting: [request-and-complaint-handling, access-management]
     flows:
       - id: online-banking-reidentification
         title: Online banking re-identification

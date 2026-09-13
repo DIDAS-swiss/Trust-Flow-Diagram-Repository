@@ -50,8 +50,8 @@ functions:
       Establishing to a stated level of assurance that a claimed identity
       corresponds to a real subject.
 
-  - id: customer-onboarding
-    title: Customer onboarding
+  - id: relationship-onboarding
+    title: Relationship onboarding
     definition: >-
       Establishing a new customer or member relationship, including the due
       diligence that regulation attaches to it.
@@ -105,8 +105,8 @@ functions:
       Hiring, employing and offboarding people, and administering their
       qualifications and entitlements.
 
-  - id: customer-service
-    title: Customer service
+  - id: request-and-complaint-handling
+    title: Request and complaint handling
     definition: >-
       Handling requests, incidents and complaints from an existing customer
       relationship.
