@@ -12,10 +12,12 @@
 //
 //   https://didas-swiss.github.io/Trust-Flow-Diagram-Repository/basic-flow/
 //
-// What this model adds is everything the generic flow has no shape for: roles
-// granted per credential type, a domain governance body that can read the
-// Swiss health registers, protected fields and the eHealth Suisse exchange
-// formats the claims are bound to. flows/trust-flow-basis.md records the
+// What this model adds is everything the generic flow has no shape for:
+// authorisation scoped per credential type, a domain governing actor that can
+// read the Swiss health registers and publish the applicable statements,
+// protected fields and the eHealth Suisse exchange formats the claims are bound
+// to. Statements are published and markers are derived from them; the model
+// keeps those two steps separate wherever it draws either. flows/trust-flow-basis.md records the
 // step-by-step mapping, including the three gaps raised as issues there.
 //
 // Render the dynamic views as SEQUENCE diagrams:
@@ -100,7 +102,7 @@ model {
   // deployable on the swiyu Sandbox today; this box is the reason none of
   // it can go live.
 
-  healthGovernance = governance 'Health domain governance body' 'Grants health roles against the Swiss registers. Does not exist yet' {
+  healthGovernance = governance 'Health domain governing actor' 'Would decide health authorisations against the Swiss registers and publish the applicable statements. Does not exist yet' {
     style {
       border dashed
       opacity 20%
@@ -123,7 +125,7 @@ model {
       }
     }
 
-    trustRegistry = database 'Trust Registry' 'Trust statements, trust markers, verification query public statements' {
+    trustRegistry = database 'Trust Registry' 'Publishes and serves trust statements, trust list statements and verification query public statements. Trust markers are derived by evaluating actors, not stored here' {
       style {
         icon bootstrap:patch-check
       }
@@ -169,13 +171,13 @@ model {
     navigateTo prescriptionRedemption
   }
 
-  practice -> healthGovernance 'applies for the vaccinator role' {
+  practice -> healthGovernance 'applies for a vaccinator authorisation' {
     navigateTo actorOnboarding
   }
   travelClinic -> healthGovernance 'applies for the travel-clinic role'
   pharmacy -> healthGovernance 'applies for the pharmacy role'
   insurer -> healthGovernance 'applies for the insurer role'
-  healthGovernance -> trustRegistry 'publishes role-scoped trust statements'
+  healthGovernance -> trustRegistry 'publishes authorisation statements scoped per credential type'
 
   practice -> baseRegistry 'publishes its DID, publishes and updates status lists'
   insurer -> baseRegistry 'publishes its DID and status lists'
@@ -234,11 +236,15 @@ views {
         **Protocol:** swiyu Trust Registry API v1 (Trust Protocol 2.0)
         **Format:** JWT signed with the assertion key
 
-        Yields the **Verified Identity trust marker (viTM)**: this DID belongs
-        to a business partner whose legal identity the Confederation checked.
+        The identity verification service publishes the applicable identity
+        statement for this DID. An actor that later validates that statement can
+        derive the **Verified Identity trust marker (viTM)** for its interaction:
+        the DID belongs to a business partner whose legal identity the
+        Confederation checked. The marker is the result of that evaluation and
+        is not returned to the practice here.
 
         This is as far as self-service goes. It is the same statement the
-        reference model's Trust Authority issues.
+        reference model's Trust Authority publishes.
       '''
     }
 
@@ -253,26 +259,31 @@ views {
         Trust-Flow-Diagram-Repository issue 3.
 
         The registers already exist and are authoritative. What is missing is
-        a body mandated to read them and publish the result as a trust
-        statement. Until one exists, verifiers fall back to explicitly listed
+        a governing actor mandated to read them and publish the result as an
+        applicable authorisation statement. Until one exists, verifiers fall back to explicitly listed
         issuer DIDs, adequate for a pilot and inadequate at scale.
       '''
     }
 
     healthGovernance -> trustRegistry 'Publish a role-scoped trust statement' {
       notes '''
-        **Format:** Trust statement naming the role and the credential types
-        it authorises
+        **Format:** an applicable authorisation statement naming the
+        credential types the governance decision covers. Trust Protocol 2.0
+        provides `piaTS` for issuance authorisation and `pvaTS` for verification
+        authorisation; it defines no health-role field, and this project does
+        not add one.
 
-        Yields the **Governed Use Case Authorization trust marker (gucaTM)**
-        for `urn:vct:ch.didas.health.immunization:1.0`.
+        A verifier that later validates the applicable statements can derive the
+        **Governed Use Case Authorization trust marker (gucaTM)** for
+        `urn:vct:ch.didas.health.immunization:1.0` in that interaction. Nothing
+        is handed to the practice at this step.
 
-        Roles are scoped per credential type. An insurer is a legitimately
-        onboarded issuer and is still refused when it tries to record a
-        vaccination, because it holds no vaccinator role. One organisation
-        holds several roles: a practice that also runs a laboratory carries
-        both. Each role carries its own issuance rights and its own
-        entitlement to ask.
+        The authorisation is scoped per credential type. An insurer is a
+        legitimately onboarded issuer and is still refused when it tries to
+        record a vaccination, because this project's governance model gives it
+        no vaccinator role. One organisation can hold several roles: a practice
+        that also runs a laboratory has both. `ch.didas.health.role.*` is DIDAS
+        project vocabulary rather than Trust Protocol vocabulary.
       '''
     }
 
@@ -474,7 +485,7 @@ views {
       '''
     }
 
-    travelClinic -> baseRegistry 'Check status, then the issuer trust markers' {
+    travelClinic -> baseRegistry 'Check status, then derive the issuer trust markers' {
       notes '''
         **Governance gate:** `reviewPresentation()`. Status first, then markers
 
@@ -503,9 +514,12 @@ views {
         **Credentials:** Beta-ID (Confederation) and the insurance card
         (`urn:vct:ch.didas.health.insurance-card:1.0`)
 
-        DCQL `multiple` is NOT SUPPORTED, so this is two queries inside one
-        presentation request, each naming its own credential type and claim
-        paths. The holder confirms the combined request once.
+        DCQL `multiple` is NOT SUPPORTED, so this is two Credential Queries
+        inside one presentation request, each naming its own credential type and
+        claim paths. Whether the profile permits that is not explicit, so this
+        is an implementation pattern of this demonstrator under clarification
+        rather than confirmed profile behaviour: see GP-01. The holder confirms
+        the combined request once.
 
         The two credentials come from two independent issuers, so the reception
         desk evaluates two issuer signatures and two status entries in one

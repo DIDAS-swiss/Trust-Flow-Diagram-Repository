@@ -1,18 +1,30 @@
 ---
 id: F-10
 title: Wearables and continuous data
+kind: flow
+interaction_scope: unresolved
+composition: unresolved
+data_mode: continuous
 status: roadmap
 roadmap_step: 3
+profile_status: beyond-current-profile
+profile_gaps:
+  - GP-04
+  - GP-05
 actors:
   - holder
   - device manufacturers
   - ch.didas.health.role.practice
 credentials:
   - continuous measurement credential types (not modelled)
-protocols:
-  - to be determined
-trust_markers:
-  - device attestation, not yet specified in the Swiss Profile
+protocols: []
+protocol_status: unresolved
+trust_markers: []
+unresolved_requirements:
+  - Measurement provenance, including a device- and software-attestation model.
+    The Trust Protocol does not define a trust marker for it.
+  - Standing authorisation for a continuing exchange, with scope, duration,
+    modification, suspension and withdrawal.
 preconditions:
   - F-07
 produces:
