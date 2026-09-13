@@ -35,11 +35,15 @@ ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM = "https://didas-swiss.github.io/industry-function-graph/ifm-graph.jsonld"
 REPO = "https://github.com/DIDAS-swiss/industry-function-graph"
 
-# local file, the key holding its entries, and the id prefix upstream uses
+# local file, the key holding its entries, and the id prefix upstream uses.
+#
+# states.yaml is deliberately absent. It is this repository's own vocabulary,
+# as its header says, and industry-function-graph publishes no states: listing
+# it here made the check report the absence of an upstream namespace as drift
+# on every run.
 CATALOGUES = [
     ("functions.yaml", "functions", "func"),
     ("value-streams.yaml", "streams", "stream"),
-    ("states.yaml", "states", "state"),
 ]
 TIMEOUT_SECONDS = 20
 

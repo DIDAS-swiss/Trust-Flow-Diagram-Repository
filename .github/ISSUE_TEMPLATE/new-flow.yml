@@ -91,7 +91,7 @@ body:
       description: "What kind of work this is, independent of the sector. The one thing the family exists to do; supporting functions go in sector.yaml."
       options:
         - "identity-proofing — Identity proofing"
-        - "customer-onboarding — Customer onboarding"
+        - "relationship-onboarding — Relationship onboarding"
         - "identity-lifecycle-management — Identity lifecycle management"
         - "eligibility-verification — Eligibility verification"
         - "access-management — Access management"
@@ -100,7 +100,7 @@ body:
         - "sourcing-and-procurement — Sourcing and procurement"
         - "supply-chain-traceability — Supply chain traceability"
         - "human-capital-management — Human capital management"
-        - "customer-service — Customer service"
+        - "request-and-complaint-handling — Request and complaint handling"
         - "service-delivery — Service delivery"
         - "records-management — Records management"
         - "contracting-and-signing — Contracting and signing"
