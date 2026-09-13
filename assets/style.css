@@ -1,20 +1,53 @@
+/* The complete light palette lives on bare :root. The dark blocks below
+   redefine only the tokens, so every rule in this file is written once. */
 :root {
   --red: #c61623;
   --ink: #212934;
   --body: #4a5261;
   --line: #e4e8ec;
   --bg-soft: #f8f9fb;
+  --paper: #ffffff;
+  --wash: #f1f3f6;
+
+  /* The masthead's width control switches this. */
+  --wrap-max: 860px;
+}
+:root[data-width="wide"] { --wrap-max: 1200px; }
+
+/* Three theme states, the same pattern on every DIDAS site: no data-theme
+   follows the operating system, data-theme="light" and "dark" override it. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --red: #ff6b73;
+    --ink: #e6eaef;
+    --body: #a6b0bd;
+    --line: #2a313b;
+    --bg-soft: #171c22;
+    --paper: #11151a;
+    --wash: #1b2128;
+  }
+}
+:root[data-theme="dark"] {
+  --red: #ff6b73;
+  --ink: #e6eaef;
+  --body: #a6b0bd;
+  --line: #2a313b;
+  --bg-soft: #171c22;
+  --paper: #11151a;
+  --wash: #1b2128;
 }
 
 * { box-sizing: border-box; }
 
-html { scroll-behavior: smooth; }
+/* The masthead's text-size control sets this in px; everything typographic in
+   this file is in rem so that it follows. */
+html { scroll-behavior: smooth; font-size: 16px; }
 
 body {
   margin: 0;
   font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   color: var(--ink);
-  background: #fff;
+  background: var(--paper);
   line-height: 1.6;
 }
 
@@ -23,48 +56,128 @@ a:hover { text-decoration: underline; }
 a:focus-visible, button:focus-visible { outline: 2px solid var(--red); outline-offset: 2px; }
 
 .wrap {
-  max-width: 860px;
+  max-width: var(--wrap-max);
   margin: 0 auto;
   padding: 0 24px;
 }
 
-/* Header */
-header.site {
-  border-bottom: 1px solid var(--line);
+/* ===========================================================================
+   Shared DIDAS masthead
+   The same header across the DIDAS sites: the identity line from the
+   digital-health_swiyu showcase, in the bar geometry and hairline rule of
+   this page. Only the four --mh-* values below differ between sites;
+   everything after them is identical everywhere, so a change to the design
+   can be copied across without rereading each site's stylesheet.
+   =========================================================================== */
+.site-masthead {
+  --mh-rule:  var(--line);
+  --mh-ink:   var(--body);
+  --mh-hover: var(--red);
+  --mh-wash:  var(--wash);
+  --mh-width: var(--wrap-max);   /* this page's own content width, so the bar
+                                    lines up with the text below it */
+
+  border-bottom: 1px solid var(--mh-rule);
 }
-header.site .wrap {
+.site-masthead .bar {
+  max-width: var(--mh-width);
+  margin-inline: auto;
+  padding-inline: 24px;
+  padding-block: 22px;
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  padding-top: 22px;
-  padding-bottom: 22px;
+  gap: 10px 24px;
 }
-.brand {
+.site-masthead .id {
   display: flex;
   align-items: center;
-  gap: 12px;
-  font-weight: 700;
-  font-size: 15px;
-  color: var(--ink);
+  flex-wrap: wrap;
+  gap: 6px 12px;
 }
-.brand .divider {
-  width: 1px;
-  height: 20px;
-  background: var(--line);
+.site-masthead .didas { display: inline-flex; align-items: center; line-height: 0; }
+.site-masthead .didas img { height: 20px; width: auto; display: block; }
+.site-masthead .eyebrow {
+  margin: 0;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--mh-ink);
 }
-.affiliation {
+.site-masthead .repolink {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  color: var(--mh-ink);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.site-masthead .repolink svg { flex: none; }
+.site-masthead .repolink span {
+  border-bottom: 1px solid var(--mh-rule);
+  padding-bottom: 2px;
+}
+.site-masthead .repolink:hover { color: var(--mh-hover); }
+.site-masthead .repolink:hover span { border-bottom-color: currentColor; }
+
+/* The same controls the glossary carries — colour theme, layout width and text
+   size — reading and writing the same localStorage keys. All four DIDAS sites
+   are served from one origin, so a preference set on any of them is the
+   preference on all of them. */
+.site-masthead .tools {
   display: flex;
   align-items: center;
-  gap: 8px;
-  font-size: 12px;
-  color: var(--body);
+  flex-wrap: wrap;
+  gap: 8px 14px;
 }
-.affiliation img { height: 20px; width: auto; display: block; }
-nav.site a {
-  color: var(--body);
-  font-size: 14px;
-  margin-left: 4px;
+.site-masthead .seg {
+  display: inline-flex;
+  align-items: stretch;
+  border: 1px solid var(--mh-rule);
+  border-radius: 4px;
+  overflow: hidden;
 }
+.site-masthead button {
+  appearance: none;
+  -webkit-appearance: none;
+  background: none;
+  border: 0;
+  margin: 0;
+  padding: 5px 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--mh-ink);
+  cursor: pointer;
+  font: inherit;
+  line-height: 0;
+}
+.site-masthead .seg button + button { border-left: 1px solid var(--mh-rule); }
+.site-masthead button:hover { color: var(--mh-hover); }
+.site-masthead button[aria-pressed="true"] {
+  color: var(--mh-hover);
+  background: var(--mh-wash);
+}
+.site-masthead button svg { width: 14px; height: 14px; display: block; }
+.site-masthead .seg.text button {
+  font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  line-height: 1;
+  padding-block: 4px;
+}
+.site-masthead .seg.text button:first-child { font-size: 0.62rem; }
+.site-masthead .seg.text button:last-child  { font-size: 0.88rem; }
+/* The width control shows the action it would take, so it swaps icon rather
+   than carrying the pressed background the theme buttons use. */
+.site-masthead button[data-width-value] .w-contract { display: none; }
+.site-masthead button[data-width-value][aria-pressed="true"] { background: none; }
+.site-masthead button[data-width-value][aria-pressed="true"] .w-expand { display: none; }
+.site-masthead button[data-width-value][aria-pressed="true"] .w-contract { display: block; }
+/* === end shared DIDAS masthead ========================================== */
 
 /* Hero */
 .hero {
@@ -72,7 +185,7 @@ nav.site a {
 }
 .eyebrow {
   display: inline-block;
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -80,13 +193,13 @@ nav.site a {
   margin-bottom: 14px;
 }
 h1 {
-  font-size: clamp(28px, 4vw, 38px);
+  font-size: clamp(1.75rem, 4vw, 2.375rem);
   line-height: 1.2;
   margin: 0 0 16px;
   letter-spacing: -0.01em;
 }
 .lede {
-  font-size: 16.5px;
+  font-size: 1.0312rem;
   color: var(--body);
   max-width: 640px;
   margin: 0 0 4px;
@@ -102,7 +215,7 @@ h1 {
 /* Sections */
 section { padding: 36px 0; border-top: 1px solid var(--line); }
 h2 {
-  font-size: 13px;
+  font-size: 0.8125rem;
   font-weight: 700;
   letter-spacing: 0.05em;
   text-transform: uppercase;
@@ -122,26 +235,26 @@ h2 {
 }
 .flow:first-child { border-top: none; }
 .flow-tag {
-  font-size: 12px;
+  font-size: 0.75rem;
   font-weight: 700;
   color: var(--red);
   text-transform: uppercase;
   letter-spacing: 0.04em;
   padding-top: 2px;
 }
-.flow-body h3 { margin: 0 0 6px; font-size: 16px; }
-.flow-body p { margin: 0; color: var(--body); font-size: 14.5px; }
-.flow-body ul { margin: 8px 0 0; padding-left: 18px; color: var(--body); font-size: 14px; }
+.flow-body h3 { margin: 0 0 6px; font-size: 1rem; }
+.flow-body p { margin: 0; color: var(--body); font-size: 0.9062rem; }
+.flow-body ul { margin: 8px 0 0; padding-left: 18px; color: var(--body); font-size: 0.875rem; }
 .flow-body li { margin-bottom: 2px; }
 .flow-link {
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   font-weight: 600;
   white-space: nowrap;
   padding-top: 2px;
 }
 .status {
   display: inline-block;
-  font-size: 11px;
+  font-size: 0.6875rem;
   font-weight: 600;
   padding: 2px 8px;
   border-radius: 20px;
@@ -152,7 +265,7 @@ h2 {
 }
 
 /* Back link on subpage */
-.back-link { font-size: 13.5px; font-weight: 600; }
+.back-link { font-size: 0.8438rem; font-weight: 600; }
 
 /* Diagram embed area */
 .diagram-frame {
@@ -166,6 +279,8 @@ h2 {
   height: 640px;
   border: 0;
   display: block;
+  /* The embedded LikeC4 diagram is a light document, so this stays white in
+     both themes rather than showing a dark frame around a light page. */
   background: #fff;
 }
 .diagram-cta {
@@ -176,9 +291,9 @@ h2 {
   flex-wrap: wrap;
   padding: 14px 18px;
   border-top: 1px solid var(--line);
-  font-size: 13.5px;
+  font-size: 0.8438rem;
   color: var(--body);
-  background: #fff;
+  background: var(--paper);
 }
 
 /* Footer */
@@ -193,7 +308,7 @@ footer.site .wrap {
   justify-content: space-between;
   flex-wrap: wrap;
   gap: 12px;
-  font-size: 13px;
+  font-size: 0.8125rem;
   color: var(--body);
 }
 footer.site a { color: var(--body); }
