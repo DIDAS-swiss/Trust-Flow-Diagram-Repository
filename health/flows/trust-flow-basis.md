@@ -25,7 +25,7 @@ commit `4fba24d`, step by step.
 | The verifier side of all three | the three `verifier ->` steps | reused |
 | Publishing the verification query and its purpose (vqPS) | *defines what data he will request for which purpose*, in the verifier accreditation step | reused |
 | Registering as a business partner on the Service Portal | n/a | added |
-| A health governance body granting **role-scoped** authorisation (`gucaTM` per credential type) | n/a | **does not map** |
+| A health governing actor publishing **role-scoped** authorisation statements per credential type, from which `gucaTM` can be derived | n/a | **does not map** |
 
 The reference model has one Trust Authority issuing one kind of statement:
 "this DID belongs to this accredited organisation, which may issue
