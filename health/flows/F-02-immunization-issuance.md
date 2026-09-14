@@ -117,7 +117,7 @@ practice management system would place that burden on every vendor.
   Trust Protocol evaluation could derive `gucaTM` for the interaction. The legal basis is modelled here
   on EpG/LEp plus the cantonal authorisation to vaccinate; that reading is this
   project's own and legal review is required before deployment
-  ([source verification](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/source-verification.md)).
+  ([source verification](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/source-verification.md)).
 - **Revocation corrects, it does not retract.** The only legitimate reason to
   revoke a dose credential is that it records something that did not happen:
   wrong patient, wrong vaccine, duplicate entry. Revoking to express "we no
