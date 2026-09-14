@@ -17,7 +17,7 @@ on:
       - 'noga-2025.yaml'
       - 'functions.yaml'
       - 'value-streams.yaml'
-      - 'states.yaml'
+      - 'conditions.yaml'
       - 'CLASSIFICATION.md'
       - 'scripts/check-classification.py'
       - '.github/workflows/classification.yml'

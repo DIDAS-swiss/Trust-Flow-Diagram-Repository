@@ -61,10 +61,19 @@ FUNCTIONS_PATH = ROOT / "functions.yaml"
 ISSUE_FORM_PATH = ROOT / ".github" / "ISSUE_TEMPLATE" / "new-flow.yml"
 
 # The composability pair. A value stream says where a family sits in an
-# end-to-end sequence; states say what it needs and what it leaves behind, which
-# is what lets one family plug into another without anyone drawing the arrow.
+# end-to-end sequence; conditions say what it needs and what it leaves behind,
+# which is what lets one family plug into another without anyone drawing the
+# arrow. Both are synced from industry-function-graph, which names the second
+# concept Condition, types it and orders it in a lattice. This file called it a
+# state while upstream published nothing to compare against.
 STREAMS_PATH = ROOT / "value-streams.yaml"
-STATES_PATH = ROOT / "states.yaml"
+CONDITIONS_PATH = ROOT / "conditions.yaml"
+
+# The four kinds upstream types a condition with. Evidence is what a party can
+# show, a fact is what has been established about them, a relationship is a
+# standing tie between two parties, and an outcome is the result a use case
+# exists to produce.
+CONDITION_KINDS = {"evidence", "fact", "relationship", "outcome"}
 
 # Directories at the repository root that are not sectors.
 NOT_SECTORS = {".git", ".github", "assets", "scripts", "node_modules"}
@@ -203,47 +212,123 @@ def load_simple(path, key, errors: list[str]) -> dict | None:
     return entries
 
 
-def check_states_block(where: str, family: dict, states: dict | None,
-                       errors: list[str], notes: list[str]) -> None:
-    """Check a family's `states` block. Absent is a note; wrong is an error."""
-    block = family.get("states")
+def check_conditions_catalogue(conditions: dict | None, errors: list[str]) -> None:
+    """The catalogue checks the sectors, so something has to check the catalogue."""
+    if conditions is None:
+        return
+    for ident, entry in conditions.items():
+        kind = str(entry.get("kind") or "")
+        if kind not in CONDITION_KINDS:
+            errors.append(
+                f"{CONDITIONS_PATH.name}: {ident} has kind {kind!r}. One of "
+                f"{', '.join(sorted(CONDITION_KINDS))}, as upstream types it"
+            )
+        if not entry.get("definition"):
+            errors.append(
+                f"{CONDITIONS_PATH.name}: {ident} has no definition. A condition nobody "
+                f"can define will be used to mean two things"
+            )
+        broader = str(entry.get("broader") or "")
+        if broader and broader not in conditions:
+            errors.append(
+                f"{CONDITIONS_PATH.name}: {ident} is broader-than {broader!r}, which is "
+                f"not in the catalogue"
+            )
+        elif broader and str(conditions[broader].get("kind") or "") != kind:
+            errors.append(
+                f"{CONDITIONS_PATH.name}: {ident} is {kind} and its broader condition "
+                f"{broader} is {conditions[broader].get('kind')}. The lattice orders "
+                f"conditions of one kind"
+            )
+
+    # A cycle would make the satisfaction walk non-terminating, and broader_chain
+    # stops on a repeat rather than reporting it.
+    for ident in conditions:
+        seen, cursor = set(), ident
+        while cursor and cursor in conditions:
+            if cursor in seen:
+                errors.append(
+                    f"{CONDITIONS_PATH.name}: {ident} sits in a broader-than cycle "
+                    f"through {cursor}"
+                )
+                break
+            seen.add(cursor)
+            cursor = str(conditions[cursor].get("broader") or "")
+
+
+def broader_chain(ident: str, conditions: dict) -> list[str]:
+    """`ident` and every condition above it, broadest last.
+
+    Upstream's composition rule reads across this chain: a provision satisfies a
+    requirement when the provided condition is the required one or narrower.
+    Walking upwards from the provided condition is the same statement, and it is
+    the direction the data is stored in.
+    """
+    chain, seen, cursor = [], set(), ident
+    while cursor and cursor in conditions and cursor not in seen:
+        chain.append(cursor)
+        seen.add(cursor)
+        cursor = str(conditions[cursor].get("broader") or "")
+    return chain
+
+
+def check_conditions_block(where: str, family: dict, conditions: dict | None,
+                           errors: list[str], notes: list[str]) -> None:
+    """Check a family's `conditions` block. Absent is a note; wrong is an error."""
+    if family.get("states") is not None:
+        errors.append(
+            f"{where}: `states` is the old name for this block. Rename it to "
+            f"`conditions` and rename `establishes` to `provides`, which is what "
+            f"industry-function-graph calls them"
+        )
+    block = family.get("conditions")
     if block is None:
         notes.append(
-            f"{where}: no `states` block, so nothing can be composed with this family. "
-            f"Pick from `python3 scripts/check-classification.py --states`"
+            f"{where}: no `conditions` block, so nothing can be composed with this "
+            f"family. Pick from `python3 scripts/check-classification.py --conditions`"
         )
         return
     if not isinstance(block, dict):
-        errors.append(f"{where}: `states` must be a mapping with `requires` and `establishes`")
+        errors.append(f"{where}: `conditions` must be a mapping with `requires` and `provides`")
         return
 
-    establishes = block.get("establishes") or []
-    if not isinstance(establishes, list) or not establishes:
+    provides = block.get("provides") or []
+    if not isinstance(provides, list) or not provides:
         errors.append(
-            f"{where}: `states.establishes` must list at least one state. A family that "
-            f"leaves nothing true cannot be composed with anything"
+            f"{where}: `conditions.provides` must list at least one condition. A family "
+            f"that leaves nothing true cannot be composed with anything"
         )
     requires = block.get("requires") or []
     if not isinstance(requires, list):
-        errors.append(f"{where}: `states.requires` must be a list")
+        errors.append(f"{where}: `conditions.requires` must be a list")
         requires = []
 
-    if states is None:
+    if conditions is None:
         return
-    for field, values in (("requires", requires), ("establishes", establishes)):
+    for field, values in (("requires", requires), ("provides", provides)):
         if not isinstance(values, list):
             continue
         for value in values:
-            if str(value) not in states:
+            if str(value) not in conditions:
                 errors.append(
-                    f"{where}: `states.{field}` names {value!r}, which is not in "
-                    f"{STATES_PATH.name}. Run "
-                    f"`python3 scripts/check-classification.py --states` for the list"
+                    f"{where}: `conditions.{field}` names {value!r}, which is not in "
+                    f"{CONDITIONS_PATH.name}. Run "
+                    f"`python3 scripts/check-classification.py --conditions` for the list"
                 )
-    both = set(map(str, requires)) & set(map(str, establishes))
+    both = set(map(str, requires)) & set(map(str, provides))
     if both:
         notes.append(f"{where}: {', '.join(sorted(both))} is both required and "
-                     f"established. Deliberate for a refresh, a mistake otherwise")
+                     f"provided. Deliberate for a refresh, a mistake otherwise")
+
+    # Providing a condition and also requiring something broader than it says
+    # nothing the narrower entry does not already say.
+    for provided in map(str, provides):
+        for required in map(str, requires):
+            if required != provided and required in broader_chain(provided, conditions)[1:]:
+                notes.append(
+                    f"{where}: requires {required!r} and provides {provided!r}, which is "
+                    f"narrower than it. The requirement is already implied"
+                )
 
 
 def check_functions_block(where: str, family: dict, functions: Functions | None,
@@ -672,7 +757,7 @@ def sector_dirs() -> list[Path]:
 
 
 def check_sector(path: Path, catalogue: Catalogue | None, functions: Functions | None,
-                 streams: dict | None, states: dict | None,
+                 streams: dict | None, conditions: dict | None,
                  errors: list[str], notes: list[str]) -> dict | None:
     manifest = path / "sector.yaml"
     if not manifest.exists():
@@ -746,7 +831,7 @@ def check_sector(path: Path, catalogue: Catalogue | None, functions: Functions |
         # The reference model is not a sector, so it does not do sector work.
         if not data.get("reference_model"):
             check_functions_block(fam_where, family, functions, errors, notes)
-        check_states_block(fam_where, family, states, errors, notes)
+        check_conditions_block(fam_where, family, conditions, errors, notes)
         stream = family.get("value_stream")
         if stream is not None and streams is not None and str(stream) not in streams:
             errors.append(
@@ -799,7 +884,8 @@ def main(argv: list[str]) -> int:
     catalogue = load_catalogue(errors)
     functions = load_functions(errors)
     streams = load_simple(STREAMS_PATH, "streams", errors)
-    states = load_simple(STATES_PATH, "states", errors)
+    conditions = load_simple(CONDITIONS_PATH, "conditions", errors)
+    check_conditions_catalogue(conditions, errors)
 
     if argv and argv[0] == "--noga":
         if catalogue is None:
@@ -813,9 +899,9 @@ def main(argv: list[str]) -> int:
                 print(f"  - {error}")
             return 1
         return print_functions(functions, argv[1] if len(argv) > 1 else None)
-    if argv and argv[0] in ("--streams", "--states"):
-        table = streams if argv[0] == "--streams" else states
-        label = "value streams" if argv[0] == "--streams" else "states"
+    if argv and argv[0] in ("--streams", "--conditions"):
+        table = streams if argv[0] == "--streams" else conditions
+        label = "value streams" if argv[0] == "--streams" else "conditions"
         if table is None:
             for error in errors:
                 print(f"  - {error}")
@@ -847,7 +933,7 @@ def main(argv: list[str]) -> int:
         scratch: list[str] = []
         manifests = {}
         for path in sector_dirs():
-            data = check_sector(path, catalogue, functions, streams, states,
+            data = check_sector(path, catalogue, functions, streams, conditions,
                                 scratch, scratch)
             if data:
                 manifests[path.name] = data
@@ -865,7 +951,7 @@ def main(argv: list[str]) -> int:
         print(
             f"Unknown argument {argv[0]!r}. Usage: check-classification.py "
             f"[--noga [search] | --functions [search] | --streams [search] "
-            f"| --states [search] | --new <sector> [division] | --issue-form]"
+            f"| --conditions [search] | --new <sector> [division] | --issue-form]"
         )
         return 1
 
@@ -875,7 +961,7 @@ def main(argv: list[str]) -> int:
         return 1
 
     for path in sectors:
-        data = check_sector(path, catalogue, functions, streams, states, errors, notes)
+        data = check_sector(path, catalogue, functions, streams, conditions, errors, notes)
         if data:
             manifests[path.name] = data
 
@@ -894,36 +980,51 @@ def main(argv: list[str]) -> int:
             )
 
     # Composition. Nobody draws these arrows: a family follows another when
-    # something the first establishes is something the second requires.
+    # something the first provides satisfies something the second requires.
+    #
+    # Satisfaction is not equality. Upstream's rule is that a provision
+    # satisfies a requirement when the provided condition is the required one or
+    # narrower, so providing `eid-held` satisfies a requirement for
+    # `identity-evidence-available` and neither family has to name the other.
+    # Comparing the two sets directly missed every such pair.
     interfaces = {}
     for name, data in manifests.items():
         for family in data.get("families") or []:
             if not isinstance(family, dict) or not family.get("id"):
                 continue
-            block = family.get("states") or {}
+            block = family.get("conditions") or {}
             interfaces[f"{name}/{family['id']}"] = (
                 set(map(str, block.get("requires") or [])),
-                set(map(str, block.get("establishes") or [])))
+                set(map(str, block.get("provides") or [])))
+
+    lattice = conditions or {}
+
+    def satisfied_by(requires: set[str], provides: set[str]) -> list[str]:
+        """The required conditions some provided condition satisfies."""
+        reach = {broad for p in provides for broad in broader_chain(p, lattice)}
+        return sorted(requires & reach) if lattice else sorted(requires & provides)
 
     chain = []
-    for source, (_, establishes) in sorted(interfaces.items()):
+    for source, (_, provides) in sorted(interfaces.items()):
         for target, (requires, _) in sorted(interfaces.items()):
-            if source != target and establishes & requires:
-                chain.append((source, target, sorted(establishes & requires)))
+            met = satisfied_by(requires, provides) if source != target else []
+            if met:
+                chain.append((source, target, met))
 
-    produced = {st for _, establishes in interfaces.values() for st in establishes}
-    needed = {st for requires, _ in interfaces.values() for st in requires}
-    open_sockets = sorted(needed - produced)
+    all_provided = {c for _, provides in interfaces.values() for c in provides}
+    needed = {c for requires, _ in interfaces.values() for c in requires}
+    open_sockets = sorted(needed - {b for p in all_provided
+                                    for b in broader_chain(p, lattice)} - all_provided)
     if open_sockets:
         notes.append(
-            f"{len(open_sockets)} state(s) are required by a family and established by "
+            f"{len(open_sockets)} condition(s) are required by a family and provided by "
             f"none: {', '.join(open_sockets)}. Each is a flow this repository has not "
             f"written down yet")
 
     signatures: dict[tuple, list[str]] = {}
-    for key, (requires, establishes) in interfaces.items():
-        if establishes:
-            signatures.setdefault((frozenset(requires), frozenset(establishes)), []).append(key)
+    for key, (requires, provides) in interfaces.items():
+        if provides:
+            signatures.setdefault((frozenset(requires), frozenset(provides)), []).append(key)
     for members in signatures.values():
         if len(members) > 1:
             notes.append(f"same interface, so possibly one family rather than "
@@ -975,7 +1076,7 @@ def main(argv: list[str]) -> int:
 
     if chain:
         print()
-        print("Composition (derived from the state interfaces)")
+        print("Composition (derived from the condition interfaces)")
         print("-" * 52)
         for source, target, via in chain:
             print(f"  {source}")
