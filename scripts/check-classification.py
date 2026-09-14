@@ -918,6 +918,14 @@ def main(argv: list[str]) -> int:
         print("-" * 72)
         for entry in shown:
             print(f"  {str(entry['id']):<34}{entry.get('title')}")
+            # A condition's kind and the condition above it decide what it
+            # composes with, so someone picking one from this list needs both.
+            if entry.get("kind"):
+                above = entry.get("broader")
+                place = f"[{entry['kind']}]"
+                if above:
+                    place += f"  narrower than {above}"
+                print(f"      {place}")
             definition = " ".join(str(entry.get("definition", "")).split())
             if definition:
                 print(f"      {definition}")

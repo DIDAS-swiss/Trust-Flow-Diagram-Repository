@@ -206,7 +206,7 @@ A family without a `functions` block is a note, not a failure — the same
 treatment an uncodified division gets. A family naming a function that does not
 exist **is** a failure, because that is a typo or an invention and both spread.
 
-## Composability: value streams and states
+## Composability: value streams and conditions
 
 Sector and function say where a family belongs. They do not say where it sits in
 an end-to-end sequence, or what has to be true before it can run — and that is
@@ -225,60 +225,91 @@ of value streams, so [`value-streams.yaml`](value-streams.yaml) is ours, synced
 from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph)
 and marked provisional. Search it with `--streams <query>`.
 
-**States**, the interface. What a family needs, and what it leaves behind:
+**Conditions**, the interface. What a family needs, and what it leaves behind:
 
 ```yaml
-    states:
-      requires: [eid-held]
-      establishes: [kyc-attestation-held, customer-relationship-open]
+    conditions:
+      requires: [identity-evidence-available]
+      provides: [kyc-attestation-held, customer-relationship-open]
 ```
 
-Ids come from [`states.yaml`](states.yaml), searchable with `--states <query>`.
+Ids come from [`conditions.yaml`](conditions.yaml), searchable with
+`--conditions <query>`. Each carries a **kind** — `evidence` is what a party can
+show, `fact` is what has been established about them, `relationship` is a
+standing tie between two parties, and `outcome` is the result a use case exists
+to produce.
+
+Each also carries **`broader`**, which places it in a lattice, and the lattice
+is what makes the derivation work. Upstream's rule:
+
+> A provision satisfies a requirement when the provided condition is the
+> required one **or narrower**.
+
+So `basic-flow/` provides `eid-held`, banking requires
+`identity-evidence-available`, `eid-held` is narrower than it, and the two
+compose without either family naming the other. A second identity credential
+placed under the same broad condition composes with banking on the day it is
+added, and no `sector.yaml` changes.
+
+That is also why banking and education require the broad condition rather than
+`eid-held`. Upstream states the rule on its own `identity-verification` row: any
+identity credential meeting the assurance the interaction needs will do, and the
+flow names which one. Requiring `eid-held` would pin the interface to one
+credential and make every other one a change to this file.
+
 The check then **derives** the composition — nobody draws these arrows:
 
 ```
 basic-flow/trust-infrastructure
-    -> banking/kyc-credential                        via eid-held
-    -> education/certificates-and-enrolment          via eid-held
+    -> banking/kyc-credential                        via identity-evidence-available
+    -> education/certificates-and-enrolment          via identity-evidence-available
 banking/kyc-credential
     -> banking/re-identification-forgotten-password  via customer-relationship-open
     -> banking/re-identification-age-of-majority     via customer-relationship-open
 ```
 
-`basic-flow/` requires nothing and establishes `eid-held`, which is why it comes
+`basic-flow/` requires nothing and provides `eid-held`, which is why it comes
 out as the root of the graph rather than being declared one.
 
-Two more things fall out of the same data. A state some family requires and no
-family establishes is a **flow this repository has not written down yet**, and
-the check names them. Two families with the same requires and establishes are
-probably **one family**, and it says that too.
+Two more things fall out of the same data. A condition some family requires that
+no family provides, and that nothing narrower reaches, is a **flow this
+repository has not written down yet**, and the check names them. Two families
+with the same requires and provides are probably **one family**, and it says
+that too.
 
-States are deliberately coarse — `secondary-education-credential-held`, not
+Conditions are deliberately coarse — `secondary-education-credential-held`, not
 `gymnasiale-maturitaet-2026-held`. An interface with one implementor is not an
 interface, and the point is that flows nobody has written yet plug into the same
 sockets as the ecosystem iterates.
 
 ### Keeping the copies honest
 
-Two of the three catalogues are copies of an upstream vocabulary and one is not:
+All three catalogues are copies of an upstream vocabulary:
 
 | File | Where it comes from |
 | --- | --- |
 | `functions.yaml` | Synchronised from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph) |
 | `value-streams.yaml` | Synchronised from industry-function-graph, including the function each stage names |
-| `states.yaml` | **Local to this repository.** industry-function-graph publishes no states vocabulary. The state interface is this repository's own |
+| `conditions.yaml` | Synchronised from industry-function-graph, including each condition's kind and its place in the lattice |
+
+`conditions.yaml` was `states.yaml`, and it was the exception: upstream
+published no interface vocabulary, so the local one was this repository's own
+and nothing compared it. Upstream now publishes a typed condition scheme, so the
+exception is gone and the file is checked like the other two.
 
 Copies drift, and nothing in the classification check would notice: it compares
 `sector.yaml` files against the local copies, which is exactly how two
 repositories end up quietly disagreeing about what `identity-proofing` means.
 
-`scripts/check-upstream-sync.py` reads the published graph and compares the two
-synchronised files against it, field by field: the id, the title, the definition
-and the broader concept. Comparing ids and titles alone is not enough, and this
-repository has the scar to prove it — a renamed function had its id and title
-updated by hand while its definition stayed behind, and the check passed.
-`states.yaml` is deliberately not compared, because there is nothing upstream to
-compare it against.
+`scripts/check-upstream-sync.py` reads the published graph and compares all
+three files against it, field by field: the id, the title, the definition and
+the broader concept, plus a condition's kind and the credential type upstream
+links it to. Comparing ids and titles alone is not enough, and this repository
+has the scar to prove it — a renamed function had its id and title updated by
+hand while its definition stayed behind, and the check passed. A condition's
+kind is compared for the same reason it is checked locally: the lattice refuses
+an edge between two kinds, so a kind edited here and not upstream would change
+what composes.
 
 It runs on pull requests that touch those files and, more usefully, **weekly**,
 because drift normally arrives from a change upstream, which is a change no pull
@@ -297,7 +328,14 @@ trust roles and what evidence a credential replaces. Those are an analytical
 layer for reasoning about where credentials pay off. They are not asked for
 here, because this repository classifies diagrams and a contributor adding a
 flow should not have to fill in a research instrument. Sector, function, stream
-and states are the minimum that makes a flow findable and composable.
+and conditions are the minimum that makes a flow findable and composable.
+
+Upstream also models **use case patterns** and the **flows** that realise them,
+which is the same separation from the other end: a pattern is the reusable unit
+of business activity, and a flow is one ecosystem's implementation of it. This
+repository holds the flows. Registering them against the patterns they realise
+is upstream work, and `healthcare-admission-ch` is the entry that has no
+`documented_by` link back here.
 
 ## `sector.yaml`
 
@@ -444,8 +482,12 @@ It fails on:
   definition, or a `broader` that is not in the list
 - a `directory:` or `diagram:` that points at a file that is not there
 - a `value_stream` that is not in `value-streams.yaml`
-- a malformed `states` block, one that establishes nothing, or one naming a
-  state that is not in `states.yaml`
+- a malformed `conditions` block, one that provides nothing, one naming a
+  condition that is not in `conditions.yaml`, or one still using the former
+  names `states` and `establishes`
+- a malformed row in `conditions.yaml` itself: a condition with no definition, a
+  `kind` outside the four upstream types, a `broader` that is not in the
+  catalogue, a `broader` edge between two kinds, or a cycle
 - an issue form whose dropdowns no longer match the catalogues, because a
   dropdown's options are fixed when the file is written and nothing else would
   catch the drift
