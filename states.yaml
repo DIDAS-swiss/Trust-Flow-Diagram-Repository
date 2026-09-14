@@ -9,11 +9,11 @@
 #
 # States are deliberately coarse. An interface with one implementor is not an
 # interface, and the point is that flows nobody has written yet plug into the
-# same sockets. Synced from industry-function-graph.
+# same sockets. This is a local Trust Flow vocabulary; industry-function-graph publishes no states vocabulary.
 
 scheme:
   name: IFM states
-  source: https://github.com/DIDAS-swiss/industry-function-graph
+  source: https://github.com/DIDAS-swiss/Trust-Flow-Diagram-Repository
   retrieved: 2026-09-12
 
 states:
