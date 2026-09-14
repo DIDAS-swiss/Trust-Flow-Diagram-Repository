@@ -2,7 +2,7 @@
 """Check the synced catalogues still match industry-function-graph.
 
 `functions.yaml` and `value-streams.yaml` are local copies of vocabularies
-maintained in DIDAS-swiss/industry-function-graph. `states.yaml` is not: it is
+maintained in Accelerate-GmbH/industry-function-graph. `states.yaml` is not: it is
 this repository's own interface vocabulary and upstream publishes no states.
 
 Copies drift. Nothing else in this repository would notice, because the local
@@ -40,7 +40,7 @@ except ImportError:  # pragma: no cover
 
 ROOT = Path(__file__).resolve().parent.parent
 UPSTREAM = "https://didas-swiss.github.io/industry-function-graph/ifm-graph.jsonld"
-REPO = "https://github.com/DIDAS-swiss/industry-function-graph"
+REPO = "https://github.com/Accelerate-GmbH/industry-function-graph"
 
 # local file, the key holding its entries, and the id prefix upstream uses.
 #
