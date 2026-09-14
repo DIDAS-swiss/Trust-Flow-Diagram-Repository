@@ -45,7 +45,7 @@ an exchange has completed.
 | Output | a FHIR resource, an openEHR composition, or both, held locally |
 | Parties involved | one |
 | Protocol messages exchanged | none |
-| Profile status | `mixed`. The mappings are a choice of this demonstrator; provenance for the derived object is [GP-02](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-02--provenance-of-a-derived-representation) |
+| Profile status | `mixed`. The mappings are a choice of this demonstrator; provenance for the derived object is [GP-02](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-02--provenance-of-a-derived-representation) |
 
 Because no messages pass between parties, the LikeC4 model carries no sequence
 view for F-07. The seven dynamic views in `likec4/health-flow.likec4` each render
@@ -77,7 +77,7 @@ layers can be composed.
 This demonstrator reuses the information models and does not operate a FHIR
 server or an openEHR clinical data repository. That is a scope choice for this
 prototype, not a judgement on either architecture; a deployment composing the
-two is described in [positioning](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/positioning.md).
+two is described in [positioning](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/positioning.md).
 
 Every claim in every credential type carries the FHIR element path and, where
 one exists, the openEHR archetype path it corresponds to. At presentation, the
@@ -160,7 +160,7 @@ flowchart TB
    `packages/swiyu/test/ch-profile-conformance.test.ts` pins the constraints
    checkable without a validator and records one known non-conformance, the
    mandatory `CHVACDExtensionVerificationStatus` that the projection does not
-   emit. See [eHealth Suisse alignment](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/ehealth-suisse-alignment.md).
+   emit. See [eHealth Suisse alignment](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/ehealth-suisse-alignment.md).
 3. **openEHR templates are sketched and unpublished.** `DIDAS.immunisation.v0`
    and its siblings are named here; real operational templates would have to be
    modelled and published for the paths to be more than plausible.
