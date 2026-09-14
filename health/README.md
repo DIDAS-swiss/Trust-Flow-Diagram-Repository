@@ -48,9 +48,9 @@ they say they will ask for.
 
 ### F-01 · Becoming an actor in the health trust domain
 
-Everything else assumes an answer to one question: why should anyone believe
-that the entity behind this DID is a medical practice? This flow is that answer.
-It is listed first because it is the one most often skipped in prototypes.
+The remaining health flows depend on establishing that the entity behind a DID
+is an authorised medical practice. F-01 models the governance and evidence
+needed for that relationship and therefore precedes the other flows.
 
 <img src="./diagrams/F-01-becoming-an-actor.png" width="100%">
 
@@ -148,9 +148,9 @@ issuer can revoke, so redemption is a request between two accountable parties.
 same bit on the status list. Only the issuer's journal separates them, which is
 what makes the journal a governance control.
 
-Revocation reaches the verifier and never the holder. The superseded credential
-stays in the wallet looking exactly as it did and the patient learns nothing.
-That gap is what this flow is drawn to record.
+Revocation reaches the verifier and not the holder. The superseded credential
+can therefore remain in the wallet without an updated visual state. F-06 records
+this lifecycle gap.
 
 ### Specified, not yet modelled
 
@@ -257,7 +257,7 @@ insurance card number, `urn:oid:2.16.756.5.32` for the AHV number. A relying
 party rebuilds whichever representation it already understands, locally, from
 what the holder released.
 
-Two points a reader of the diagrams may want:
+Two relevant alignment points:
 
 - **CH Core reaches the same minimisation rule from the other side.**
   `CHCorePatientEPR` sets both `EPR-SPID` and `AHVN13` to `0..0`, forbidding them
@@ -271,18 +271,17 @@ Two points a reader of the diagrams may want:
 [Full alignment note](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/ehealth-suisse-alignment.md),
 including where this design diverges and why.
 
-## The finding
+## Key governance gap
 
 Organisation onboarding, identity onboarding and the verification query public
-statement are all self-service on the swiyu Sandbox today. The role grant is not.
-**No health-domain governance body exists** to state that a given DID is a
-practice authorised to vaccinate. Until one does, verification relies on
-explicitly listed issuer DIDs, which is adequate for a pilot and inadequate at
-scale.
+statement are self-service on the swiyu Sandbox today. Health-domain role
+authorisation is not. No health-domain governance body currently provides the
+authorisation statements needed to establish that a given DID represents a
+practice authorised to vaccinate.
 
-The technology is ready some distance ahead of the institutional arrangements.
-That is the finding these flows exist to surface. It is why F-01 is listed
-first.
+Pilot deployments can rely on explicitly configured issuer DIDs. Scaled
+deployment requires a governed mechanism for health-domain authorisation and
+trust evaluation. F-01 models that missing layer.
 
 ## Source
 
