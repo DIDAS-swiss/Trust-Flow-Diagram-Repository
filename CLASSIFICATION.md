@@ -161,7 +161,7 @@ issues one. And a function is **sector-independent** — if it cannot be stated
 without naming an industry, it belongs in a flow instead.
 
 The vocabulary is maintained in
-[industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph),
+[industry-function-graph](https://github.com/Accelerate-GmbH/industry-function-graph),
 which keys its functions to the same division numbers used here and links its
 use cases back to the flows in this repository. `functions.yaml` is a local copy
 for the same reason `noga-2025.yaml` is: classifying should be a choice from a
@@ -222,7 +222,7 @@ The concept follows [ArchiMate's Value Stream
 element](https://pubs.opengroup.org/architecture/archimate32-doc/) — a sequence
 of activities creating an overall result. There is no openly licensed catalogue
 of value streams, so [`value-streams.yaml`](value-streams.yaml) is ours, synced
-from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph)
+from [industry-function-graph](https://github.com/Accelerate-GmbH/industry-function-graph)
 and marked provisional. Search it with `--streams <query>`.
 
 **States**, the interface. What a family needs, and what it leaves behind:
@@ -264,7 +264,7 @@ Two of the three catalogues are copies of an upstream vocabulary and one is not:
 
 | File | Where it comes from |
 | --- | --- |
-| `functions.yaml` | Synchronised from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph) |
+| `functions.yaml` | Synchronised from [industry-function-graph](https://github.com/Accelerate-GmbH/industry-function-graph) |
 | `value-streams.yaml` | Synchronised from industry-function-graph, including the function each stage names |
 | `states.yaml` | **Local to this repository.** industry-function-graph publishes no states vocabulary. The state interface is this repository's own |
 
