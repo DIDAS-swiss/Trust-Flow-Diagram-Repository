@@ -147,7 +147,7 @@ sequenceDiagram
   F-04 uses two as an implementation pattern under clarification, and F-08 needs
   an unknown number of instances of one type, which the profile does not provide
   for. See
-  [GP-01](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics).
+  [GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics).
 - **Trusted authorities are DID-based.** The DCQL trusted-authority types in the
   base OID4VP specification do not apply; the Swiss Profile defines a `did` type
   carrying a list of accepted issuer DIDs.
