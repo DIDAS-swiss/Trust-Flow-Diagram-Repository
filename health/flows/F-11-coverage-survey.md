@@ -197,7 +197,7 @@ identifies a person or a practitioner.
 - **The sampling frame stays where it is.** The wallet changes the *response*
   channel and not the *selection* method. A survey that let people volunteer their credentials
   would be measuring the people who volunteer, and
-  [the public health view](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/public-health.md) explains why that estimate
+  [the public health view](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/public-health.md) explains why that estimate
   cannot be corrected from inside the sample. This constraint governs the whole
   design.
 - **A statistics role, distinct from research.** A coverage survey runs under a
