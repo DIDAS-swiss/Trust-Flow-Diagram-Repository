@@ -116,7 +116,7 @@ Verification 1.0 §6.1 states that `multiple` is NOT SUPPORTED and adds that
 "only a single credential can be used in a verification", which is not explicit
 about this case. Conformance of the multi-query pattern is therefore under
 clarification, recorded as
-[GP-01](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics)
+[GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics)
 in the source repository. The wallet asks the holder to approve or decline the
 combined request once; that approval is not, by itself, a conclusion that any
 legal consent requirement has been satisfied.
@@ -174,7 +174,7 @@ interaction scope that decides whether a sequence view is possible.
 
 F-08, F-09 and F-10 each depend on a mechanism the current Swiss Profiles do not
 define, recorded as GP-01 to GP-05 and GP-10 in the
-[Swiss Profile gap register](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md) in the source repository, which stays
+[Swiss Profile gap register](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md) in the source repository, which stays
 authoritative for that analysis.
 
 ---
@@ -268,7 +268,7 @@ Two points a reader of the diagrams may want:
   standard defines is the answer to reconciling a vaccination series reported by
   several issuers.
 
-[Full alignment note](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/ehealth-suisse-alignment.md),
+[Full alignment note](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/ehealth-suisse-alignment.md),
 including where this design diverges and why.
 
 ## The finding
@@ -286,8 +286,9 @@ first.
 
 ## Source
 
-Built and documented in
-[DIDAS-swiss/digital-health_swiyu](https://github.com/DIDAS-swiss/digital-health_swiyu),
-an end-to-end implementation on the swiyu Sandbox against Swiss Profiles 1.0,
-continuing [GovTech Hackathon 2024 project
-1103](https://hack.opendata.ch/project/1103).
+Canonical source:
+[Accelerate-GmbH/digital-health-swiyu-vaccination](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination).
+The contribution is published in the DIDAS ecosystem at
+[DIDAS-swiss/digital-health_swiyu](https://github.com/DIDAS-swiss/digital-health_swiyu).
+It is a prototype on the swiyu Sandbox against Swiss Profiles 1.0, continuing
+[GovTech Hackathon 2024 project 1103](https://hack.opendata.ch/project/1103).
