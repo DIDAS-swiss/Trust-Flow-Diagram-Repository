@@ -43,7 +43,7 @@ That intent shapes the format:
 | --- | --- |
 | `id` | Stable identifier. Referenced from other flows and from code comments. |
 | `kind`, `interaction_scope`, `composition`, `data_mode` | What kind of step this is, on four independent axes. See below. |
-| `profile_status`, `profile_gaps` | Whether the flow runs on the current Swiss Profiles, and which entries in [the gap register](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md) it depends on. |
+| `profile_status`, `profile_gaps` | Whether the flow runs on the current Swiss Profiles, and which entries in [the gap register](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md) it depends on. |
 | `status` | `implemented`: runnable in this repository. `partial`: the happy path is implemented, named gaps are not. `roadmap`: specified here, deliberately not built. |
 | `roadmap_step` | 1 = Immunization Showcase (2026), 2 = International Patient Summary (2027), 3 = Swiss Health App (2028). |
 | `actors` | Roles. An organisation may hold several. |
