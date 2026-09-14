@@ -38,7 +38,7 @@ it is not built.
 > authorisation object with its own lifecycle and withdrawal semantics. The
 > current Swiss Profiles do not define a holder-as-issuer consent-credential
 > pattern, nor the governance model that would accompany one. Recorded as
-> [GP-03](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-03--holder-originated-authorisation-object).
+> [GP-03](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-03--holder-originated-authorisation-object).
 >
 > Four things stay distinct throughout this document and none is shorthand for
 > another: the wallet asking the holder to approve or decline a presentation
