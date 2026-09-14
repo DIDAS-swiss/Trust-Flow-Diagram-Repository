@@ -16,7 +16,7 @@
 
 scheme:
   name: IFM value streams
-  source: https://github.com/DIDAS-swiss/industry-function-graph
+  source: https://github.com/Accelerate-GmbH/industry-function-graph
   concept_standard: https://pubs.opengroup.org/architecture/archimate32-doc/
   retrieved: 2026-09-12
 
