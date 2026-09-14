@@ -1,16 +1,8 @@
 ---
 id: F-11
 title: Answering the national coverage survey
-kind: flow
-interaction_scope: multi-party
-composition: atomic
-data_mode: discrete
 status: roadmap
 roadmap_step: 2
-profile_status: mixed
-profile_gaps:
-  - GP-08
-  - GP-09
 basis: basic-flow/verification
 actors:
   - ch.didas.health.role.statistics
@@ -82,14 +74,14 @@ sequenceDiagram
 
     S->>P: Draw a random sample of 2-, 8- and 16-year-olds
     P-->>S: Household addresses, age band, canton
-    Note over S: The sample is drawn here.<br/>The wallet is the response channel<br/>and not the sampling frame.
+    Note over S: The sample is drawn here.<br/>The wallet is a response channel, never a frame.
     S-->>H: Invitation by post, QR carrying a single-use invitation credential
     H->>W: Scan the QR, receive the invitation credential
     Note over W: It carries the stratum (age band, canton,<br/>cycle) and no household identifier.
     W->>W: Show the purpose and every claim requested
-    W-->>W: Holder approves the request, or declines<br/>and the postal path stands
+    W-->>W: Consent, or decline and the paper path stands
     W->>S: One presentation: invitation (stratum) + doses (clinical)
-    Note over S: The presentation contains no explicit<br/>household identifier. Other disclosed values or<br/>protocol metadata may still permit correlation.
+    Note over S: Nothing in the response names the household.<br/>The stratum arrives in the credential, so there is<br/>nothing to join back to.
     S->>BR: Revoke the invitation credential
     Note over BR: Single use. A second response cannot be made,<br/>and no register of who replied is kept.
 ```

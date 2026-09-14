@@ -1,15 +1,8 @@
 ---
 id: F-05
 title: Prescription and its redemption
-kind: flow
-interaction_scope: multi-party
-composition: atomic
-data_mode: discrete
 status: implemented
 roadmap_step: 1
-profile_status: mixed
-profile_gaps:
-  - GP-06
 actors:
   - ch.didas.health.role.practice
   - ch.didas.health.role.pharmacy
@@ -77,7 +70,7 @@ sequenceDiagram
     Ph->>P: Redemption request
     P->>GI: PATCH …/status?credentialStatus=REVOKED
     GI->>BR: Publish, bit → INVALID
-    Note over W: The credential remains in the wallet.<br/>The Generic Issuer records it as REVOKED and the<br/>Token Status List entry is published as INVALID.<br/>A verifier evaluating that entry no longer receives VALID.
+    Note over W: The credential remains in the wallet<br/>and no longer verifies
 ```
 
 ## Governance constraints
