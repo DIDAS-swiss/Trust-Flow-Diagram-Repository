@@ -128,7 +128,7 @@ also names a **function**:
 
 ```yaml
     functions:
-      primary: customer-onboarding
+      primary: relationship-onboarding
       supporting: [identity-proofing, regulatory-compliance]
 ```
 
@@ -172,6 +172,33 @@ splitting.** `education/` is the current example: the school issues a
 certificate and the university onboards a student, which are two kinds of work
 in one family. The `functions` block records the dominant one and says so in a
 comment rather than quietly picking a side.
+
+Where a family is heterogeneous enough that no dominant function is defensible,
+it declares none. `health/immunization` is the current example: ten flows
+spanning actor onboarding, issuance, presentation, check-in, redemption,
+lifecycle correction, a local projection, IPS composition, secondary research
+use and continuous measurement. Picking one would be classifying a narrative
+rather than the work.
+
+Three things are distinct and a directory does not settle any of them:
+
+| | |
+| --- | --- |
+| **Repository navigation family** | The directory a reader browses. It groups flows that belong together in a story |
+| **Canonical use case** | One reusable unit of work, which is what carries one primary business function |
+| **Primary business function** | The kind of work, from `functions.yaml` |
+
+A large narrative family is not automatically a canonical use case, and the
+current directory structure does not decide the semantic classification. Where
+the two disagree, leave the function unset rather than force the family to be
+something it is not.
+
+**A missing catalogue entry is not solved by approximation.** `health/public-health-statistics`
+declares no function because the catalogue has no official-statistics or
+population-analytics entry, and the nearest one, `research-and-development`,
+would erase the distinction between a statistical mandate and the Human
+Research Act that the health model exists to preserve. If that is a reusable
+cross-sector function it belongs upstream first, and is then synchronised.
 
 ### Adoption is gradual
 
@@ -233,17 +260,29 @@ sockets as the ecosystem iterates.
 
 ### Keeping the copies honest
 
-`functions.yaml`, `value-streams.yaml` and `states.yaml` are copies of
-vocabularies maintained in
-[industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph).
+Two of the three catalogues are copies of an upstream vocabulary and one is not:
+
+| File | Where it comes from |
+| --- | --- |
+| `functions.yaml` | Synchronised from [industry-function-graph](https://github.com/DIDAS-swiss/industry-function-graph) |
+| `value-streams.yaml` | Synchronised from industry-function-graph, including the function each stage names |
+| `states.yaml` | **Local to this repository.** industry-function-graph publishes no states vocabulary. The state interface is this repository's own |
+
 Copies drift, and nothing in the classification check would notice: it compares
 `sector.yaml` files against the local copies, which is exactly how two
 repositories end up quietly disagreeing about what `identity-proofing` means.
 
-`scripts/check-upstream-sync.py` reads the published graph and compares ids and
-titles against the three files. It runs on pull requests that touch them and,
-more usefully, **weekly** — because drift normally arrives from a change
-upstream, which is a change no pull request here touches.
+`scripts/check-upstream-sync.py` reads the published graph and compares the two
+synchronised files against it, field by field: the id, the title, the definition
+and the broader concept. Comparing ids and titles alone is not enough, and this
+repository has the scar to prove it — a renamed function had its id and title
+updated by hand while its definition stayed behind, and the check passed.
+`states.yaml` is deliberately not compared, because there is nothing upstream to
+compare it against.
+
+It runs on pull requests that touch those files and, more usefully, **weekly**,
+because drift normally arrives from a change upstream, which is a change no pull
+request here touches.
 
 Being unable to reach the upstream graph is reported and passed. That is not a
 contributor's fault. Disagreeing with it is a failure.

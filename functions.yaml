@@ -53,15 +53,16 @@ functions:
   - id: relationship-onboarding
     title: Relationship onboarding
     definition: >-
-      Establishing a new customer or member relationship, including the due
-      diligence that regulation attaches to it.
+      Establishing a new relationship between an organisation and a counterparty
+      - customer, member, student, patient or supplier - including the due
+      diligence attached to it.
 
   - id: identity-lifecycle-management
     title: Identity lifecycle management
     broader: identity-proofing
     definition: >-
-      Maintaining an established identity relationship over time: re-
-      verification, recovery, attribute updates, revocation.
+      Maintaining an established identity relationship over time:
+      re-verification, recovery, attribute updates, revocation.
 
   - id: eligibility-verification
     title: Eligibility verification
@@ -78,14 +79,14 @@ functions:
   - id: certification-and-attestation
     title: Certification and attestation
     definition: >-
-      Issuing an authoritative statement about a subject, a product or a
-      process — a diploma, a certificate, an accreditation.
+      Issuing an authoritative statement about a subject, a product or a process
+      — a diploma, a certificate, an accreditation.
 
   - id: regulatory-compliance
     title: Regulatory compliance
     definition: >-
-      Meeting statutory and regulatory obligations, including record-keeping
-      and supervisory reporting.
+      Performing the record-keeping, control and supervisory-reporting work that
+      statutory and regulatory obligations require.
 
   - id: sourcing-and-procurement
     title: Sourcing and procurement
@@ -108,14 +109,13 @@ functions:
   - id: request-and-complaint-handling
     title: Request and complaint handling
     definition: >-
-      Handling requests, incidents and complaints from an existing customer
+      Handling requests, incidents and complaints arising from an existing
       relationship.
 
   - id: service-delivery
     title: Service delivery
     definition: >-
-      Performing and delivering the service the organisation exists to
-      provide.
+      Performing and delivering the service the organisation exists to provide.
 
   - id: records-management
     title: Records management
@@ -126,8 +126,8 @@ functions:
   - id: contracting-and-signing
     title: Contracting and signing
     definition: >-
-      Concluding an agreement and applying a signature that binds the parties
-      to it.
+      Concluding an agreement and applying a signature that binds the parties to
+      it.
 
   - id: invoicing-and-settlement
     title: Invoicing and settlement
@@ -173,8 +173,8 @@ functions:
   - id: asset-lifecycle-management
     title: Asset lifecycle management
     definition: >-
-      Registering, maintaining, servicing and transferring a physical asset
-      over its life.
+      Registering, maintaining, servicing and transferring a physical asset over
+      its life.
 
   - id: sustainability-reporting
     title: Sustainability reporting
@@ -202,8 +202,8 @@ functions:
   - id: entitlement-administration
     title: Entitlement administration
     definition: >-
-      Granting and maintaining a benefit, subsidy or allowance once
-      eligibility has been established.
+      Granting and maintaining a benefit, subsidy or allowance once eligibility
+      has been established.
 
   - id: research-and-development
     title: Research and development
