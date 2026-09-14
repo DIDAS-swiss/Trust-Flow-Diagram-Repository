@@ -1,0 +1,191 @@
+# NOGA 2025, codified for this repository
+#
+# Pick a sector's classification from this file instead of transcribing it by
+# hand. The quickest way to use it:
+#
+#     python3 scripts/check-classification.py --noga health
+#     python3 scripts/check-classification.py --noga 86
+#     python3 scripts/check-classification.py --noga            # the whole list
+#
+# A search that matches exactly one division prints the `noga:` block to paste
+# into your `sector.yaml`.
+#
+# What is in here:
+#
+#   sections   All 22 of them, complete. The checker requires a sector's
+#              `noga.section` to be one of these and its `section_title` to
+#              match the title recorded here.
+#   divisions  A working subset: the divisions this repository already uses,
+#              plus the ones a trust flow is most likely to need. Listing every
+#              division would mean transcribing 87 rows, most of which no trust
+#              flow will ever claim. A division that is listed is checked
+#              against this file. A division that is missing is accepted, and
+#              the checker asks you to add its row in the same pull request.
+#
+# Every row carries the title KUBB gives that code. To add one, open
+# https://www.kubb-tool.bfs.admin.ch/en/noga/2025/<code>, copy the title and put
+# the row in numeric order.
+#
+# Two rows came from this repository's own sector.yaml files rather than from a
+# KUBB page: division 64, which KUBB served in German, and division 85, whose
+# page did not come back at all. Both predate this file and both are already
+# used by a sector. Anyone who can open KUBB should confirm the two titles.
+#
+# Titles are recorded in sentence case. KUBB prints section titles in capitals,
+# which is a rendering choice rather than part of the name.
+
+scheme:
+  name: NOGA 2025
+  full_name: General Classification of Economic Activities
+  publisher: Federal Statistical Office
+  derives_from: NACE Rev. 2.1, which derives from ISIC Rev. 5
+  # Stronger than "derives from", and the reason a division number is usable
+  # outside Switzerland: the section letters and division numbers below are
+  # identical to ISIC Rev. 5. Checked against the UN Statistics Division's
+  # published ISIC Rev. 5 structure file - all 22 sections and all 23 divisions
+  # codified here agree, with three section titles differing in spelling only.
+  # The equivalence stops at division level, where NACE and NOGA add detail
+  # ISIC does not have.
+  equivalent_to: ISIC Rev. 5 at section and division level
+  lookup: https://www.kubb-tool.bfs.admin.ch/en
+  code_url: https://www.kubb-tool.bfs.admin.ch/en/noga/2025/{code}
+  retrieved: 2026-09-12
+
+# Section letters moved between NOGA 2008 and NOGA 2025. Finance was K and is
+# now L, education was P and is now Q, human health was Q and is now R. The
+# division numbers 64, 85 and 86 stayed where they were. This is why a
+# sector.yaml is keyed on the division and carries the letter alongside it.
+sections:
+  - letter: A
+    title: Agriculture, forestry and fishing
+  - letter: B
+    title: Mining and quarrying
+  - letter: C
+    title: Manufacturing
+  - letter: D
+    title: Electricity, gas, steam and air conditioning supply
+  - letter: E
+    title: Water supply; sewerage, waste management and remediation activities
+  - letter: F
+    title: Construction
+  - letter: G
+    title: Wholesale and retail trade
+  - letter: H
+    title: Transportation and storage
+  - letter: I
+    title: Accommodation and food service activities
+  - letter: J
+    title: Publishing, broadcasting, and content production and distribution activities
+  - letter: K
+    title: Telecommunication, computer programming, consulting, computing infrastructure and other information service activities
+  - letter: L
+    title: Financial and insurance activities
+  - letter: M
+    title: Real estate activities
+  - letter: N
+    title: Professional, scientific and technical activities
+  - letter: O
+    title: Administrative and support service activities
+  - letter: P
+    title: Public administration and defence; compulsory social security
+  - letter: Q
+    title: Education
+  - letter: R
+    title: Human health and social work activities
+  - letter: S
+    title: Arts, sports and recreation
+  - letter: T
+    title: Other service activities
+  - letter: U
+    title: Activities of households as employers and undifferentiated goods- and service-producing activities of households for own use
+  - letter: V
+    title: Activities of extraterritorial organisations and bodies
+
+divisions:
+  - code: "01"
+    title: Crop and animal production, hunting and related service activities
+    section: A
+  - code: "08"
+    title: Other mining and quarrying
+    section: B
+  - code: "10"
+    title: Manufacture of food products
+    section: C
+  - code: "36"
+    title: Water collection, treatment and supply
+    section: E
+  - code: "37"
+    title: Sewerage
+    section: E
+  - code: "38"
+    title: Waste collection, recovery and disposal activities
+    section: E
+  - code: "39"
+    title: Remediation activities and other waste management service activities
+    section: E
+  - code: "46"
+    title: Wholesale trade
+    section: G
+  - code: "47"
+    title: Retail trade
+    section: G
+    note: >-
+      A loyalty or age-check flow at a shop counter belongs here. A payment flow
+      belongs in 64, because the relying party is the bank.
+  - code: "49"
+    title: Land transport and transport via pipelines
+    section: H
+    note: A concession or reduced-fare flow presented to a transport operator.
+  - code: "61"
+    title: Telecommunication
+    section: K
+    note: SIM registration and subscriber identification.
+  - code: "64"
+    title: Financial service activities, except insurance and pension funding
+    section: L
+    used_by: banking
+  - code: "65"
+    title: Insurance, reinsurance and pension funding, except compulsory social security
+    section: L
+    note: >-
+      An insurer issuing a cover credential. Compulsory social security is 84,
+      in a different section.
+  - code: "66"
+    title: Activities auxiliary to financial services and insurance activities
+    section: L
+    note: Brokers, agents and financial market infrastructure.
+  - code: "68"
+    title: Real estate activities
+    section: M
+    note: Tenant screening and handover of keys to a let property.
+  - code: "78"
+    title: Employment activities
+    section: O
+    note: A staffing agency verifying a qualification or a right to work.
+  - code: "84"
+    title: Public administration and defence; compulsory social security
+    section: P
+    note: >-
+      The residence, civil status and social security registers. An authority
+      issuing a credential about a person it administers sits here.
+  - code: "85"
+    title: Education
+    section: Q
+    used_by: education
+  - code: "86"
+    title: Human health activities
+    section: R
+    used_by: health
+  - code: "87"
+    title: Residential care activities
+    section: R
+  - code: "94"
+    title: Activities of membership organisations
+    section: T
+    note: Professional bodies and associations issuing membership credentials.
+  - code: "98"
+    title: Undifferentiated goods- and service-producing activities of private households for own use
+    section: U
+  - code: "99"
+    title: Activities of extraterritorial organisations and bodies
+    section: V
