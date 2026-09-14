@@ -48,9 +48,8 @@ they say they will ask for.
 
 ### F-01 · Becoming an actor in the health trust domain
 
-The remaining health flows depend on establishing that the entity behind a DID
-is an authorised medical practice. F-01 models the governance and evidence
-needed for that relationship and therefore precedes the other flows.
+F-01 models how a medical practice is identified and authorised in the health
+trust domain. The later health flows assume that relationship.
 
 <img src="./diagrams/F-01-becoming-an-actor.png" width="100%">
 
@@ -148,9 +147,8 @@ issuer can revoke, so redemption is a request between two accountable parties.
 same bit on the status list. Only the issuer's journal separates them, which is
 what makes the journal a governance control.
 
-Revocation reaches the verifier and not the holder. The superseded credential
-can therefore remain in the wallet without an updated visual state. F-06 records
-this lifecycle gap.
+The status-list mechanism is evaluated by verifiers and does not notify the
+holder. A superseded credential may therefore remain visible in the wallet.
 
 ### Specified, not yet modelled
 
@@ -274,14 +272,12 @@ including where this design diverges and why.
 ## Key governance gap
 
 Organisation onboarding, identity onboarding and the verification query public
-statement are self-service on the swiyu Sandbox today. Health-domain role
-authorisation is not. No health-domain governance body currently provides the
-authorisation statements needed to establish that a given DID represents a
-practice authorised to vaccinate.
+statement are self-service on the swiyu Sandbox today. No health-domain
+governance body currently publishes authorisation statements for a practice to
+vaccinate.
 
-Pilot deployments can rely on explicitly configured issuer DIDs. Scaled
-deployment requires a governed mechanism for health-domain authorisation and
-trust evaluation. F-01 models that missing layer.
+The demonstrator therefore uses explicitly configured accepted issuer DIDs.
+F-01 models the missing health-domain authorisation step.
 
 ## Source
 
