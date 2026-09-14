@@ -79,8 +79,10 @@ functions:
   - id: certification-and-attestation
     title: Certification and attestation
     definition: >-
-      Issuing an authoritative statement about a subject, a product or a process
-      — a diploma, a certificate, an accreditation.
+      Issuing an attested statement about a subject, a product or a process under
+      an applicable authority or governance framework — a diploma, a certificate,
+      an accreditation. Whether the statement carries authority is a property of
+      that framework, not of the signature on it.
 
   - id: regulatory-compliance
     title: Regulatory compliance
