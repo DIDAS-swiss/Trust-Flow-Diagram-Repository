@@ -75,7 +75,7 @@ streams:
       it.
     stages:
       - position: 1
-        function: customer-onboarding
+        function: relationship-onboarding
         label: Establish the customer relationship
       - position: 2
         function: identity-proofing
@@ -93,7 +93,7 @@ streams:
         function: invoicing-and-settlement
         label: Invoice and collect
       - position: 7
-        function: customer-service
+        function: request-and-complaint-handling
         label: Handle what goes wrong
       - position: 8
         function: records-management

@@ -1,11 +1,18 @@
 #!/usr/bin/env python3
 """Check the synced catalogues still match industry-function-graph.
 
-`functions.yaml`, `value-streams.yaml` and `states.yaml` are local copies of
-vocabularies maintained in DIDAS-swiss/industry-function-graph. Copies drift.
-Nothing else in this repository would notice, because the local check only ever
-compares sector.yaml files against the local copies - which is exactly how two
-repositories end up quietly disagreeing about what `identity-proofing` means.
+`functions.yaml` and `value-streams.yaml` are local copies of vocabularies
+maintained in DIDAS-swiss/industry-function-graph. `states.yaml` is not: it is
+this repository's own interface vocabulary and upstream publishes no states.
+
+Copies drift. Nothing else in this repository would notice, because the local
+check only ever compares sector.yaml files against the local copies - which is
+exactly how two repositories end up quietly disagreeing about what
+`identity-proofing` means.
+
+Every copied field is compared, not just the id and the title. An earlier
+version compared ids and titles only, and a renamed function passed CI with its
+id and title updated by hand and its definition left behind.
 
     python3 scripts/check-upstream-sync.py
     python3 scripts/check-upstream-sync.py --source path/or/url   # for testing
@@ -61,33 +68,51 @@ def fetch(source: str) -> dict | None:
         return None
 
 
-def upstream_entries(graph: dict, prefix: str) -> dict[str, str]:
-    """{id: english prefLabel} for one prefix of the published graph."""
+# The fields copied from upstream into the local YAML, and where each comes
+# from in the published graph. Comparing only ids and titles is what let a stale
+# `relationship-onboarding` definition sit in the copy while CI stayed green:
+# the id and the title had been updated by hand and the definition had not.
+COPIED_FIELDS = [("title", "skos:prefLabel"), ("definition", "skos:definition"),
+                 ("broader", "skos:broader")]
+
+
+def _value(node: dict, key: str) -> str:
+    """One scalar out of a JSON-LD node, whatever shape it is published in."""
+    raw = node.get(key)
+    if isinstance(raw, list):
+        raw = next((item for item in raw if isinstance(item, (dict, str))), None)
+    if isinstance(raw, dict):
+        raw = raw.get("@value") or raw.get("@id") or ""
+    text = str(raw or "")
+    # skos:broader is published as a prefixed id; the local copy holds the bare one.
+    return text.split(":", 1)[1] if key == "skos:broader" and ":" in text else text
+
+
+def upstream_entries(graph: dict, prefix: str) -> dict[str, dict[str, str]]:
+    """{id: {field: value}} for one prefix of the published graph."""
     found = {}
     for node in graph.get("@graph", []):
         ident = str(node.get("@id", ""))
         if not ident.startswith(f"{prefix}:"):
             continue
-        label = node.get("skos:prefLabel")
-        if isinstance(label, dict):
-            label = label.get("@value")
-        elif isinstance(label, list):
-            label = next((item.get("@value") for item in label
-                          if isinstance(item, dict)), None)
-        found[ident.split(":", 1)[1]] = str(label or "")
+        found[ident.split(":", 1)[1]] = {
+            field: _value(node, source) for field, source in COPIED_FIELDS
+        }
     return found
 
 
-def local_entries(filename: str, key: str) -> dict[str, str]:
+def local_entries(filename: str, key: str) -> dict[str, dict[str, str]]:
     data = yaml.safe_load((ROOT / filename).read_text()) or {}
     return {
-        str(entry["id"]): str(entry.get("title") or "")
+        str(entry["id"]): {field: str(entry.get(field) or "").strip()
+                           for field, _ in COPIED_FIELDS}
         for entry in data.get(key) or []
         if isinstance(entry, dict) and entry.get("id")
     }
 
 
-def compare(filename: str, local: dict[str, str], upstream: dict[str, str]) -> list[str]:
+def compare(filename: str, local: dict[str, dict[str, str]],
+            upstream: dict[str, dict[str, str]]) -> list[str]:
     problems = []
     for ident in sorted(set(upstream) - set(local)):
         problems.append(
@@ -97,10 +122,20 @@ def compare(filename: str, local: dict[str, str], upstream: dict[str, str]) -> l
             f"{filename}: {ident!r} exists here and not upstream. Either it was removed "
             f"there, or it was added here and belongs upstream first")
     for ident in sorted(set(local) & set(upstream)):
-        if local[ident] != upstream[ident] and upstream[ident]:
-            problems.append(
-                f"{filename}: {ident!r} is titled {local[ident]!r} here and "
-                f"{upstream[ident]!r} upstream")
+        for field, _ in COPIED_FIELDS:
+            here, there = local[ident][field], upstream[ident][field].strip()
+            # An upstream field that is absent is not drift: not every entry has
+            # a broader concept. A local value where upstream has none is.
+            if here == there or (not there and not here):
+                continue
+            if not there:
+                problems.append(
+                    f"{filename}: {ident!r} has {field} {here!r} here and none upstream")
+            else:
+                problems.append(
+                    f"{filename}: {ident!r} {field} differs.\n"
+                    f"      here:     {here!r}\n"
+                    f"      upstream: {there!r}")
     return problems
 
 
