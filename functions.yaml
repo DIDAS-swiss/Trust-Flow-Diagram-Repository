@@ -14,7 +14,7 @@
 #
 # Why a local copy rather than a link: the same reason noga-2025.yaml exists.
 # Classifying should be a choice from a list, and the checker has to work
-# offline. The upstream scheme is industry-function-graph; a function added
+# offline. The canonical upstream is Accelerate-GmbH/industry-function-graph; a function added
 # there should be copied here in the pull request that first uses it.
 #
 # Functions are not exclusive. Two sectors performing the same function is the
