@@ -242,23 +242,6 @@ h2 {
   letter-spacing: 0.04em;
   padding-top: 2px;
 }
-/* Sizes are in rem so the shared masthead's text-size control reaches them. */
-.flow-noga {
-  display: block;
-  margin-top: 4px;
-  font-size: 0.6562rem;
-  font-weight: 600;
-  letter-spacing: 0.02em;
-  text-transform: none;
-  color: var(--body);
-  opacity: 0.75;
-}
-.section-note {
-  margin: -8px 0 18px;
-  font-size: 0.875rem;
-  color: var(--body);
-  max-width: 68ch;
-}
 .flow-body h3 { margin: 0 0 6px; font-size: 1rem; }
 .flow-body p { margin: 0; color: var(--body); font-size: 0.9062rem; }
 .flow-body ul { margin: 8px 0 0; padding-left: 18px; color: var(--body); font-size: 0.875rem; }
