@@ -1,8 +1,17 @@
 ---
 id: F-08
 title: Assembling an International Patient Summary from held credentials
+kind: flow
+interaction_scope: multi-party
+composition: composed
+data_mode: discrete
 status: roadmap
 roadmap_step: 2
+profile_status: beyond-current-profile
+profile_gaps:
+  - GP-01
+  - GP-02
+  - GP-10
 actors:
   - holder
   - ch.didas.health.role.practice
@@ -13,8 +22,9 @@ credentials:
   - urn:vct:ch.didas.health.lab-report:1.0
   - allergy / problem credential types (not yet modelled)
 protocols:
+  - OpenID4VP 1.0. The composition semantics this flow needs are unresolved; see GP-01
+representations:
   - HL7 FHIR IPS (Bundle, Composition)
-  - OpenID4VP 1.0 with several credential queries
 trust_markers:
   - gucaTM per contributing issuer
 preconditions:
@@ -28,6 +38,21 @@ produces:
 # F-08 · Assembling an International Patient Summary (roadmap, 2027)
 
 Roadmap step 2. Specified here, deliberately not built.
+
+> **Beyond the current Swiss Profile.** This flow requires several independently
+> issued credentials to contribute to one clinical summary, including several
+> instances of the same credential type where the count is not known when the
+> request is built. `swiss-profile-verification:1.0.0` §6.1 states that DCQL
+> `multiple` is NOT SUPPORTED, and adds that "only a single credential can be
+> used in a verification". The profile is not explicit about whether several
+> Credential Queries may appear in one verification, so this repository treats
+> that case as requiring clarification rather than as settled. Either way, an
+> International Patient Summary needs a mechanism for an unknown number of
+> matching instances of one credential type, which the current profile does not
+> define. Recorded as
+> [GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics),
+> and not a capability this repository assumes today. Cross-border presentation
+> raises [GP-10](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-10--cross-domain-and-cross-border-trust-evaluation).
 
 The International Patient Summary is the standardised minimum dataset for
 unplanned care: allergies, current medication, problems and immunizations. That
@@ -61,10 +86,12 @@ flowchart TB
   active problems and medication *statements* as distinct from prescriptions.
   These carry most of the clinical weight in an IPS. Each needs the same
   treatment F-02 gave immunizations: a model, an issuer role, an entitlement.
-- **Multi-credential presentation.** An IPS spans several credentials, but the
-  Swiss Profile currently allows one credential per DCQL query and no `multiple`.
-  Several queries in one request works; whether it scales to a full summary, and
-  what happens when the patient holds twelve dose credentials, is untested.
+- **Multi-credential presentation.** An IPS spans several credentials. DCQL
+  `multiple` is NOT SUPPORTED, and the profile is not explicit about several
+  Credential Queries in one verification. Even if that case is confirmed, a
+  patient holding twelve dose credentials needs a mechanism for an unknown number
+  of matching instances, which the profile does not define. GP-01 sets out the
+  three cases the profile would have to separate.
 - **Completeness is unknowable.** A summary assembled from held credentials can
   only report what the patient holds. A clinician reading it must be able to tell
   "no known allergies" from "no allergy credential present". The IPS has

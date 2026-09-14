@@ -1,8 +1,13 @@
 ---
 id: F-02
 title: Recording an administered dose
+kind: flow
+interaction_scope: multi-party
+composition: atomic
+data_mode: discrete
 status: implemented
 roadmap_step: 1
+profile_status: mixed
 actors:
   - ch.didas.health.role.vaccinator
   - holder
@@ -106,11 +111,13 @@ practice management system would place that burden on every vendor.
 ## Governance constraints
 
 - **Only an authorised vaccinator may issue.** `reviewIssuance()` refuses before
-  any request reaches the issuer and the refusal is journalled. The underlying
-  grant is `gucaTM` naming this credential type. The legal basis is modelled here
+  any request reaches the issuer and the refusal is journalled. In a deployed
+  ecosystem the underlying authorisation would be published as an applicable
+  authorisation statement naming this credential type, from which a verifier's
+  Trust Protocol evaluation could derive `gucaTM` for the interaction. The legal basis is modelled here
   on EpG/LEp plus the cantonal authorisation to vaccinate; that reading is this
   project's own and legal review is required before deployment
-  ([source verification](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/source-verification.md)).
+  ([source verification](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/source-verification.md)).
 - **Revocation corrects, it does not retract.** The only legitimate reason to
   revoke a dose credential is that it records something that did not happen:
   wrong patient, wrong vaccine, duplicate entry. Revoking to express "we no

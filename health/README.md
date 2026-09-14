@@ -109,13 +109,23 @@ and care continues. See
 [Open full size ↗](./diagrams/F-04-practice-check-in.png) ·
 [Flow document](./flows/F-04-practice-check-in.md)
 
-Two issuers in one presentation: the Confederation's e-ID and an insurer's card.
-DCQL `multiple` is NOT SUPPORTED, so this is two queries inside one request, and
-the patient consents once.
+Two issuers in one presentation: the Confederation's Beta-ID and an insurer's
+card. This demonstrator places two DCQL Credential Queries in one authorization
+request. OpenID4VP 1.0 defines several Credential Queries; Swiss Profile
+Verification 1.0 §6.1 states that `multiple` is NOT SUPPORTED and adds that
+"only a single credential can be used in a verification", which is not explicit
+about this case. Conformance of the multi-query pattern is therefore under
+clarification, recorded as
+[GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics)
+in the source repository. The wallet asks the holder to approve or decline the
+combined request once; that approval is not, by itself, a conclusion that any
+legal consent requirement has been satisfied.
 
-The AHV number is a **protected field**. Requesting it needs an explicit
-authorization marker whatever credential carries it. The practice holds that
-entitlement because it bills with the number.
+The AHV number is a **protected field**. Under `swiss-profile-trust:1.0` a
+verifier needs authorisation to request it whatever credential carries it. The
+applicable authorisation information permits a practice to request it because it
+bills with the number; during Trust Protocol evaluation that can contribute to
+deriving the governed use-case authorisation marker for the interaction.
 
 ### F-05 · Redeeming a prescription, exactly once
 
@@ -148,13 +158,24 @@ That gap is what this flow is drawn to record.
 | --- | --- |
 | [F-07](./flows/F-07-model-projection.md) | Projecting a presented credential into FHIR and openEHR |
 | [F-08](./flows/F-08-patient-summary.md) | Assembling an International Patient Summary |
-| [F-09](./flows/F-09-secondary-use.md) | Secondary use under revocable consent |
+| [F-09](./flows/F-09-secondary-use.md) | Secondary use under revocable research consent |
 | [F-10](./flows/F-10-continuous-data.md) | Wearables and continuous data |
 
-These have documents and no diagram. F-07 happens inside a relying party after a
-presentation. F-08 and F-09 are compositions of F-03 across more credential
-types. F-10 has an unresolved question about who authors a claim a machine
-produced. Drawing them now would show a system that does not exist.
+These have documents and no diagram, for different reasons. The source
+repository classifies each flow on four independent axes, and it is the
+interaction scope that decides whether a sequence view is possible.
+
+| Flow | Why there is no diagram |
+| --- | --- |
+| F-07 | `kind: transformation`, `interaction_scope: local`. It happens inside one relying party after a presentation has completed, so a sequence diagram would show one lifeline |
+| F-08 | `multi-party` and `composed`, so a view is possible. It is `roadmap` and not yet modelled |
+| F-09 | `multi-party` and `atomic`, a presentation to a research role under its own entitlement rather than a composition of F-03. `roadmap` and not yet modelled |
+| F-10 | `interaction_scope: unresolved`. What a continuing measurement exchange looks like is one of the questions the flow leaves open, so there is no exchange to draw |
+
+F-08, F-09 and F-10 each depend on a mechanism the current Swiss Profiles do not
+define, recorded as GP-01 to GP-05 and GP-10 in the
+[Swiss Profile gap register](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md) in the source repository, which stays
+authoritative for that analysis.
 
 ---
 
@@ -247,7 +268,7 @@ Two points a reader of the diagrams may want:
   standard defines is the answer to reconciling a vaccination series reported by
   several issuers.
 
-[Full alignment note](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/ehealth-suisse-alignment.md),
+[Full alignment note](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/ehealth-suisse-alignment.md),
 including where this design diverges and why.
 
 ## The finding
@@ -265,8 +286,9 @@ first.
 
 ## Source
 
-Built and documented in
-[DIDAS-swiss/digital-health_swiyu](https://github.com/DIDAS-swiss/digital-health_swiyu),
-an end-to-end implementation on the swiyu Sandbox against Swiss Profiles 1.0,
-continuing [GovTech Hackathon 2024 project
-1103](https://hack.opendata.ch/project/1103).
+Canonical source:
+[Accelerate-GmbH/digital-health-swiyu-vaccination](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination).
+The contribution is published in the DIDAS ecosystem at
+[DIDAS-swiss/digital-health_swiyu](https://github.com/DIDAS-swiss/digital-health_swiyu).
+It is a prototype on the swiyu Sandbox against Swiss Profiles 1.0, continuing
+[GovTech Hackathon 2024 project 1103](https://hack.opendata.ch/project/1103).

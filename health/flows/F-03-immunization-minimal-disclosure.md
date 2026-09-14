@@ -1,8 +1,16 @@
 ---
 id: F-03
 title: Presenting vaccination evidence with minimal disclosure
+kind: flow
+interaction_scope: multi-party
+composition: atomic
+data_mode: discrete
 status: implemented
 roadmap_step: 1
+profile_status: mixed
+profile_gaps:
+  - GP-08
+  - GP-09
 actors:
   - ch.didas.health.role.travel-clinic
   - holder
@@ -93,7 +101,7 @@ sequenceDiagram
     W-->>W: Holder confirms, or declines, which is a defined outcome
     W->>GV: POST the encrypted response (direct_post.jwt, vp_token + KB-JWT)
     GV->>BR: Resolve the status list. Is the credential still valid?
-    GV->>TR: Evaluate the issuer's trust markers
+    GV->>TR: Retrieve and validate the applicable statements<br/>about the issuer, then derive its trust markers
     GV-->>T: SUCCESS + disclosed claims + credential_evaluation
     Note over T: reviewPresentation(): status first,<br/>then trust markers, then act
 ```
@@ -133,9 +141,13 @@ sequenceDiagram
 - **The authorization request must be a signed JAR.** `client_id` is the
   verifier's DID, optionally prefixed `decentralized_identifier:` and must match
   the `kid` of the signature without its fragment.
-- **One credential per verification.** DCQL `multiple` is not supported, so a
-  question spanning several credentials needs several queries in one request,
-  or, for the immunization series, F-08.
+- **DCQL `multiple` is NOT SUPPORTED**, and §6.1 adds that "only a single
+  credential can be used in a verification". Whether that also rules out several
+  Credential Queries in one verification is not stated. This flow uses one query.
+  F-04 uses two as an implementation pattern under clarification, and F-08 needs
+  an unknown number of instances of one type, which the profile does not provide
+  for. See
+  [GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics).
 - **Trusted authorities are DID-based.** The DCQL trusted-authority types in the
   base OID4VP specification do not apply; the Swiss Profile defines a `did` type
   carrying a list of accepted issuer DIDs.
