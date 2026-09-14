@@ -1,0 +1,57 @@
+sector: banking
+title: Banking
+noga:
+  division: "64"
+  division_title: Financial service activities, except insurance and pension funding
+  section: L
+  section_title: Financial and insurance activities
+  scheme: NOGA 2025
+families:
+  - id: kyc-credential
+    title: KYC credential
+    directory: KYC Credential
+    status: in-progress
+    value_stream: order-to-cash
+    conditions:
+      # The broad condition, not `eid-held`. Upstream states the rule on its own
+      # identity-verification row: any identity credential meeting the assurance
+      # the interaction needs will do, and the flow names which one. The Swiss
+      # e-ID is narrower than this, so the reference model still satisfies it.
+      requires: [identity-evidence-available]
+      provides: [kyc-attestation-held, customer-relationship-open]
+    functions:
+      primary: relationship-onboarding
+      supporting: [identity-proofing, regulatory-compliance]
+    flows:
+      - id: kyc-onboarding
+        title: Online onboarding and KYC credential issuance
+      - id: kyc-sharing
+        title: KYC credential sharing
+      - id: re-kyc
+        title: Re-KYC periodic reevaluation
+  - id: re-identification-forgotten-password
+    title: Re-identification after a forgotten password
+    directory: Re-Identification After Forgotten Password
+    status: in-progress
+    conditions:
+      requires: [customer-relationship-open, identity-evidence-available]
+      provides: [access-granted]
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [request-and-complaint-handling, access-management]
+    flows:
+      - id: online-banking-reidentification
+        title: Online banking re-identification
+  - id: re-identification-age-of-majority
+    title: Re-identification at the age of majority
+    directory: Re-Identification at Age of Majority
+    status: in-progress
+    conditions:
+      requires: [customer-relationship-open, identity-evidence-available]
+      provides: [legal-capacity-established]
+    functions:
+      primary: identity-lifecycle-management
+      supporting: [eligibility-verification, regulatory-compliance]
+    flows:
+      - id: qes-18
+        title: QES for 18-year-old re-identification

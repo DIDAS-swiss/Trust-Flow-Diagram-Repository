@@ -1,0 +1,241 @@
+# Conditions, codified for this repository
+#
+# What is true, or what a party holds, before and after a family of flows runs.
+# Conditions are the interface that makes flows composable: one family's
+# `provides` is another's `requires`, so the chain between them is computed
+# rather than drawn by hand.
+#
+#     python3 scripts/check-classification.py --conditions credential
+#
+# Conditions are deliberately coarse. An interface with one implementor is not
+# an interface, and the point is that flows nobody has written yet plug into the
+# same sockets.
+#
+# A condition is one of four kinds. `evidence` is what a party can show,
+# `fact` is what has been established about them, `relationship` is a standing
+# tie between two parties, and `outcome` is the result a use case exists to
+# produce. The kind is upstream's, not this repository's.
+#
+# `broader` places a condition in a lattice, and the lattice is what makes the
+# composition rule work: a family that provides a condition satisfies a family
+# requiring the same condition or any condition broader than it. Providing
+# `eid-held` therefore satisfies a requirement for `identity-evidence-available`
+# without either family naming the other. The reverse does not hold: providing
+# a broad condition does not satisfy a requirement for a narrow one.
+#
+# `substantiated_by` records the credential type upstream links the condition
+# to. It is a note, not a constraint. A condition is the socket and a credential
+# is one thing that can fill it, which is what lets a second credential serve
+# the same interface without any family changing.
+#
+# Synced from industry-function-graph. `scripts/check-upstream-sync.py` compares
+# every copied field against the published graph, so a definition edited here
+# and not there fails CI.
+
+scheme:
+  name: IFM conditions
+  source: https://github.com/DIDAS-swiss/industry-function-graph
+  concept_scheme: scheme:ifm-conditions
+  retrieved: 2026-09-14
+
+conditions:
+  - id: accreditation-evidence-available
+    title: Accreditation evidence available
+    kind: evidence
+    definition: >-
+      Evidence that an organisation meets a published standard can be
+      presented and checked - a quality, conformity or sector accreditation.
+
+  - id: due-diligence-evidence-available
+    title: Due diligence evidence available
+    kind: evidence
+    definition: >-
+      Evidence that customer due diligence was carried out can be presented
+      and checked.
+
+  - id: education-qualification-evidence-available
+    title: Education qualification evidence available
+    kind: evidence
+    definition: >-
+      Evidence of a completed education or training qualification can be
+      presented and checked. Deliberately broader than any one certificate, so
+      that a flow requiring it can be served by several kinds of
+      qualification.
+
+  - id: employment-evidence-held
+    title: Employment evidence held
+    kind: evidence
+    definition: >-
+      The subject holds verifiable evidence that an employment relationship is
+      in force.
+    substantiated_by: employment-attestation
+
+  - id: identity-evidence-available
+    title: Identity evidence available
+    kind: evidence
+    definition: >-
+      Evidence of who the subject is can be presented to a relying party and
+      checked by it. Says nothing about which credential carries the evidence,
+      or that anyone has checked it yet.
+    substantiated_by: eid-credential
+
+  - id: service-entitlement-evidence-held
+    title: Service entitlement evidence held
+    kind: evidence
+    definition: >-
+      The subject holds verifiable evidence of entitlement to a named public
+      service.
+    substantiated_by: service-entitlement-attestation
+
+  - id: supplier-qualification-evidence-held
+    title: Supplier qualification evidence held
+    kind: evidence
+    definition: >-
+      The buying organisation holds a verifiable record of its own
+      qualification decision.
+    substantiated_by: supplier-qualification-record
+
+  - id: tertiary-enrolment-evidence-held
+    title: Tertiary enrolment evidence held
+    kind: evidence
+    definition: >-
+      The subject holds verifiable evidence of enrolment at a higher education
+      institution.
+    substantiated_by: tertiary-enrolment-attestation
+
+  - id: eid-held
+    title: Electronic identity held
+    kind: evidence
+    broader: identity-evidence-available
+    definition: >-
+      The subject holds a government-issued electronic identity credential.
+    substantiated_by: eid-credential
+
+  - id: kyc-attestation-held
+    title: KYC attestation held
+    kind: evidence
+    broader: due-diligence-evidence-available
+    definition: >-
+      The subject holds a reusable attestation that customer due diligence was
+      completed.
+    substantiated_by: kyc-attestation
+
+  - id: secondary-education-credential-held
+    title: Upper-secondary qualification held
+    kind: evidence
+    broader: education-qualification-evidence-available
+    definition: >-
+      The subject holds a verifiable upper-secondary qualification. In
+      Switzerland that is the gymnasiale Maturität or a federal vocational
+      certificate (EFZ); both sit at this level.
+    substantiated_by: secondary-education-certificate
+
+  - id: supplier-accreditation-held
+    title: Supplier accreditation held
+    kind: evidence
+    broader: accreditation-evidence-available
+    definition: >-
+      The supplier holds current quality, conformity or sector accreditations
+      in verifiable form.
+    substantiated_by: quality-accreditation-certificate
+
+  - id: kyc-attestation-current
+    title: KYC attestation current
+    kind: evidence
+    broader: kyc-attestation-held
+    definition: >-
+      The due diligence behind the attestation has been re-evaluated within
+      its validity period.
+    substantiated_by: kyc-currency-attestation
+
+  - id: accreditation-verified
+    title: Accreditation verified
+    kind: fact
+    definition: >-
+      The relying party has evaluated presented accreditation evidence and
+      established, under the verification and acceptance policy that applies
+      to the interaction, that the required accreditation is present and
+      current. Checking a signature is one input to that conclusion and does
+      not reach it alone.
+
+  - id: age-threshold-established
+    title: Age threshold established
+    kind: fact
+    definition: >-
+      The relying party has established that the subject satisfies a stated
+      age threshold, without requiring disclosure of the underlying date of
+      birth or of the subject's identity. A fact established in an
+      interaction, not something a separate credential attests.
+
+  - id: identity-verified
+    title: Identity verified
+    kind: fact
+    definition: >-
+      The relying party has evaluated presented identity evidence and
+      established the subject's identity to the level of assurance the
+      interaction requires. The assurance level qualifies the conclusion and
+      is part of it.
+
+  - id: legal-capacity-established
+    title: Legal capacity established
+    kind: fact
+    definition: >-
+      The relying party has established that the subject may contract in their
+      own right. Reached from verified attributes rather than from a
+      credential issued for the purpose.
+
+  - id: qualification-verified
+    title: Qualification verified
+    kind: fact
+    definition: >-
+      The relying party has evaluated presented qualification evidence and
+      established that the subject holds the qualification the interaction
+      requires. Which qualifications count is a policy question the
+      interaction settles, not a property of the evidence.
+
+  - id: access-granted
+    title: Access granted
+    kind: relationship
+    definition: >-
+      The subject can reach the service or premises the relationship entitles
+      them to.
+
+  - id: customer-relationship-open
+    title: Customer relationship open
+    kind: relationship
+    definition: >-
+      A contractual relationship exists between the subject and the
+      organisation.
+
+  - id: employment-relationship-open
+    title: Employment relationship open
+    kind: relationship
+    definition: >-
+      An employment contract is in force between the subject and an employer.
+
+  - id: service-entitlement-established
+    title: Service entitlement established
+    kind: relationship
+    definition: >-
+      The body providing a public service has accepted that the subject is
+      entitled to it.
+
+  - id: tertiary-enrolment-established
+    title: Tertiary enrolment established
+    kind: relationship
+    definition: >-
+      The subject is enrolled at a higher education institution.
+
+  - id: patient-record-linked
+    title: Patient record linked
+    kind: outcome
+    definition: >-
+      The clinician has bound the person in front of them to the correct
+      medical record.
+
+  - id: supplier-qualified
+    title: Supplier qualified
+    kind: outcome
+    definition: >-
+      The buying organisation has decided that the supplier is eligible to be
+      contracted.

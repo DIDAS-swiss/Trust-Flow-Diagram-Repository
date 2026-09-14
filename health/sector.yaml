@@ -11,6 +11,44 @@ families:
     title: Immunization and vaccination records
     directory: likec4-health
     status: in-progress
+    # No `functions` block, deliberately.
+    #
+    # This family spans ten flows with different primary functions: actor
+    # onboarding, credential issuance, evidence presentation, practice check-in,
+    # prescription redemption, lifecycle correction, a local projection into
+    # FHIR and openEHR, IPS composition, secondary research use and continuous
+    # measurement. Naming one of them primary would be picking a dominant
+    # narrative rather than classifying the work, and this document's own rule
+    # says a family whose flows have different primary functions is a family
+    # worth splitting.
+    #
+    # Splitting the health architecture is a design decision that needs its own
+    # change. Until then the honest position is either smaller canonical
+    # families or flow-level classification, and a missing functions block is a
+    # note rather than a failure.
+    conditions:
+      # This interface is F-04's and it understates the family. F-04 checks a
+      # Beta-ID and an insurance card at a practice and binds the person to
+      # their record, which is upstream's patient-record-linked: "the clinician
+      # has bound the person in front of them to the correct medical record".
+      # Upstream reaches the same outcome through healthcare-admission-ch,
+      # which realises identity-verification and then patient-record-matching.
+      #
+      # What the family also leaves behind has no condition upstream: a
+      # vaccination record held in a wallet, a prescription dispensed exactly
+      # once, a released claim set projected into FHIR and openEHR. Those are
+      # the family's principal outputs and they are absent from the catalogue,
+      # so the block below composes on the one condition that exists rather
+      # than inventing four that do not. Adding them is upstream work in
+      # industry-function-graph, and this comment is the record of what is
+      # missing until then.
+      #
+      # The requirement is the broad evidence condition, as upstream states on
+      # its identity-verification row. F-01 through F-06 accept a Beta-ID
+      # today and the federal e-ID when it is available, and neither is named
+      # here.
+      requires: [identity-evidence-available]
+      provides: [patient-record-linked]
     flows:
       - id: F-01
         kind: flow
@@ -117,6 +155,29 @@ families:
     title: Population health statistics
     directory: likec4-health
     status: specified
+    # No `functions` block, deliberately.
+    #
+    # research-and-development is the closest entry in the catalogue and it is
+    # the wrong one. F-11 is separated from F-09 precisely because a coverage
+    # survey runs under a statistical mandate rather than the Human Research
+    # Act, which changes the legal basis, the entitlement and the retention
+    # rule. Filing official vaccination-coverage statistics under "Research and
+    # development" would reintroduce the distinction the health model was built
+    # to keep.
+    #
+    # The catalogue has no official-statistics or population-analytics
+    # function. If that is a reusable cross-sector function it belongs upstream
+    # in industry-function-graph first, and is then synchronised here. An
+    # approximate classification is not a substitute for the missing entry.
+    #
+    # No `conditions` block either, for the same kind of reason. The catalogue
+    # holds no condition for what this family needs or leaves behind. F-11
+    # requires an invitation the statistical office issues and leaves behind a
+    # coverage figure about a population, and every upstream condition is about
+    # a subject, an organisation or a relying party. Requiring
+    # identity-evidence-available would be the opposite of what F-11 does: the
+    # presentation request names no person identifier, which is the property
+    # that separates it from F-09.
     flows:
       - id: F-11
         kind: flow
