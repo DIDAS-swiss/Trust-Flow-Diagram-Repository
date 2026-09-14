@@ -3,6 +3,7 @@
 # Builds two things into one GitHub Pages deployment:
 #   /                -> the hand-written landing page (index.html, assets/)
 #   /basic-flow/     -> the LikeC4 model in basic-flow/, built to a static site
+#   /health/         -> the LikeC4 model in health/likec4-health/, built the same way
 #
 # Requires: Settings > Pages > Source = "GitHub Actions" (not "Deploy from a branch")
 
@@ -46,6 +47,15 @@ jobs:
           path: basic-flow
           output: dist/basic-flow
           base: "${{ steps.pages.outputs.base_path }}/basic-flow/"
+          likec4-version: latest
+
+      - name: Build health diagrams (LikeC4)
+        uses: likec4/actions@v1
+        with:
+          action: build
+          path: health/likec4-health
+          output: dist/health
+          base: "${{ steps.pages.outputs.base_path }}/health/"
           likec4-version: latest
 
       - name: Upload artifact
