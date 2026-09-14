@@ -38,7 +38,7 @@
 scheme:
   name: IFM business functions
   publisher: DIDAS
-  source: https://github.com/DIDAS-swiss/industry-function-graph
+  source: https://github.com/Accelerate-GmbH/industry-function-graph
   lookup: https://didas-swiss.github.io/industry-function-graph/
   aligned_to: UN CBF and APQC PCF, recorded upstream as SKOS mapping relations
   retrieved: 2026-09-12
