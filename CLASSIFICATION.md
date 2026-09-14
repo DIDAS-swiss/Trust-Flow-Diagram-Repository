@@ -330,6 +330,23 @@ here, because this repository classifies diagrams and a contributor adding a
 flow should not have to fill in a research instrument. Sector, function, stream
 and conditions are the minimum that makes a flow findable and composable.
 
+Two words now carry more than one meaning across the two repositories, and
+neither is a synonym for the other.
+
+**Transformation.** Upstream's `TransformationMode` says how much a process
+changes when verifiable data enters it: digitise, optimise, redesign, enable.
+The `kind: transformation` a health flow carries says something else entirely —
+that the flow is a local data transformation rather than an exchange between
+parties, which is what F-07 is when it projects a released claim set into FHIR
+and openEHR. A flow can be a transformation in the local sense and a digitise
+in upstream's.
+
+**Kind.** A condition's `kind` is one of the four upstream types. A health
+flow's `kind` is `flow` or `transformation`. The health flow axes are defined in
+[digital-health_swiyu](https://github.com/DIDAS-swiss/digital-health_swiyu),
+which is where the health flows are written, and changing either name is a
+change to both repositories rather than to this file.
+
 Upstream also models **use case patterns** and the **flows** that realise them,
 which is the same separation from the other end: a pattern is the reusable unit
 of business activity, and a flow is one ecosystem's implementation of it. This
