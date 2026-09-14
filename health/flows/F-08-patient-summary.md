@@ -50,9 +50,9 @@ Roadmap step 2. Specified here, deliberately not built.
 > International Patient Summary needs a mechanism for an unknown number of
 > matching instances of one credential type, which the current profile does not
 > define. Recorded as
-> [GP-01](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics),
+> [GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics),
 > and not a capability this repository assumes today. Cross-border presentation
-> raises [GP-10](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-10--cross-domain-and-cross-border-trust-evaluation).
+> raises [GP-10](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-10--cross-domain-and-cross-border-trust-evaluation).
 
 The International Patient Summary is the standardised minimum dataset for
 unplanned care: allergies, current medication, problems and immunizations. That
