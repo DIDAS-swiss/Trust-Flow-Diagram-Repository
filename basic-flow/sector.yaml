@@ -1,0 +1,22 @@
+# The reference model is not a sector. It is the flow every sector flow
+# abstracts, so it carries no NOGA classification.
+sector: basic-flow
+title: Basic flow
+reference_model: true
+noga: null
+families:
+  - id: trust-infrastructure
+    title: The trust infrastructure itself
+    status: stable
+    states:
+      # The reference model is what every other family requires and nothing
+      # requires it. It is the root of the composition graph.
+      requires: []
+      establishes: [eid-held]
+    flows:
+      - id: registration
+        title: Registration and trust setup
+      - id: issuance
+        title: Credential issuance
+      - id: verification
+        title: Credential verification
