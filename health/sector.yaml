@@ -28,39 +28,97 @@ families:
     # note rather than a failure.
     flows:
       - id: F-01
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
         title: Becoming an actor in the health trust domain
         status: partial
         diagram: diagrams/F-01-becoming-an-actor.png
       - id: F-02
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
         title: Recording an administered dose
         status: implemented
         diagram: diagrams/F-02-recording-a-dose.png
       - id: F-03
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-08, GP-09]
         title: Presenting vaccination evidence with minimal disclosure
         status: implemented
         diagram: diagrams/F-03-minimal-disclosure.png
       - id: F-04
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-01]
         title: Check-in at the practice
         status: implemented
         diagram: diagrams/F-04-practice-check-in.png
       - id: F-05
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-06]
         title: Prescription and its redemption
         status: implemented
         diagram: diagrams/F-05-prescription-redemption.png
       - id: F-06
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-06, GP-07]
         title: Correction, suspension and revocation
         status: partial
         diagram: diagrams/F-06-correction.png
       - id: F-07
+        kind: transformation
+        interaction_scope: local
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-02]
         title: Projecting a presented credential into FHIR and openEHR
         status: implemented
       - id: F-08
+        kind: flow
+        interaction_scope: multi-party
+        composition: composed
+        data_mode: discrete
+        profile_status: beyond-current-profile
+        profile_gaps: [GP-01, GP-02, GP-10]
         title: Assembling an International Patient Summary from held credentials
         status: roadmap
       - id: F-09
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: beyond-current-profile
+        profile_gaps: [GP-03]
         title: Secondary use under revocable research consent
         status: roadmap
       - id: F-10
+        kind: flow
+        interaction_scope: unresolved
+        composition: unresolved
+        data_mode: continuous
+        profile_status: beyond-current-profile
+        profile_gaps: [GP-04, GP-05]
         title: Wearables and continuous data
         status: roadmap
 
@@ -90,6 +148,12 @@ families:
     # approximate classification is not a substitute for the missing entry.
     flows:
       - id: F-11
+        kind: flow
+        interaction_scope: multi-party
+        composition: atomic
+        data_mode: discrete
+        profile_status: mixed
+        profile_gaps: [GP-08, GP-09]
         title: Answering the national coverage survey
         status: roadmap
         diagram: diagrams/F-11-coverage-survey.png
