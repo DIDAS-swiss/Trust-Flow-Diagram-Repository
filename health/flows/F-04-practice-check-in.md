@@ -111,7 +111,7 @@ sequenceDiagram
   in a verification", which is not explicit about this case. The repository
   therefore treats profile conformance of this pattern as requiring
   clarification, recorded as
-  [GP-01](https://github.com/DIDAS-swiss/digital-health_swiyu/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics).
+  [GP-01](https://github.com/Accelerate-GmbH/digital-health-swiyu-vaccination/blob/main/docs/swiss-profile-gaps.md#gp-01--multi-credential-and-multi-instance-presentation-semantics).
 - `accepted_issuer_dids` is set per query, so the Beta-ID must come from the
   Beta Credential Service and the card from the patient's insurer. Without it the
   verifier would accept any issuer, which `checkVerificationRequest()` refuses.
