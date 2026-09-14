@@ -279,6 +279,20 @@ vaccinate.
 The demonstrator therefore uses explicitly configured accepted issuer DIDs.
 F-01 models the missing health-domain authorisation step.
 
+## Further dialogue and experimentation
+
+The next questions are use-case specific. Healthcare actors, regulators,
+patient representatives and implementers need to discuss the benefits, risks
+and governance choices in the context of concrete flows and test proposed
+mechanisms before treating them as settled. Evidence from those experiments can
+then be used to refine the model iteratively.
+
+Where a pilot requires a temporary deviation from rules under the Federal
+Health Insurance Act, Article 59b KVG provides a legal basis for approved pilot
+projects that can, among other objectives, strengthen quality or promote
+digitalisation. Whether it applies has to be assessed for the specific use
+case; it is not a general sandbox for all health regulation.
+
 ## Source
 
 Canonical source:
