@@ -1,0 +1,71 @@
+sector: sport
+title: Sport
+noga:
+  division: "93"
+  division_title: Sports activities and amusement and recreation activities
+  section: S
+  section_title: Arts, sports and recreation
+  scheme: NOGA 2025
+families:
+  # Three families, because certifying people, servicing a rig and checking a
+  # jumper at the drop zone are three kinds of work with different primary
+  # functions. The insurance that sits between them is in insurance/, because
+  # there the insurer is the relying party. The state interface joins them.
+  - id: skydiving-licence
+    title: Skydiving licences and qualifications
+    status: draft
+    functions:
+      # One family for everything Swiss Skydive certifies about a person: the
+      # licence, rigger licences by level, accident expert certificates. The
+      # accident expert flow also shows the certificate checked at a scene,
+      # which is access work; it becomes its own family if accident
+      # investigation grows further flows.
+      primary: certification-and-attestation
+      supporting: [identity-proofing, records-management, eligibility-verification, access-management]
+    states:
+      requires: [eid-held]
+      establishes: [qualification-credential-held]
+    flows:
+      - id: licence-issuance
+        title: Issuing the Swiss Skydive licence into the swiyu wallet
+        status: draft
+      - id: licence-lifecycle
+        title: Adding a rating, suspending and withdrawing a licence
+        status: draft
+      - id: rigger-licence
+        title: Issuing or raising a rigger licence by level
+        status: draft
+      - id: accident-expert
+        title: Appointing an accident expert and showing the certificate at an accident
+        status: draft
+  - id: reserve-repack
+    title: Reserve repack by a rigger
+    status: draft
+    functions:
+      # The credential is about a rig, not about a person: servicing a physical
+      # asset and attesting that it was done.
+      primary: asset-lifecycle-management
+      supporting: [certification-and-attestation, quality-assurance]
+    states:
+      # The rigger proves the qualification with the rigger licence, so this
+      # family requires what the licence family establishes.
+      requires: [qualification-credential-held]
+      establishes: [equipment-inspection-current]
+    flows:
+      - id: reserve-repack
+        title: Issuing a reserve repack credential valid for one year
+        status: draft
+  - id: drop-zone-check-in
+    title: Check-in at the drop zone
+    status: draft
+    functions:
+      primary: eligibility-verification
+      supporting: [access-management]
+    states:
+      # Licence, insurance and repack are presented together in one request.
+      requires: [qualification-credential-held, insurance-cover-held, equipment-inspection-current]
+      establishes: [access-granted]
+    flows:
+      - id: manifest-check-in
+        title: Presenting licence, insurance and repack together at manifest
+        status: draft

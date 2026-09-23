@@ -31,6 +31,10 @@
 # page did not come back at all. Both predate this file and both are already
 # used by a sector. Anyone who can open KUBB should confirm the two titles.
 #
+# Division 93 was added with sport/ from the NACE Rev. 2.1 title, because KUBB
+# could not be reached when the row was written. It is not part of the ISIC
+# comparison below either. Confirm it against KUBB and ISIC when you next can.
+#
 # Titles are recorded in sentence case. KUBB prints section titles in capitals,
 # which is a rendering choice rather than part of the name.
 
@@ -147,6 +151,7 @@ divisions:
   - code: "65"
     title: Insurance, reinsurance and pension funding, except compulsory social security
     section: L
+    used_by: insurance
     note: >-
       An insurer issuing a cover credential. Compulsory social security is 84,
       in a different section.
@@ -179,6 +184,14 @@ divisions:
   - code: "87"
     title: Residential care activities
     section: R
+  - code: "93"
+    title: Sports activities and amusement and recreation activities
+    section: S
+    used_by: sport
+    note: >-
+      Sports clubs, sports facilities and the federations that regulate a
+      sport. A skydiving licence presented at a drop zone sits here. A
+      membership credential with no sporting content belongs in 94.
   - code: "94"
     title: Activities of membership organisations
     section: T
