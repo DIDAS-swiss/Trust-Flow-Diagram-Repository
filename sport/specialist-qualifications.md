@@ -21,12 +21,13 @@ Part of the `skydiving-licence` family. The rigger licence builds on the skydivi
 | --- | --- | --- |
 | Level raised | Re-issue the licence | Re-issue only the rigger licence |
 | Accident expert appointed for a term | Licence needs an `exp` it does not otherwise have | The certificate carries its own `exp` |
-| What a verifier sees | Must request the licence and look inside `ratings` | Requests exactly the qualification it needs |
+| What a verifier sees | Must request the licence and look inside it | Requests exactly the qualification it needs |
 | Withdrawing one qualification | Revoke and re-issue the whole licence | Revoke only that credential; the licence is untouched |
 
-Ratings that only change what the holder may jump — tandem, wingsuit,
-camera — stay in the licence's `ratings`. Qualifications that let the holder
-sign for someone else's safety get their own credential.
+Every qualification that lets the holder take responsibility for someone
+else's safety gets its own credential: rigger, accident expert and
+[tandem master](./tandem-master.md). Swiss Skydive treats these as functions
+with their own rules and annual validation, which is the same line.
 
 ## Rigger licence
 
@@ -49,6 +50,7 @@ the rules move.
 | `rigger_licence_number` | `R-0471` | |
 | `rigger_level` | `rigger-2` | |
 | `type_endorsements` | `["tandem-vector", "tandem-sigma"]` | Optional. Rig types the rigger is signed off on, where the rules need it |
+| `seal_symbol` | `K7` | The rigger's personal seal symbol, pressed into the seal and written on the data card. Carried into every repack credential |
 | `licence_number` | `CH-04711` | Links to the skydiving licence |
 | `family_name`, `given_name`, `birth_date` | | From the skydiving licence |
 | `issue_date` | `2026-09-23` | |
@@ -63,7 +65,7 @@ the rules move.
 | `expert_id` | `UE-012` | |
 | `role` | `accident-expert` | |
 | `mandate` | `Swiss Skydive accident and incident investigation` | What the appointment covers |
-| `family_name`, `given_name`, `portrait` | | Portrait, because the certificate is shown in person at an accident site |
+| `family_name`, `given_name`, `portrait` | | Portrait (`data:image/jpeg;base64,…`), because the certificate is shown in person at an accident site |
 | `valid_from`, `exp` | `2026-01-01`, `2028-12-31` | Assumption: appointments run for a term |
 | `status`, `cnf` | | Revoked when the appointment ends early |
 

@@ -22,9 +22,10 @@ The flow runs in four phases:
 4. **Issuance.** The member area shows a credential offer, and the wallet
    collects the licence over OID4VCI.
 
-Before any of this, Swiss Skydive has registered as issuer and verifier on the
-swiyu trust infrastructure: a DID in the Base Registry and a trust statement in
-the Trust Registry. That one-time setup is the `registration` view of
+Before any of this, Swiss Skydive has onboarded as issuer and verifier on the
+swiyu trust infrastructure: a `did:webvh` DID each in the Base Registry and a
+Trust Protocol 2.0 identity trust statement in the Trust Registry (see
+[implementing on swiyu](./swiyu-implementation.md#recommended-implementation-for-swiss-skydive)). That one-time setup is the `registration` view of
 [`basic-flow/`](../basic-flow).
 
 ## Phase 1 and 2: proficiency and application
@@ -67,10 +68,10 @@ sequenceDiagram
     Student->>Wallet: Scan QR code
     Wallet->>Verifier: Fetch signed request (OID4VP)
     Wallet->>Trust: Resolve verifier DID, check trust statement
-    Trust-->>Wallet: "Swiss Skydive" — registered verifier
+    Trust-->>Wallet: Swiss Skydive — verified identity
     Wallet-->>Student: Swiss Skydive asks for name, date of birth, portrait
     Student->>Wallet: Consent
-    Wallet->>Verifier: VP token: e-ID disclosures + key binding JWT
+    Wallet->>Verifier: VP token (direct_post.jwt): e-ID disclosures + key binding JWT
     Verifier->>Trust: Resolve e-ID issuer DID, fetch status list
     Trust-->>Verifier: Issuer key, e-ID not revoked
     Verifier->>Verifier: Check signature, disclosures, key binding, nonce
@@ -121,14 +122,14 @@ sequenceDiagram
     Student->>Wallet: Scan QR code
     Wallet->>Issuer: Fetch issuer metadata
     Wallet->>Trust: Resolve issuer DID, check trust statement
-    Trust-->>Wallet: "Swiss Skydive" — registered issuer
+    Trust-->>Wallet: Swiss Skydive — verified identity
     Wallet-->>Student: Swiss Skydive offers "Skydiving licence"
     Student->>Wallet: Accept
-    Wallet->>Issuer: Token request (pre-authorised code)
+    Wallet->>Issuer: Token request (pre-authorised code, DPoP)
     Issuer-->>Wallet: Access token, c_nonce
     Wallet->>Wallet: Generate holder key, sign proof with c_nonce
     Wallet->>Issuer: Credential request + proof of possession
-    Issuer->>Issuer: Sign SD-JWT VC (claims, cnf = holder key, status)
+    Issuer->>Issuer: Sign dc+sd-jwt (claims, cnf = holder key, status)
     Issuer-->>Wallet: Skydiving licence credential
     Wallet->>Wallet: Verify issuer signature, store licence
     Wallet-->>Student: Licence in wallet

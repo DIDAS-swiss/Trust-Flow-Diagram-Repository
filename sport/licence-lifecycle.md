@@ -9,7 +9,7 @@ An SD-JWT VC cannot be edited. Every change is therefore one of two moves:
 
 | Change | Move |
 | --- | --- |
-| Rating added (e.g. tandem, wingsuit), name changed | Issue a new credential, revoke the old one |
+| Name changed, endorsement added | Issue a new credential and revoke the old one, or let the wallet renew it |
 | Suspension after an incident, pending review | Set the old credential's status to *suspended*; clear it if the review ends well |
 | Licence withdrawn | Set the status to *revoked* |
 | Member asks for the credential to be removed, device lost | Revoke; re-issue to the new wallet on request |
@@ -38,9 +38,9 @@ sequenceDiagram
 
     participant DZ as 🪂 Drop zone verifier
 
-    Note over Jumper,DZ: A — Rating added
-    Register->>Register: Tandem course passed, add rating "tandem"
-    Register->>Issuer: New licence credential with ratings = ["tandem"]
+    Note over Jumper,DZ: A — Name changed
+    Register->>Register: Name change reported, confirmed with the e-ID
+    Register->>Issuer: New licence credential, same licence_number
     Issuer-->>Jumper: Credential offer (member area / e-mail link)
     Jumper->>Wallet: Accept
     Wallet->>Issuer: OID4VCI, proof of possession
@@ -76,9 +76,21 @@ sequenceDiagram
 - A new licence credential after a **name change** keeps the licence number,
   so the proof of insurance still matches.
 
+## What swiyu does with each state
+
+Checked against the swiyu issuer and wallet code (see
+[implementing on swiyu](./swiyu-implementation.md#status)):
+
+- **Suspended** exists: a status list with `bits: 2`, set and cleared through
+  the issuer's management API. The wallet shows the credential as suspended
+  **but still presents it**. Every verifier must therefore reject
+  `suspended` itself; the drop zone flow does.
+- **Revoked** is final, and the wallet will no longer present the credential.
+- **Renewal**: the issuer can offer wallet-initiated renewal through a
+  renewal endpoint. Whether a renewal may carry changed claims, such as a new
+  name, needs confirming; until then a change is revoke-and-reissue.
+
 ## Assumptions
 
-- The swiyu Token Status List supports a *suspended* state alongside *revoked*.
-  If only revocation is available, a suspension becomes revoke-and-reissue.
 - Swiss Skydive decides about suspension and withdrawal under its own rules.
   The flow shows how the decision propagates, not how it is taken.

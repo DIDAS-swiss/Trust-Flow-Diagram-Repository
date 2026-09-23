@@ -16,7 +16,7 @@ families:
     status: draft
     functions:
       # One family for everything Swiss Skydive certifies about a person: the
-      # licence, rigger licences by level, accident expert certificates. The
+      # licence, tandem master, rigger licences by level, accident experts. The
       # accident expert flow also shows the certificate checked at a scene,
       # which is access work; it becomes its own family if accident
       # investigation grows further flows.
@@ -31,6 +31,9 @@ families:
         status: draft
       - id: licence-lifecycle
         title: Adding a rating, suspending and withdrawing a licence
+        status: draft
+      - id: tandem-master
+        title: Tandem master rating with manufacturer system ratings, renewed every year
         status: draft
       - id: rigger-licence
         title: Issuing or raising a rigger licence by level
@@ -62,10 +65,11 @@ families:
       primary: eligibility-verification
       supporting: [access-management]
     states:
-      # Licence, insurance and repack are presented together in one request.
+      # Licence, insurance and repack are checked in one manifest session:
+      # three requests today, one once swiyu supports credential_sets.
       requires: [qualification-credential-held, insurance-cover-held, equipment-inspection-current]
       establishes: [access-granted]
     flows:
       - id: manifest-check-in
-        title: Presenting licence, insurance and repack together at manifest
+        title: Licence, insurance and repack at manifest, tandem master before tandem loads
         status: draft
