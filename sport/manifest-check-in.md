@@ -20,6 +20,14 @@ Status: **draft**.
 Manifest also looks at the logbook for currency. That stays with the
 logbook: a jump count that changes with every jump is not a credential.
 
+**Today** a drop zone checks licence and insurance on paper or in Swiss
+Skydive's public *Find a Member* lookup, which shows, for a last name and a
+licence number, rows such as `Skydiver Licence · expires 31.03.2027` and
+`Skydiving third party liability insurance CHF 3 Mio · expires 31.03.2027`.
+The reserve is checked by opening the data card. The credentials give the
+same answers with the jumper's consent, offline, and without the lookup
+being open to anyone who knows a name and a number.
+
 ## Three requests, one session
 
 swiyu cannot answer several credentials in one request today: the verifier
@@ -48,7 +56,8 @@ DCQL requests in a row. The first one, for the licence, looks like this:
 ```
 
 The insurance request asks for `licence_number`, `cover`, `liability_sum`,
-`territory`; the repack request for `container_serial` and `expiry_date`.
+`territory`; the repack request for `container_serial`, `expiry_date`,
+`reserve_max_exit_weight_lbs` and the AAD dates.
 Nothing else is asked for. Date of birth, policy number and the other serials
 stay in the wallet.
 
@@ -98,10 +107,10 @@ sequenceDiagram
     Note over Jumper,Trust: Cross-checks
     Manifest->>Manifest: insurance.licence_number = licence.licence_number
     Manifest->>Manifest: liability_sum ≥ drop zone minimum, territory covers CH
-    Manifest->>Manifest: repack expiry_date ≥ today
+    Manifest->>Manifest: repack expiry_date ≥ today, AAD not past service or life,<br/>declared exit weight ≤ reserve maximum
 
     Note over Jumper,Trust: Physical match and booking
-    Manifest-->>Staff: ✅ Licence ✅ Insurance until 2027-09-22 ✅ Repack until 2027-09-23
+    Manifest-->>Staff: ✅ Licence until 2027-03-31 ✅ Insurance until 2027-03-31 ✅ Repack until 2027-09-23
     Staff->>Jumper: Compare face with portrait
     Staff->>Jumper: Compare container serial with the rig
     Staff->>Manifest: Book slot, keep result for today

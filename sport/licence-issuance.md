@@ -115,7 +115,7 @@ sequenceDiagram
     end
 
     Note over Student,Trust: Phase 4 — Issuance (OID4VCI, pre-authorised code)
-    Portal->>Issuer: Create credential offer<br/>(licence claims, status list index)
+    Portal->>Issuer: Create credential offer<br/>(licence claims, status index, credential_valid_until = next 31 March)
     Issuer-->>Portal: Credential offer with pre-authorised code
     Portal-->>Browser: QR code / deep link
     Browser-->>Student: "Add your licence to the wallet"

@@ -11,17 +11,30 @@ Status: **draft**.
 
 ## Today: the data card in the rig
 
-Every rig carries a reserve packing data card in a pocket of the container.
-It is the permanent record of the rig and follows it through changes of
-owner. The layout follows the Parachute Industry Association's standard for
-packing data records; a Swiss card was not available to check.
+Every rig carries a **Parachute Record Log** — the reserve data card — in a
+pocket of the container. It is the permanent record of the rig and follows it
+through changes of owner. The fields below are those of the card in use
+(PIA-style layout, as sold for example by [XD Sports](https://xdsports.uk/images/thumbs/000/0002170_reserve-log-cards.png)):
 
-| Section | Fields |
+| Section | Fields on the card |
 | --- | --- |
-| Harness / container | Manufacturer, model, serial number, date of manufacture |
-| Reserve canopy | Manufacturer, model, size, serial number, date of manufacture |
-| AAD | Manufacturer, model, serial number, date of manufacture; service dates in the notes |
-| Each repack line | Date, place, work done (inspect and repack, repair, alteration) and defects found, rigger name, rigger number, signature, **seal symbol** |
+| Header | "For legal use in aircraft. This parachute must be inspected and maintained in accordance with all applicable manufacturer's instructions and aviation laws. **Repack cycle ___ days.**" |
+| Never exceed — reserve canopy limitations | **Maximum exit weight** (jumper + clothing + equipment) ___ lbs; **maximum deployment speed** ___ kts |
+| Owner information | Name, address, city/state/zip, telephone |
+| Equipment data | For **reserve canopy**, **harness & container** and **AAD**: manufacturer, model, serial no., date of manufacture |
+| Repack lines | **Date**, **place**, **certificate no. and seal**, **rigger's signature**, **remarks** |
+
+The seal on the reserve closing loop carries the rigger's personal seal
+symbol, and the same symbol goes into the "certificate no. and seal" column.
+An intact seal with that symbol on the card is how anyone can see that nobody
+has opened the reserve since. Two things are worth noting:
+
+- **The repack cycle is written on the card**, in days. The credential takes
+  it from there instead of assuming one: 365 days in this flow, as specified
+  for Swiss Skydive.
+- **The canopy limitations** are what a drop zone would need to check wing
+  loading on the reserve: the jumper's exit weight must stay below the
+  maximum. The credential carries them so the check can be made.
 
 The seal on the reserve closing loop carries the rigger's personal seal
 symbol, and the same symbol goes on the card line. An intact seal with that
@@ -94,18 +107,18 @@ sequenceDiagram
     RWallet->>Verifier: VP token + key binding
     Verifier->>Trust: Swiss Skydive key, status list
     Verifier->>Verifier: Valid, not suspended
-    Verifier-->>App: Rigger R-0471, level 2, seal symbol K7
+    Verifier-->>App: Rigger R-0471, senior rigger, seal symbol K7
 
     Note over Owner,Trust: Phase 2 — Inspect and repack, as today
     Owner->>Rigger: Hand over rig
     Rigger->>Rigger: Inspect, repack reserve, check AAD service dates
-    Rigger->>Rigger: Seal with symbol K7, fill in data card line, sign
-    Rigger->>App: Record: serials from the card, packing date, work, findings
+    Rigger->>Rigger: Seal with symbol K7, fill in the card line, sign
+    Rigger->>App: Record from the card: equipment data, limitations,<br/>repack cycle, date, place, remarks
 
     Note over Owner,Trust: Phase 3 — Credential for the owner (OID4VCI)
     App->>Register: Submit repack record
     Register->>Register: Level covers this rig (tandem needs a tandem-capable level),<br/>AAD not past service date or end of life
-    Register->>Issuer: POST /management/api/credentials<br/>claims, credential_valid_until = packing date + 12 months
+    Register->>Issuer: POST /management/api/credentials<br/>claims, credential_valid_until = packing date + repack_cycle_days
     Issuer-->>Register: Offer deep link, short validity
     Register-->>App: Offer
     App-->>Owner: QR code, shown in person
@@ -130,25 +143,30 @@ Every claim selectively disclosable. Dates are ISO dates.
 | Claim | Example | From the data card |
 | --- | --- | --- |
 | `vct` | `https://swissskydive.org/vc/reserve-repack/v1` | — (placeholder URL) |
-| `container_manufacturer`, `container_model`, `container_serial`, `container_dom` | `UPT`, `Vector 3`, `V3-24-01873`, `2024-03` | Harness / container |
-| `reserve_manufacturer`, `reserve_model`, `reserve_size`, `reserve_serial`, `reserve_dom` | `PD`, `Reserve`, `160`, `R-55621`, `2024-01` | Reserve canopy |
-| `aad_manufacturer`, `aad_model`, `aad_serial`, `aad_dom` | `Airtec`, `CYPRES 2`, `C2-99812`, `2023-11` | AAD |
-| `aad_next_service`, `aad_end_of_life` | `2028-11`, `2039-05` | AAD notes. Depends on model: CYPRES 2 built from 2017 has optional service at 5 and 10 years and a 15.5-year life; Vigil has a 20-year life |
-| `work` | `inspect-and-repack` | Repack line |
-| `packing_date`, `packing_place` | `2026-09-23`, `Beromünster` | Repack line |
-| `rigger_name`, `rigger_licence_number`, `rigger_level` | `Max Beispiel`, `R-0471`, `rigger-2` | Repack line |
-| `seal_symbol` | `K7` | Repack line; matches the seal on the rig |
-| `findings` | `none` | Repack line |
-| `expiry_date` | `2027-09-23` | — packing date + 12 months; the wallet shows "Expired" after it |
+| `container_manufacturer`, `container_model`, `container_serial`, `container_dom` | `UPT`, `Vector 3`, `V3-24-01873`, `2024-03` | Equipment data: harness & container |
+| `reserve_manufacturer`, `reserve_model`, `reserve_serial`, `reserve_dom` | `PD`, `Reserve 160`, `R-55621`, `2024-01` | Equipment data: reserve canopy |
+| `aad_manufacturer`, `aad_model`, `aad_serial`, `aad_dom` | `Airtec`, `CYPRES 2`, `C2-99812`, `2023-11` | Equipment data: AAD |
+| `reserve_max_exit_weight_lbs` | `254` | Never exceed: maximum exit weight. Kept in lbs as on the card |
+| `reserve_max_deployment_speed_kts` | `150` | Never exceed: maximum deployment speed |
+| `repack_cycle_days` | `365` | Header: repack cycle |
+| `packing_date`, `packing_place` | `2026-09-23`, `Beromünster` | Repack line: date, place |
+| `rigger_name`, `rigger_certificate_number`, `rigger_level` | `Max Beispiel`, `R-0471`, `senior-rigger` | Repack line: rigger's signature, certificate no. |
+| `seal_symbol` | `K7` | Repack line: seal; matches the seal on the rig |
+| `remarks` | `inspected and repacked` | Repack line: remarks, including any defects found |
+| `aad_next_service`, `aad_end_of_life` | `2028-11`, `2039-05` | Not on the card's columns; derived from the AAD model and date of manufacture (CYPRES 2 built from 2017: optional service at 5 and 10 years, 15.5-year life; Vigil: 20-year life) |
+| `expiry_date` | `2027-09-23` | — packing date + `repack_cycle_days`; the wallet shows "Expired" after it |
 | `exp` (protected) | `2027-09-23` | — set via `credential_valid_until`; after it the wallet will not present the credential |
 | `status`, `cnf` (protected) | | Status list; bound to the owner's wallet |
 
 `expiry_date` and `exp` fall on the same day. `expiry_date` gives the wallet
 something to show; `exp` makes an overdue reserve impossible to present.
-Twelve months is the interval this flow is specified for. The issuer should
-take it from configuration rather than a constant, so a rig under a foreign
-country's shorter interval (6 months in the UK, 180 days in the US) can get
-its own.
+The validity is computed from `repack_cycle_days`, as the card does: 365
+days in this flow. A rig under a foreign country's shorter cycle (6 months in
+the UK, 180 days in the US) gets its own value, with nothing else changing.
+
+Owner information stays on the card and out of the credential: the holder
+binding already says whose it is, and address and telephone are not a drop
+zone's business.
 
 The AAD is on the credential because manifest looks for it today, and because
 an AAD past its service date or end of life makes the repack pointless. If
@@ -173,7 +191,7 @@ becomes its own credential.
 
 ## Open questions
 
-1. Rigger levels in Switzerland, and which of them covers tandem rigs.
+1. Which of the two rigger levels (senior, master; directive 01-09d) may repack tandem reserves.
 2. Do Swiss drop zones accept a repack under a foreign rig's shorter interval,
    or always apply 12 months?
 3. Is Swiss Skydive willing to sign on behalf of riggers it licenses but does

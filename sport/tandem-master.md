@@ -11,8 +11,10 @@ Status: **draft**. Part of the `skydiving-licence` family.
 
 ## Today
 
-What public sources say. The Swiss Skydive rules themselves (document 01-05,
-"Tandem") could not be read from here; the gaps are listed at the end.
+What public sources say. Swiss Skydive's Safety Management System lists two
+tandem directives, **01-05d Tandem** (the tandem master) and **01-11d
+Tandembetrieb** (running a tandem operation). Neither could be read from here;
+the gaps are listed at the end.
 
 | Topic | Today | Source |
 | --- | --- | --- |
@@ -31,7 +33,7 @@ own conditions and is checked only on tandem loads.
 | Claim | Example | Notes |
 | --- | --- | --- |
 | `vct` | `https://swissskydive.org/vc/tandem-master/v1` | Placeholder URL |
-| `licence_number` | `CH-12345` | Links to the skydiving licence |
+| `licence_number` | `1234` | Links to the skydiving licence |
 | `family_name`, `given_name`, `portrait` | | From the licence; portrait as `data:image/jpeg;base64,…` |
 | `system_ratings` | `[{"system": "UPT Sigma", "rated_on": "2024-05-10"}, {"system": "Strong Dual Hawk", "rated_on": "2025-06-02"}]` | Manufacturer ratings Swiss Skydive has on file. Each element disclosable, so the drop zone sees only the system it uses |
 | `commercial` | `true` | Assumption: whether the holder may take paying passengers, if Swiss Skydive distinguishes |
@@ -86,7 +88,7 @@ sequenceDiagram
     TM->>Wallet: Scan, consent
     Wallet->>Verifier: VP token + key binding
     Verifier->>Trust: Swiss Skydive key, status list
-    Verifier-->>Portal: Licence CH-12345 valid
+    Verifier-->>Portal: Licence 1234 valid until 2027-03-31
     Portal->>Register: Check club training completed, 750 jumps / 10 h,<br/>manufacturer rating on file
     Register->>Issuer: Offer tandem master credential,<br/>system_ratings, credential_valid_until = 31 March
     Issuer-->>TM: Credential offer (QR / deep link)

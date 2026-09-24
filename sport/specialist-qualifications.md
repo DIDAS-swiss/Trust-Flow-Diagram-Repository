@@ -8,8 +8,11 @@ each as its own credential:
 - an **accident expert certificate**, which says the holder is appointed to
   investigate skydiving accidents and incidents for Swiss Skydive.
 
-Status: **draft**. The level names and what each level permits are placeholders
-until Swiss Skydive's rules fill them in.
+Status: **draft**. The two rigger levels and the "expert" function are named
+in the Swiss Skydive directives listed by its Safety Management System:
+**01-09d Master- und Senior Rigger** and **01-10d Experten**. The directives
+themselves could not be read; what each level permits is taken by analogy
+from the FAA senior and master rigger certificates until they are.
 
 Part of the `skydiving-licence` family. The rigger licence builds on the skydiving licence; the accident expert certificate does not have to.
 
@@ -33,11 +36,10 @@ with their own rules and annual validation, which is the same line.
 
 ### Levels
 
-| `rigger_level` | May do (placeholder) | Signs |
+| `rigger_level` | Directive | May do (by analogy with FAA 14 CFR 65.125, to confirm against 01-09d) |
 | --- | --- | --- |
-| `rigger-1` | Inspect and repack reserves of standard sport rigs | Reserve repack credential |
-| `rigger-2` | As level 1, plus tandem and student rigs, minor repairs | Reserve repack, repair record |
-| `rigger-3` | As level 2, plus major repairs, alterations, and training and examining riggers | All of the above, rigger exams |
+| `senior-rigger` | 01-09d | Inspect, pack and maintain; minor repairs. Signs reserve repacks |
+| `master-rigger` | 01-09d | As senior rigger, plus major repairs and alterations; trains and examines riggers |
 
 The claim carries the level; what a level permits is published by Swiss
 Skydive and applied by the rigger service at the time of signing (see
@@ -48,10 +50,10 @@ the rules move.
 | --- | --- | --- |
 | `vct` | `https://swissskydive.org/vc/rigger-licence/v1` | Placeholder URL |
 | `rigger_licence_number` | `R-0471` | |
-| `rigger_level` | `rigger-2` | |
+| `rigger_level` | `senior-rigger` | |
 | `type_endorsements` | `["tandem-vector", "tandem-sigma"]` | Optional. Rig types the rigger is signed off on, where the rules need it |
 | `seal_symbol` | `K7` | The rigger's personal seal symbol, pressed into the seal and written on the data card. Carried into every repack credential |
-| `licence_number` | `CH-04711` | Links to the skydiving licence |
+| `licence_number` | `4711` | Links to the skydiving licence |
 | `family_name`, `given_name`, `birth_date` | | From the skydiving licence |
 | `issue_date` | `2026-09-23` | |
 | `exp` | — | Only if rigger licences expire or need periodic proof of activity |
@@ -75,7 +77,7 @@ the rules move.
 %%{init: {"theme": "default", "themeVariables": {"fontFamily": "Inter, Arial"}}}%%
 sequenceDiagram
     actor Candidate as 👤 Rigger candidate
-    actor Examiner as 🧵 Examiner (rigger-3)
+    actor Examiner as 🧵 Examiner (master rigger)
 
     box rgb(220,235,255) Candidate's device
         participant Wallet as 🪪 swiyu Wallet
@@ -93,32 +95,31 @@ sequenceDiagram
     end
 
     Note over Candidate,Trust: Phase 1 — Course and exam
-    Candidate->>Examiner: Rigger course, practical and theory exam for level 2
-    Examiner->>Portal: Sign in with own rigger licence (OID4VP, level rigger-3)
+    Candidate->>Examiner: Rigger course, practical and theory exam for senior rigger
+    Examiner->>Portal: Sign in with own rigger licence (OID4VP, master-rigger)
     Portal->>Register: Record exam passed: candidate, level, date, examiner
 
     Note over Candidate,Trust: Phase 2 — Application
-    Candidate->>Portal: Apply for rigger-2
-    Portal->>Verifier: Request skydiving licence<br/>(+ current rigger licence if raising a level)
+    Candidate->>Portal: Apply for senior-rigger
+    Portal->>Verifier: Request skydiving licence<br/>(+ senior rigger licence when applying for master rigger)
     Verifier-->>Candidate: QR code
     Candidate->>Wallet: Scan, consent
     Wallet->>Verifier: VP token + key binding
     Verifier->>Trust: Swiss Skydive key, status lists
-    Verifier-->>Portal: Licence CH-04711 valid, holds rigger-1
-    Portal->>Register: Match exam record, check prerequisites for level 2
+    Verifier-->>Portal: Licence 4711 valid, no rigger licence yet
+    Portal->>Register: Match exam record, check prerequisites for senior rigger
 
     Note over Candidate,Trust: Phase 3 — Issuance (OID4VCI)
-    Register->>Issuer: Offer rigger licence, rigger_level = rigger-2
+    Register->>Issuer: Offer rigger licence, rigger_level = senior-rigger
     Issuer-->>Candidate: Credential offer
     Candidate->>Wallet: Accept
     Wallet->>Trust: Resolve issuer DID, trust statement
     Wallet->>Issuer: Token and credential request + proof of possession
-    Issuer-->>Wallet: Rigger licence, level 2
-    Issuer->>Trust: Revoke the rigger-1 credential's status index
+    Issuer-->>Wallet: Rigger licence, senior rigger
 ```
 
 The examiner's own rigger licence is what makes the exam record trustworthy:
-only a `rigger-3` may record a rigger exam. The same pattern — a qualification
+only a master rigger may record a rigger exam. The same pattern — a qualification
 credential that lets its holder sign for others — is what the reserve repack
 flow uses.
 
@@ -175,15 +176,18 @@ investigate, by theirs.
 
 ## Assumptions and open questions
 
-1. **Levels.** Which rigger levels exist, what each permits, and whether type
-   endorsements are needed, are for Swiss Skydive to state. The table above is
-   a placeholder to show where they go.
-2. **Expiry.** Does a rigger licence lapse without activity? Is an accident
+1. **Levels.** Senior and master rigger are Swiss Skydive's levels (01-09d).
+   What each permits, which covers tandem rigs, and whether type endorsements
+   are needed must be read from 01-09d.
+2. **"Experten" (01-10d)** may cover more than accident experts, for example
+   examiners. The accident expert certificate here is one function of that
+   directive, not necessarily all of it.
+3. **Expiry.** Does a rigger licence lapse without activity? Is an accident
    expert appointed for a term?
-3. **Verifier at the scene.** A police officer is unlikely to have a verifier
+4. **Verifier at the scene.** A police officer is unlikely to have a verifier
    app today. Until then the certificate is shown on the wallet screen, which
    is no better than a card; the verifiable check needs a verifier on the
    drop zone's side.
-4. **Flow B mixes two kinds of work** — certifying the expert and granting
+5. **Flow B mixes two kinds of work** — certifying the expert and granting
    access at the scene. If accident investigation grows further flows, the
    scene check becomes its own family.

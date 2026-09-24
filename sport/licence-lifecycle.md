@@ -1,6 +1,7 @@
 # Licence lifecycle
 
-What happens to the licence credential after it is issued: a rating is added,
+What happens to the licence credential after it is issued: it is renewed for
+the next season, an endorsement is added,
 a name changes, the licence is suspended after an incident or withdrawn.
 
 Status: **draft**.
@@ -9,6 +10,7 @@ An SD-JWT VC cannot be edited. Every change is therefore one of two moves:
 
 | Change | Move |
 | --- | --- |
+| New season: licence fee paid, conditions met | New credential valid until the next 31 March, or wallet-initiated renewal. The old one expires by itself on 31 March, no revocation needed |
 | Name changed, endorsement added | Issue a new credential and revoke the old one, or let the wallet renew it |
 | Suspension after an incident, pending review | Set the old credential's status to *suspended*; clear it if the review ends well |
 | Licence withdrawn | Set the status to *revoked* |
@@ -37,6 +39,15 @@ sequenceDiagram
     end
 
     participant DZ as 🪂 Drop zone verifier
+
+    Note over Jumper,DZ: S — New season
+    Jumper->>Register: Pay licence fee for the season
+    Register->>Issuer: Licence credential, valid_from = payment date,<br/>credential_valid_until = next 31 March
+    Issuer-->>Jumper: Credential offer, or renewal on the wallet's request
+    Jumper->>Wallet: Accept
+    Wallet->>Issuer: OID4VCI, proof of possession
+    Issuer-->>Wallet: Licence for the new season
+    Note right of Wallet: Last season's credential expires on 31 March
 
     Note over Jumper,DZ: A — Name changed
     Register->>Register: Name change reported, confirmed with the e-ID

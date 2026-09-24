@@ -93,68 +93,99 @@ mountain guide's diploma.
 
 ## The licence credential
 
-A proposal, to be settled with Swiss Skydive. `dc+sd-jwt` as the swiyu Swiss
+Modelled on what Swiss Skydive shows today. `dc+sd-jwt` as the swiyu Swiss
 Profile requires, with every business claim selectively disclosable; the
 protected claims are set by the issuer.
 
-What public sources say about today's licence, and what they do not:
+### Today: the member lookup
+
+Swiss Skydive publishes a **Find a Member** lookup
+([SSDProfiles](https://swissskydive.org/dax/apps/SSDService/?SSDProfiles)).
+Anyone who enters a last name and a licence number sees that member's current
+licence and insurance:
+
+| Field in the lookup | Meaning |
+| --- | --- |
+| Lastname*, SSD-License* | Mandatory search keys. Licence number is a plain number (e.g. `4567`) |
+| Firstname, SSDID, Gender | Optional. SSDID is the member number, distinct from the licence number |
+| Result: Date · Description · Expire | One row per current entitlement, e.g. `19.09.2026 · Skydiver Licence · 31.03.2027` and `18.09.2026 · Skydiving third party liability insurance CHF 3 Mio · 31.03.2027` |
+| Licence `0` | Shows the AXA parachute insurance of someone without a Swiss Skydive licence |
+
+Three things follow for the credential:
+
+- **The licence is annual.** It is issued for the season and expires on
+  **31 March** of the following year. It is not valid until withdrawn.
+- **The date on the row is the date of this year's licence**, not the date the
+  holder first qualified.
+- **Today's check is a public lookup.** Whoever knows a name and a licence
+  number can see licence and insurance status, and the drop zone needs a
+  connection to check. The credential turns this into a check the holder
+  consents to, which works offline and cannot be run against someone who is
+  not present. The lookup can stay as a fallback for foreign drop zones.
+
+Other public facts:
 
 | | |
 | --- | --- |
 | Issued by | Swiss Skydive, after the proficiency test of the Swiss Skydive Education System (SES), on application |
-| Where it shows today | In the Swiss Skydive member area, next to the valid insurance |
-| FAI | FAI Certificates of Proficiency keep one country and one number across levels, and a level once reached is kept for life. Whether Swiss Skydive prints A–D levels was not found |
+| FAI | FAI Certificates of Proficiency keep one country and one number across levels. Whether Swiss Skydive prints A–D levels was not found |
 | Legal frame | The VLK (SR 748.941) regulates parachute jumps (jumpmaster, airspace, insurance). No state licence for sport skydivers was found; the licence is the association's |
-| Card layout | Field labels, number format, photo and printed endorsements were **not found**. The claims below are therefore a proposal |
 
-| Claim | Example | Disclosure | Notes |
+### The licence credential
+
+| Claim | Example | Disclosure | From today |
 | --- | --- | --- | --- |
-| `vct` | `https://swissskydive.org/vc/skydiving-licence/v1` | protected | Credential type. The URL is a placeholder |
-| `iss` | `did:webvh:…` | protected | Swiss Skydive's issuer DID in the Base Registry |
-| `licence_number` | `CH-12345` | selective | The number on today's card |
-| `licence_type` | `FAI Certificate of Proficiency` | selective | One Swiss licence; kept as a field so the schema does not break if that changes |
-| `family_name`, `given_name` | `Muster`, `Anna` | selective | Copied from the e-ID at application |
-| `birth_date` | `1994-03-07` | selective | Copied from the e-ID |
-| `portrait` | `data:image/jpeg;base64,…` | selective | Optional. Lets manifest staff match face to licence without a second credential |
-| `issue_date` | `2026-09-23` | selective | Date the licence was first granted |
-| `endorsements` | `["wingsuit"]` | selective | Assumption: only if Swiss Skydive records endorsements without rules of their own. Functions with annual validation — tandem master, jumpmaster, AFF instructor, rigger — are separate credentials, see [tandem master](./tandem-master.md) and [specialist qualifications](./specialist-qualifications.md) |
-| `issuing_federation` | `Swiss Skydive` | selective | Human-readable; the trust decision rests on `iss`, not on this |
-| `status` | status list reference | protected | Token Status List index (2-bit list), for suspension and withdrawal |
-| `cnf` | holder public key | protected | Binds the licence to the wallet it was issued to |
+| `vct` | `https://swissskydive.org/vc/skydiving-licence/v1` | protected | — (placeholder URL) |
+| `iss` | `did:webvh:…` | protected | — Swiss Skydive's issuer DID |
+| `licence_number` | `1234` | selective | SSD-License |
+| `member_id` | `987` | selective | SSDID. Only disclosed where the member relationship matters |
+| `licence_type` | `Skydiver Licence` | selective | Description |
+| `family_name`, `given_name` | `Muster`, `Anna` | selective | Lastname, Firstname; checked against the e-ID at first issuance |
+| `birth_date` | `1994-03-07` | selective | From the e-ID |
+| `portrait` | `data:image/jpeg;base64,…` | selective | — Optional. Lets manifest staff match face to licence |
+| `valid_from` | `2026-09-19` | selective | Date |
+| `expiry_date` | `2027-03-31` | selective | Expire. The wallet shows "Expired" after it |
+| `exp` | `2027-03-31` | protected | — Set via `credential_valid_until`; an expired licence cannot be presented |
+| `endorsements` | `["wingsuit"]` | selective | — Assumption: only if Swiss Skydive records endorsements without rules of their own. Functions — tandem master, jumpmaster, AFF instructor, rigger — are separate credentials |
+| `status` | status list reference | protected | — 2-bit list, for suspension and withdrawal during the season |
+| `cnf` | holder public key | protected | — Binds the licence to the wallet |
+
+Gender is a field in the lookup but is not in the credential: nothing
+downstream needs it.
 
 Deliberately **not** in the credential:
 
 - **Jump count and last jump date.** They change with every jump and belong in
   the logbook. Currency is a drop zone rule, not a property of the licence.
-- **Insurance.** It has its own issuer and its own term, and mixing it in would
-  force a re-issue of the licence every year. It is a separate credential that
-  names the `licence_number` and is presented together with the licence.
-- **Reserve repack.** It is about a rig, not a person, and expires after a year.
-- **An expiry date**, unless Swiss Skydive licences actually expire. A licence
-  that stays valid until withdrawn is modelled through the status list, not
-  through `exp`.
+- **Insurance.** Its own product, bought separately, possibly without a
+  licence at all. It is a separate credential that names the
+  `licence_number`, and in practice runs to the same 31 March.
+- **Reserve repack.** It is about a rig, not a person, and has its own cycle.
 
 ## Open questions for Swiss Skydive
 
 1. How does a training facility report a passed proficiency test today, and can
    that report become the trigger for the credential offer?
-2. Does the licence expire, or is it valid until withdrawn?
-3. Which endorsements exist on the licence itself, as opposed to functions
+2. Which endorsements exist on the licence itself, as opposed to functions
    with their own validation?
-4. Should the Aero-Club membership that active members also need be verified
+3. Should the Aero-Club membership that active members also need be verified
    at application, or is it already known to Swiss Skydive?
-5. Is the insurance a group policy that comes with membership, so that Swiss
-   Skydive issues the proof, or do skydivers buy it from insurers directly?
-6. Do foreign drop zones need anything beyond the licence, such as an IPC
+4. Do foreign drop zones need anything beyond the licence, such as an IPC
    certificate number, that should be a claim?
 
 ## Sources
 
-The semantics above were researched on 2026-09-23 from public sources only.
-Swiss Skydive's own regulations (01-03 skydiver, 01-04 jumpmaster, 01-05
-tandem, 01-06 PAC) and a real Swiss licence card and reserve data card could
-not be read and should be checked against the flows before anything is built.
+The semantics above were researched on 2026-09-23 and 2026-09-24. Primary
+sources are Swiss Skydive's public member lookup and a reserve data card of
+the kind in use. The Swiss Skydive directives are known by title from the
+list its Safety Management System gives (01-00 to 01-11, among them 01-03
+skydiver, 01-04 jumpmaster, 01-05 tandem, 01-06 AFF, 01-07 instructor, 01-08
+assistants with a foreign licence, 01-09 master and senior rigger, 01-10
+experts, 01-11 tandem operation), but their content could not be read and
+should be checked against the flows before anything is built.
 
+- Swiss Skydive: [Find a Member lookup](https://swissskydive.org/dax/apps/SSDService/?SSDProfiles), [document catalogue](https://swissskydive.org/dax/apps/SSDService/?SSDDownloads=)
+- Reserve data card: [Parachute Record Log card](https://xdsports.uk/images/thumbs/000/0002170_reserve-log-cards.png)
 - Swiss Skydive: [the way to the licence](https://home.swissskydive.org/der-weg-zur-fallschirmlizenz), [FAQ](https://home.swissskydive.org/faq), [Ausbildungskonzept 00-08d](https://swissskydive.org/dax/share/ssd/documents/00-08d_SSD_Ausbildungskonzept.pdf), [PAC 01-06f](https://swissskydive.org/dax/share/ssd/documents/01-06f_PAC.pdf), [Safety Management System 05-01d](https://swissskydive.org/dax/share/ssd/documents/05-01d_SafetyManagementSystem.pdf)
 - FAI: [Certificates of Proficiency](https://www.fai.org/page/certificates-proficiency)
 - VLK, [SR 748.941](https://www.fedlex.admin.ch/eli/cc/2022/802/de)

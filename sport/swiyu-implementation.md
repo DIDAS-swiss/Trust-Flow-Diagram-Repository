@@ -109,11 +109,11 @@ Skydive domain with type metadata and an OCA bundle for the display:
 
 | Credential | `vct` (proposal) | Validity | Status list |
 | --- | --- | --- | --- |
-| Skydiving licence | `…/skydiving-licence/v1` | No `exp`; valid until withdrawn | 2-bit (suspend) |
+| Skydiving licence | `…/skydiving-licence/v1` | `expiry_date` and `exp` 31 March; a new credential (or wallet renewal) each season | 2-bit (suspend) |
 | Tandem master | `…/tandem-master/v1` | `expiry_date` 31 March, renewed on the annual function report | 2-bit |
 | Rigger licence | `…/rigger-licence/v1` | Per the rigger rules; renewed like other functions if they are | 2-bit |
 | Accident expert | `…/accident-expert/v1` | `expiry_date` and `exp` = end of appointment | 1-bit |
-| Proof of insurance | `…/skydiving-insurance/v1` | `exp` = end of cover (day or year) | 1-bit (cancellation) |
+| Proof of insurance | `…/skydiving-insurance/v1` | `expiry_date` and `exp` 31 March for annual cover, the day itself for day cover | 1-bit (cancellation) |
 | Reserve repack | `…/reserve-repack/v1` | `expiry_date` and `exp` = packing date + 12 months | 1-bit (faulty repack, stolen rig) |
 
 Claim rules: `snake_case` names, ISO dates, labels in the five swiyu locales,
@@ -137,7 +137,10 @@ documents.
 
 ### 5. Renewal and changes
 
-Annual function renewals (tandem master and similar) and name changes are
+The licence, the annual insurance and the functions (tandem master and
+similar) all run to 31 March, so every holder renews at least one credential
+per season. That makes wallet-initiated renewal the most valuable feature to
+switch on. Annual renewals and name changes are
 either revoke-and-reissue, or wallet-initiated renewal through the issuer's
 renewal endpoint. Renewal needs less of the holder, but whether it may carry
 changed claims needs confirming with the swiyu team.
