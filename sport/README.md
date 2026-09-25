@@ -170,14 +170,18 @@ Deliberately **not** in the credential:
 
 ## Open questions for Swiss Skydive
 
-1. May the examiner record the exam protocol (02-09) online, signed in with
-   their own licence, instead of on paper?
-2. Which endorsements exist on the licence itself, as opposed to functions
+1. Which endorsements exist on the licence itself, as opposed to functions
    with their own directive and validity?
-3. Can the ≥ 24 jumps for renewal (01-03 04.07) be checked from a digital
-   logbook, or does it stay the skydiver's declaration?
-4. Do foreign drop zones need anything beyond the licence, such as an IPC
+2. Do foreign drop zones need anything beyond the licence, such as an IPC
    certificate number, that should be a claim?
+
+Decisions taken for the draft, to be confirmed by Swiss Skydive:
+
+- The exam protocol 02-09 is recorded **online** by the examiner, signed in
+  with their own licence; where the examiner is authorised, the candidate
+  also gets an exam result credential.
+- The ≥ 24 jumps for renewal remain the skydiver's **declaration**, governed
+  by 01-03 04.04 and 04.08, not a check against a digital logbook.
 
 ## Sources
 

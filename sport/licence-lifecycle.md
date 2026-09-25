@@ -45,7 +45,7 @@ sequenceDiagram
     Jumper->>Register: Pay licence fee for the season
     Register->>Wallet: Verification: proof of insurance ≥ CHF 1 million, in force
     Wallet-->>Register: Proof of insurance
-    Register->>Register: ≥ 24 jumps in the last 12 months (logbook, reported),<br/>or practical exam passed in the last 12 months
+    Jumper->>Register: Declare ≥ 24 jumps in the last 12 months,<br/>or present exam result credential (practical exam)
     Register->>Issuer: Licence credential, valid_from = payment date,<br/>credential_valid_until = next 31 March
     Issuer-->>Jumper: Credential offer, or renewal on the wallet's request
     Jumper->>Wallet: Accept
@@ -105,10 +105,27 @@ Directive 01-03 (04.06–04.08) sets them:
   "exam failed, licence not valid" or "exam passed, licence validated" — and
   fills in the exam protocol 02-09.
 
-The jump count is the one piece Swiss Skydive cannot see today without the
-skydiver's word; it is in the logbook. A digital logbook whose entries are
-confirmed by the people 01-03 01.05 allows (licensed skydivers, instructors,
-experts, pilots, jump directors) would let the register check it.
+### The 24 jumps: a matter of governance, not of credentials
+
+The jump count stays the **skydiver's declaration** at renewal. It is not
+checked against a digital logbook, and no credential carries it:
+
+- The logbook is paper, kept by the skydiver, with entries confirmed by the
+  people 01-03 01.05 lists. There is no register of jumps to check against,
+  and building one would put every jump of every member into a central
+  system for the sake of one threshold a year.
+- Directive 01-03 already places the responsibility on the skydiver: without
+  the jumps they must **report of their own accord** to the jump director
+  and repeat the practical exam (04.08).
+- What keeps the declaration honest is governance: the logbook can be asked
+  for at any drop zone, at an exam or after an incident, and a false
+  declaration is grounds for withdrawal (04.04).
+
+So the renewal flow records the declaration with the date and the
+declarant, and the credential says only that the licence is valid. The
+alternative path — the practical exam of 04.08 — produces an exam result
+credential (see [licence issuance](./licence-issuance.md#the-exam-result-credential))
+and is verifiable.
 
 ## What swiyu does with each state
 

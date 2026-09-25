@@ -28,10 +28,11 @@ prevails):
 
 The flow runs in four phases:
 
-1. **Exam.** The examiner signs the exam protocol (02-09). Today it is paper;
-   here the examiner signs in with their own instructor or expert licence and
-   records the result, so the register knows it came from someone allowed to
-   examine.
+1. **Exam.** The examiner fills in the exam protocol (02-09) **online**: they
+   sign in with their own instructor or expert licence, so the register knows
+   the entry comes from someone 01-03 03.25–27 allows to examine. Where the
+   examiner is authorised to, Swiss Skydive additionally issues the candidate
+   an **exam result credential** (see below).
 2. **Application with the e-ID.** The candidate applies in the Swiss Skydive
    member area and presents name, date of birth and, optionally, portrait from
    the e-ID over OID4VP.
@@ -158,6 +159,34 @@ sequenceDiagram
     Issuer->>Register: Mark credential issued (status list index)
 ```
 
+## The exam result credential
+
+The online protocol is enough for the licence register. Issuing the result
+to the candidate as a credential as well adds two things: the candidate
+holds proof of each passed part through the 3-year window (01-03 03.02),
+and the same credential serves the renewal exam of 01-03 04.08, where today
+the examiner writes "exam passed, licence validated" into the logbook.
+
+swiyu issuers are single-tenant, so the examiner does not sign it: the
+examiner signs in with their own licence, Swiss Skydive checks that they may
+examine this candidate, and Swiss Skydive's issuer signs a credential naming
+the examiner — the same pattern as the [reserve repack](./reserve-repack.md).
+
+| Claim | Example | From 01-03 / 02-09 |
+| --- | --- | --- |
+| `vct` | `https://swissskydive.org/vc/exam-result/v1` | — (placeholder URL) |
+| `family_name`, `given_name`, `birth_date` | | Candidate, from the e-ID |
+| `exam` | `skydiver-licence` or `licence-renewal` | 03, 04.08 |
+| `parts_passed` | `[{"part": "theory", "date": "2026-06-02"}, {"part": "practical", "date": "2026-09-12"}]` | 03.01–02, per-element disclosure |
+| `examiner_name`, `examiner_licence_number`, `examiner_role` | `…`, `4711`, `school-head` | 03.25: expert, school head or named deputy |
+| `window_ends` | `2029-06-02` | 3 years from the first part passed (03.02) |
+| `exp` (protected) | `2029-06-02` | Same day; the result is useless afterwards |
+
+The licence application then asks for this credential instead of matching
+the e-ID against the register. Only examiners whose own licence shows them
+as authorised — expert, school head or a deputy named on form 02-08 — can
+trigger it.
+
 ## Where trust is decided
 
 | Decision | Made by | On the basis of |
@@ -173,9 +202,8 @@ sequenceDiagram
 - Matching the e-ID to the exam record on name and date of birth is
   enough. If two students share both, the licence register needs a further
   key, such as the Swiss Skydive member number, entered by the student.
-- The examiner records the exam in the member area instead of posting form
-  02-09. A later version could issue the candidate an "exam passed"
-  credential, which removes the matching step entirely.
+- The exam protocol 02-09 is recorded online by the examiner. This is
+  assumed to be acceptable to Swiss Skydive; it is listed for confirmation.
 - The progression sheet (01-03 01.03) could itself be a credential issued by
   the school — it is what admits a student to the jump operation (01-00d
   05.10). Not drawn here.
