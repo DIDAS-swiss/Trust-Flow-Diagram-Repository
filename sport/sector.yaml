@@ -61,6 +61,9 @@ families:
       - id: reserve-repack
         title: Issuing a reserve repack credential valid for one year
         status: draft
+      - id: tandem-reserves
+        title: Manufacturer requirements for tandem reserves and the claims they add
+        status: draft
   - id: drop-zone-check-in
     title: Check-in at the drop zone
     status: draft

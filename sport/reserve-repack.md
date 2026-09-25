@@ -213,8 +213,8 @@ becomes its own credential.
 
 ## Open questions
 
-1. 01-09d lets both senior and master riggers pack reserves and does not
-   single out tandem reserves. Are there tandem-specific requirements, for
-   example from the tandem system manufacturer?
+1. Tandem rigs: 01-09d has no tandem-specific rule, the manufacturers do.
+   See [tandem reserves](./tandem-reserves.md) for their requirements and the
+   extra claims a tandem repack credential carries.
 2. Is Swiss Skydive willing to sign on behalf of riggers it licenses but does
    not employ?

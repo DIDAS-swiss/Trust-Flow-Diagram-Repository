@@ -63,6 +63,7 @@ inside "the wallet checks the issuer" is shown in [`basic-flow/`](../basic-flow)
 | [Tandem pilot](./tandem-pilot.md) | `skydiving-licence` | Swiss Skydive rating plus manufacturer system ratings, renewed every year on the activity report |
 | [Specialist qualifications](./specialist-qualifications.md) | `skydiving-licence` | Rigger licences by level, accident expert certificates, and showing one at an accident |
 | [Skydiving insurance](../insurance/README.md) | `insurance/sport-liability-cover` | Licence presented to an insurer → proof of insurance issued |
+| [Tandem reserves](./tandem-reserves.md) | `reserve-repack` | Manufacturer requirements for tandem reserves (UPT, Paradigm, Safran, X-Skyspirit, Paratec, SWS) and what they add to the repack credential |
 | [Reserve repack](./reserve-repack.md) | `reserve-repack` | Rigger signs in with the rigger licence, repacks, owner receives a repack credential valid for one year |
 | [Manifest check-in](./manifest-check-in.md) | `drop-zone-check-in` | Licence, insurance and repack checked in one manifest session; tandem licence before tandem loads |
 

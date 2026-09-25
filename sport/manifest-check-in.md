@@ -137,7 +137,7 @@ and a fourth credential:
 | --- | --- | --- |
 | Licence | ✅ | ✅ |
 | Insurance | Third-party liability | Cover that includes carrying passengers; drop zone minimum for commercial tandem |
-| Repack | The jumper's rig | The **tandem rig** on the load, often owned by the drop zone. Its repack must be signed by a rigger whose level covers tandem |
+| Repack | The jumper's rig | The **tandem rig** on the load, often owned by the drop zone: `system_type` tandem, AAD in tandem mode, counters within the manufacturer's limits ([tandem reserves](./tandem-reserves.md)) |
 | Tandem licence | — | Current (`expiry_date` not passed) and **not suspended** (01-05 05.03). If the drop zone requires it, a manufacturer rating for the system on the load |
 
 Manufacturer currency (for example, a number of tandem jumps within 90 or 365
