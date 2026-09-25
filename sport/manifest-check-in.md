@@ -1,0 +1,169 @@
+# Manifest check-in
+
+Before booking a jump, the skydiver presents the three things manifest checks
+today on paper — licence, insurance and reserve repack card — as three
+credentials in one manifest session. The drop zone checks all three without
+calling Swiss Skydive or the insurer, and cross-checks that they belong
+together. A tandem pilot additionally presents the tandem licence.
+
+Status: **draft**.
+
+**Requires** `qualification-credential-held`, `insurance-cover-held`, `equipment-inspection-current` · **Establishes** `access-granted`
+
+| Credential | Issued in | Issuer | Replaces today |
+| --- | --- | --- | --- |
+| Skydiving licence | [Licence issuance](./licence-issuance.md) | Swiss Skydive | Licence card / member-portal entry |
+| Proof of insurance | [Skydiving insurance](../insurance/README.md) | Swiss Skydive or an accepted insurer | Insurance certificate |
+| Reserve repack | [Reserve repack](./reserve-repack.md) | Swiss Skydive, rigger named | Looking at the data card in the rig |
+| Tandem licence (tandem loads) | [Tandem pilot](./tandem-pilot.md) | Swiss Skydive | Licence entry, manufacturer card |
+
+Manifest also looks at the logbook for currency. That stays with the
+logbook: a jump count that changes with every jump is not a credential.
+
+**Today** a drop zone checks licence and insurance on paper or in Swiss
+Skydive's public *Find a Member* lookup, which shows, for a last name and a
+licence number, rows such as `Skydiver Licence · expires 31.03.2027` and
+`Skydiving third party liability insurance CHF 3 Mio · expires 31.03.2027`.
+The reserve is checked by opening the data card. The credentials give the
+same answers with the jumper's consent, offline, and without the lookup
+being open to anyone who knows a name and a number.
+
+## Who may jump: the rules the check implements
+
+| Rule | § |
+| --- | --- |
+| Admitted: a valid Swiss Skydive licence, a progression sheet from a Swiss Skydive school, or a valid foreign licence | 01-00d 05.10 |
+| The Swiss licence is valid only with liability insurance in force | 01-03 01.06 |
+| Foreign skydivers: a recognised licence and liability of ≥ CHF 1 million; the person responsible for the day decides on admission from their experience (checklist 02-21) | 01-11d 03.06 |
+| Every rig carries a packing card signed by a senior or master rigger; systems past their service life are not maintained | 01-00d 10.03–04 |
+| AAD mandatory for students, tandem rigs and jumps above 5,000 m ASL | 01-00d 01.08, 01.10, 08.01 |
+| Tandems only by Swiss Skydive tandem pilots or reported foreign-licence assistants, under a Swiss Skydive school or tandem operation | 01-11d 03.07 |
+
+## Three requests, one session
+
+swiyu cannot answer several credentials in one request today: the verifier
+rejects `credential_sets`, and the wallet submits one credential per request
+(see [implementing on swiyu](./swiyu-implementation.md#verification)). The
+manifest system therefore opens one session and runs three single-credential
+DCQL requests in a row. The first one, for the licence, looks like this:
+
+```json
+{
+  "credentials": [
+    {
+      "id": "licence",
+      "format": "dc+sd-jwt",
+      "meta": { "vct_values": ["https://swissskydive.org/vc/skydiving-licence/v1"] },
+      "require_cryptographic_holder_binding": true,
+      "claims": [
+        { "path": ["licence_number"] },
+        { "path": ["family_name"] },
+        { "path": ["given_name"] },
+        { "path": ["portrait"] }
+      ]
+    }
+  ]
+}
+```
+
+The insurance request asks for `licence_number`, `cover`, `liability_sum`,
+`territory`; the repack request for `container_serial`, `expiry_date`,
+`reserve_max_exit_weight_lbs` and the AAD dates.
+Nothing else is asked for. Date of birth, policy number and the other serials
+stay in the wallet.
+
+When swiyu supports `credential_sets`, the three queries go into one request
+and the three scans become one. No credential has to change for that.
+
+## Flow
+
+```mermaid
+%%{init: {"theme": "default", "themeVariables": {"fontFamily": "Inter, Arial"}}}%%
+sequenceDiagram
+    actor Jumper as 👤 Skydiver
+    actor Staff as 🧑‍💼 Manifest staff
+
+    box rgb(220,235,255) Skydiver's device
+        participant Wallet as 🪪 swiyu Wallet
+    end
+
+    box rgb(220,255,220) Drop zone
+        participant Manifest as 🖥️ Manifest system
+        participant Verifier as ✅ swiyu Verifier
+    end
+
+    box rgb(255,235,210) swiyu trust infrastructure
+        participant Trust as 🛡️ Base & Trust Registry
+    end
+
+    Note over Jumper,Trust: Session opened
+    Jumper->>Staff: "One slot on the next load"
+    Staff->>Manifest: New check-in session
+
+    loop licence → insurance → repack
+        Manifest->>Verifier: Create verification (one DCQL query,<br/>accepted_issuer_dids)
+        Verifier-->>Manifest: Signed request, QR code
+        Manifest-->>Jumper: QR code on the manifest screen
+        Jumper->>Wallet: Scan
+        Wallet->>Trust: Resolve drop zone DID, trust statement
+        Trust-->>Wallet: Drop zone — verified identity
+        Wallet-->>Jumper: Drop zone asks for … (pick rig if several repacks)
+        Jumper->>Wallet: Consent
+        Wallet->>Verifier: VP token (direct_post.jwt): one SD-JWT + key binding
+        Verifier->>Trust: Issuer key, status list
+        Verifier->>Verifier: Signature, key binding, nonce, not expired,<br/>issuer accepted, status valid (reject suspended)
+        Verifier-->>Manifest: Verified claims
+    end
+
+    Note over Jumper,Trust: Cross-checks
+    Manifest->>Manifest: insurance.licence_number = licence.licence_number
+    Manifest->>Manifest: liability_sum ≥ drop zone minimum, territory covers CH
+    Manifest->>Manifest: repack expiry_date ≥ today, AAD not past service or life,<br/>declared exit weight ≤ reserve maximum
+
+    Note over Jumper,Trust: Physical match and booking
+    Manifest-->>Staff: ✅ Licence until 2027-03-31 ✅ Insurance until 2027-03-31 ✅ Repack until 2027-09-23
+    Staff->>Jumper: Compare face with portrait
+    Staff->>Jumper: Compare container serial with the rig
+    Staff->>Manifest: Book slot, keep result for today
+    Manifest-->>Jumper: Slot on load 7
+```
+
+## Tandem loads
+
+A tandem pilot presents the same three credentials, with two differences,
+and a fourth credential:
+
+| Check | Solo | Tandem |
+| --- | --- | --- |
+| Licence | ✅ | ✅ |
+| Insurance | Third-party liability | Cover that includes carrying passengers; drop zone minimum for commercial tandem |
+| Repack | The jumper's rig | The **tandem rig** on the load, often owned by the drop zone: `system_type` tandem, AAD in tandem mode, counters within the manufacturer's limits ([tandem reserves](./tandem-reserves.md)) |
+| Tandem licence | — | Current (`expiry_date` not passed) and **not suspended** (01-05 05.03). If the drop zone requires it, a manufacturer rating for the system on the load |
+
+Manufacturer currency (for example, a number of tandem jumps within 90 or 365
+days) is in the tandem pilot's logbook and the drop zone's own manifest
+records, not in the credential. The drop zone checks it as it does today.
+
+A tandem pilot may jump ten times a day. The drop zone keeps the verified
+result for the day and does not ask again before every load.
+
+## Where trust is decided
+
+| Decision | Made by | On the basis of |
+| --- | --- | --- |
+| The licence is genuine and in force | Drop zone | Swiss Skydive's DID, status list |
+| The cover is genuine, in force and belongs to this licence | Drop zone | Insurer's DID, status list, `exp`, matching `licence_number` |
+| The reserve was repacked within 12 months by a rigger allowed to | Drop zone | Swiss Skydive's DID, `expiry_date`; the rigger's level was checked when the repack was issued |
+| The tandem pilot may fly tandems | Drop zone | Tandem licence, status |
+| The person is the holder | Manifest staff | Portrait; the key binding shows the wallet is the one the licence was issued to |
+| The rig on the back is the one repacked | Manifest staff | `container_serial` against the rig |
+| Currency, weather, wing loading, load capacity | Drop zone | Its own rules and records |
+
+## Assumptions
+
+- **The paper stays for now.** The reserve data card belongs to the rig and
+  the law may require the insurance certificate to be carried on the jump.
+  The credentials let manifest check without the paper; whether they may
+  replace it is for Swiss Skydive and FOCA to decide.
+- **Foreign drop zones** need a verifier that trusts Swiss Skydive's DID, or
+  they fall back to paper.

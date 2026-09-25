@@ -60,6 +60,8 @@ wrong within a year of being written.
 | `banking/` | 64, Financial service activities, except insurance and pension funding | L, Financial and insurance activities |
 | `education/` | 85, Education | Q, Education |
 | `health/` | 86, Human health activities | R, Human health and social work activities |
+| `insurance/` | 65, Insurance, reinsurance and pension funding, except compulsory social security | L, Financial and insurance activities |
+| `sport/` | 93, Sports activities and amusement and recreation activities | S, Arts, sports and recreation |
 | `basic-flow/` | none, because it is the reference model rather than a sector | n/a |
 
 A directory name stays short and readable. `health/`, not `human-health-activities/`.

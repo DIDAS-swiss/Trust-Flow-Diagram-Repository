@@ -17,7 +17,9 @@ trust-flows-e-id/
 ├── basic-flow/     reference flow: the trust infrastructure itself
 ├── banking/        KYC, re-identification, 18-year-old re-identification
 ├── education/      issuance of a Maturitätszeugnis, university onboarding
-└── health/         vaccination records, consultation, prescription
+├── health/         vaccination records, consultation, prescription
+├── insurance/      cover taken out by presenting a licence
+└── sport/          skydiving licence, reserve repack, drop zone check-in
 ```
 
 Sector directories are named after their [NOGA
@@ -52,11 +54,17 @@ Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certi
 ### [`health/`](./health)
 Flows for vaccination records held in the patient's wallet: issuing a dose, proving protection while disclosing four claims out of eighteen, check-in against an e-ID and an insurance card, a prescription redeemed once, and correcting a record. Modelled in LikeC4 and bound to the eHealth Suisse exchange formats.
 
+### [`sport/`](./sport)
+Flows for skydiving: the Swiss Skydive licence issued with the e-ID, tandem licence, senior and master rigger licences and expert licences, a reserve repack issued by a rigger and valid for one year, and licence, insurance and repack presented together at a drop zone.
+
+### [`insurance/`](./insurance)
+Flows in which an insurer is the relying party. So far: skydiving cover taken out by presenting the licence, with a proof of insurance issued in return.
+
 ## License
 
 | What | License |
 |---|---|
-| The diagrams and models — the LikeC4 model in [`basic-flow/`](./basic-flow), the diagrams under [`banking/`](./banking) and [`education/`](./education), and the README prose | [CC BY 4.0](./LICENSE-CONTENT) |
+| The diagrams and models — the LikeC4 model in [`basic-flow/`](./basic-flow), the diagrams under [`banking/`](./banking), [`education/`](./education), [`sport/`](./sport) and [`insurance/`](./insurance), and the README prose | [CC BY 4.0](./LICENSE-CONTENT) |
 | The software — GitHub Actions workflows, `index.html`, `assets/style.css`, build configuration | [MIT](./LICENSE) |
 
 Reuse the diagrams freely, including commercially and in modified form, as long

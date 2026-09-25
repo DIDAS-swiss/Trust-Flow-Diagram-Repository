@@ -101,3 +101,21 @@ states:
     title: Service entitlement established
     definition: >-
       The subject's entitlement to a public service has been demonstrated.
+
+  - id: qualification-credential-held
+    title: Qualification credential held
+    definition: >-
+      The subject holds a verifiable licence, rating or proof of competence
+      issued under a governance framework that says what the holder may do.
+
+  - id: insurance-cover-held
+    title: Insurance cover held
+    definition: >-
+      The subject holds a verifiable proof that an insurance policy covering a
+      stated risk is in force for a stated period.
+
+  - id: equipment-inspection-current
+    title: Equipment inspection current
+    definition: >-
+      An item of equipment has passed a required inspection or maintenance,
+      and the attestation of it has not yet expired.

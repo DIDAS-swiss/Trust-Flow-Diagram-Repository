@@ -1,0 +1,81 @@
+sector: sport
+title: Sport
+noga:
+  division: "93"
+  division_title: Sports activities and amusement and recreation activities
+  section: S
+  section_title: Arts, sports and recreation
+  scheme: NOGA 2025
+families:
+  # Three families, because certifying people, servicing a rig and checking a
+  # jumper at the drop zone are three kinds of work with different primary
+  # functions. The insurance that sits between them is in insurance/, because
+  # there the insurer is the relying party. The state interface joins them.
+  - id: skydiving-licence
+    title: Skydiving licences and qualifications
+    status: draft
+    functions:
+      # One family for everything Swiss Skydive certifies about a person: the
+      # licence, tandem licence, rigger licences, experts. The
+      # accident expert flow also shows the certificate checked at a scene,
+      # which is access work; it becomes its own family if accident
+      # investigation grows further flows.
+      primary: certification-and-attestation
+      supporting: [identity-proofing, records-management, eligibility-verification, access-management]
+    states:
+      # Directive 01-03 01.06: the licence is valid only once third-party
+      # liability insurance of at least CHF 1 million is in force, and 04.07
+      # makes it a renewal condition. So insurance comes first.
+      requires: [eid-held, insurance-cover-held]
+      establishes: [qualification-credential-held]
+    flows:
+      - id: licence-issuance
+        title: Issuing the Swiss Skydive licence into the swiyu wallet
+        status: draft
+      - id: licence-lifecycle
+        title: Adding a rating, suspending and withdrawing a licence
+        status: draft
+      - id: tandem-pilot
+        title: Tandem licence under directive 01-05, renewed every year on reported activity
+        status: draft
+      - id: rigger-licence
+        title: Issuing or raising a rigger licence by level
+        status: draft
+      - id: accident-expert
+        title: Appointing an accident expert and showing the certificate at an accident
+        status: draft
+  - id: reserve-repack
+    title: Reserve repack by a rigger
+    status: draft
+    functions:
+      # The credential is about a rig, not about a person: servicing a physical
+      # asset and attesting that it was done.
+      primary: asset-lifecycle-management
+      supporting: [certification-and-attestation, quality-assurance]
+    states:
+      # The rigger proves the qualification with the rigger licence, so this
+      # family requires what the licence family establishes.
+      requires: [qualification-credential-held]
+      establishes: [equipment-inspection-current]
+    flows:
+      - id: reserve-repack
+        title: Issuing a reserve repack credential valid for one year
+        status: draft
+      - id: tandem-reserves
+        title: Manufacturer requirements for tandem reserves and the claims they add
+        status: draft
+  - id: drop-zone-check-in
+    title: Check-in at the drop zone
+    status: draft
+    functions:
+      primary: eligibility-verification
+      supporting: [access-management]
+    states:
+      # Licence, insurance and repack are checked in one manifest session:
+      # three requests today, one once swiyu supports credential_sets.
+      requires: [qualification-credential-held, insurance-cover-held, equipment-inspection-current]
+      establishes: [access-granted]
+    flows:
+      - id: manifest-check-in
+        title: Licence, insurance and repack at manifest, tandem licence before tandem loads
+        status: draft

@@ -21,6 +21,8 @@ body:
         - "banking — Banking (division 64)"
         - "education — Education (division 85)"
         - "health — Health (division 86)"
+        - "insurance — Insurance (division 65)"
+        - "sport — Sport (division 93)"
         - "a new sector — not listed above"
     validations:
       required: true
@@ -42,7 +44,7 @@ body:
         - "49 — Land transport and transport via pipelines (section H)"
         - "61 — Telecommunication (section K)"
         - "64 — Financial service activities, except insurance and pension funding (section L) — already banking/"
-        - "65 — Insurance, reinsurance and pension funding, except compulsory social security (section L)"
+        - "65 — Insurance, reinsurance and pension funding, except compulsory social security (section L) — already insurance/"
         - "66 — Activities auxiliary to financial services and insurance activities (section L)"
         - "68 — Real estate activities (section M)"
         - "78 — Employment activities (section O)"
@@ -50,6 +52,7 @@ body:
         - "85 — Education (section Q) — already education/"
         - "86 — Human health activities (section R) — already health/"
         - "87 — Residential care activities (section R)"
+        - "93 — Sports activities and amusement and recreation activities (section S) — already sport/"
         - "94 — Activities of membership organisations (section T)"
         - "98 — Undifferentiated goods- and service-producing activities of private households for own use (section U)"
         - "99 — Activities of extraterritorial organisations and bodies (section V)"
@@ -69,6 +72,10 @@ body:
         - "education/certificates-and-enrolment — Certificates and enrolment"
         - "health/immunization — Immunization and vaccination records"
         - "health/public-health-statistics — Population health statistics"
+        - "insurance/sport-liability-cover — Sport liability and accident cover"
+        - "sport/skydiving-licence — Skydiving licences and qualifications"
+        - "sport/reserve-repack — Reserve repack by a rigger"
+        - "sport/drop-zone-check-in — Check-in at the drop zone"
         - "a new family — described below"
     validations:
       required: true
