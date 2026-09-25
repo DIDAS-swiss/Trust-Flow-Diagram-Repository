@@ -1,8 +1,9 @@
 # Reserve repack
 
-A rigger inspects and repacks the reserve parachute of a rig and has a repack
-credential issued into the owner's swiyu wallet. It is valid for **12 months**
-from the packing date. At manifest it lets the drop zone check the repack
+A senior or master rigger inspects and repacks the reserve of a rig,
+certifies its airworthiness, and has a repack credential issued into the
+owner's swiyu wallet. It is valid for the repack cycle — **12 months** in this
+flow — from the packing date. At manifest it lets the drop zone check the repack
 without anyone opening the container to read the data card.
 
 Status: **draft**.
@@ -29,17 +30,34 @@ symbol, and the same symbol goes into the "certificate no. and seal" column.
 An intact seal with that symbol on the card is how anyone can see that nobody
 has opened the reserve since. Two things are worth noting:
 
-- **The repack cycle is written on the card**, in days. The credential takes
-  it from there instead of assuming one: 365 days in this flow, as specified
-  for Swiss Skydive.
+- **The repack cycle is written on the card**, in days. Swiss Skydive does not
+  fix one: "the packing cycle for the reserve is set by the manufacturer"
+  (01-00d 10.02). The credential takes it from the card: 365 days in this
+  flow.
 - **The canopy limitations** are what a drop zone would need to check wing
   loading on the reserve: the jumper's exit weight must stay below the
   maximum. The credential carries them so the check can be made.
 
-The seal on the reserve closing loop carries the rigger's personal seal
-symbol, and the same symbol goes on the card line. An intact seal with that
-symbol on the card is how anyone can see that nobody has opened the reserve
-since. The rigger also keeps their own log of the work, separate from the card.
+## What Swiss Skydive requires
+
+Directive **01-09d** (valid from June 2025) and **01-00d 10** set what goes
+on the card and when a rigger may certify:
+
+| Requirement | Rule | § |
+| --- | --- | --- |
+| Who | Harness, reserve and AAD are maintained and packed only by a **senior or master rigger**, following the manufacturers' manuals | 01-00d 10.01 |
+| Cycle | Set by the manufacturer | 01-00d 10.02 |
+| Card on every system | Signed by the senior or master rigger | 01-00d 10.03 |
+| **Packing card must show** | a) owner's name; b) reserve: manufacturer, type, serial, date of manufacture; c) harness: the same; d) AAD: the same plus **dates of battery changes and periodic checks**; e) **packing date and validity period**; f) packing place; g) rigger's **signature and ID number** | 01-09d 01.06 |
+| **SSD seal** | The responsible rigger's symbols assigned by Swiss Skydive | 01-09d 01.06 |
+| Certifying airworthiness | Only with valid Swiss Skydive licences; the whole system checked; repairs done professionally; every part inspected; **service life not exceeded** (an exception must be defined, documented and signed by the rigger) | 01-09d 01.05 |
+| Approval | Reserve and harness need an FAA-TSO, E-TSO or equivalent TSO; the manufacturer's warning label must be on harness and reserve, or the system loses its airworthiness | 01-09d 01.04 c, 01-00d 10.05 |
+| Rigger book | Every job recorded, kept ≥ 5 years | 01-09d 01.07 |
+| AAD mandatory | For students, tandem rigs and jumps above 5,000 m ASL | 01-00d 01.08, 01.10, 08.01 |
+
+The printed international card has no column for AAD battery and check dates
+or for the validity period; Swiss riggers write them in. The credential gives
+each its own claim.
 
 ## What changes and what does not
 
@@ -62,14 +80,15 @@ The rigger does, in substance; Swiss Skydive does, technically. swiyu issuers
 are single-tenant ([implementing on swiyu](./swiyu-implementation.md#issuance)),
 and a drop zone should have to trust one DID for repacks, not one per rigger.
 So the rigger signs in to a **rigger app** with their own rigger licence, the
-licence register checks that the rigger's level covers this rig, and Swiss
+licence register checks that the rigger licence is valid and its rating
+(R or F) covers the reserve, and Swiss
 Skydive's issuer signs a credential that names the rigger.
 
 | | Swiss Skydive signs, rigger named (this flow) | Each rigger signs |
 | --- | --- | --- |
 | Issuer DIDs a drop zone trusts | One | One per rigger |
 | Rigger licence withdrawn | Swiss Skydive refuses their next repack at once | Every drop zone must learn it |
-| Level check (e.g. tandem rigs) | At issuance, by the licence register | By every verifier |
+| Licence and rating check | At issuance, by the licence register | By every verifier |
 | swiyu today | Works: one issuer, management API | Every rigger would run an issuer and onboard a DID |
 
 ## Flow
@@ -117,7 +136,7 @@ sequenceDiagram
 
     Note over Owner,Trust: Phase 3 — Credential for the owner (OID4VCI)
     App->>Register: Submit repack record
-    Register->>Register: Level covers this rig (tandem needs a tandem-capable level),<br/>AAD not past service date or end of life
+    Register->>Register: Rigger licence valid, rating covers the reserve (F for ram-air),<br/>TSO, service life and AAD dates within limits
     Register->>Issuer: POST /management/api/credentials<br/>claims, credential_valid_until = packing date + repack_cycle_days
     Issuer-->>Register: Offer deep link, short validity
     Register-->>App: Offer
@@ -146,15 +165,18 @@ Every claim selectively disclosable. Dates are ISO dates.
 | `container_manufacturer`, `container_model`, `container_serial`, `container_dom` | `UPT`, `Vector 3`, `V3-24-01873`, `2024-03` | Equipment data: harness & container |
 | `reserve_manufacturer`, `reserve_model`, `reserve_serial`, `reserve_dom` | `PD`, `Reserve 160`, `R-55621`, `2024-01` | Equipment data: reserve canopy |
 | `aad_manufacturer`, `aad_model`, `aad_serial`, `aad_dom` | `Airtec`, `CYPRES 2`, `C2-99812`, `2023-11` | Equipment data: AAD |
+| `aad_battery_changes`, `aad_periodic_checks` | `["2027-11"]`, `[]` | Required on the Swiss card (01-09d 01.06 d) |
+| `tso` | `{"reserve": "TSO-C23d", "harness": "TSO-C23d"}` | Required for airworthiness (01-09d 01.04 c) |
+| `service_life_extension` | — | Only if the rigger extended a system past its service life; the documented conditions (01-09d 01.05 f) |
 | `reserve_max_exit_weight_lbs` | `254` | Never exceed: maximum exit weight. Kept in lbs as on the card |
 | `reserve_max_deployment_speed_kts` | `150` | Never exceed: maximum deployment speed |
 | `repack_cycle_days` | `365` | Header: repack cycle |
 | `packing_date`, `packing_place` | `2026-09-23`, `Beromünster` | Repack line: date, place |
-| `rigger_name`, `rigger_certificate_number`, `rigger_level` | `Max Beispiel`, `R-0471`, `senior-rigger` | Repack line: rigger's signature, certificate no. |
-| `seal_symbol` | `K7` | Repack line: seal; matches the seal on the rig |
+| `rigger_name`, `rigger_licence_number`, `rigger_level` | `Max Beispiel`, `R-0471`, `senior-rigger` | Repack line: signature and ID number (01-09d 01.06 g) |
+| `seal_symbol` | `K7` | SSD seal: the symbols Swiss Skydive assigned to the rigger |
 | `remarks` | `inspected and repacked` | Repack line: remarks, including any defects found |
 | `aad_next_service`, `aad_end_of_life` | `2028-11`, `2039-05` | Not on the card's columns; derived from the AAD model and date of manufacture (CYPRES 2 built from 2017: optional service at 5 and 10 years, 15.5-year life; Vigil: 20-year life) |
-| `expiry_date` | `2027-09-23` | — packing date + `repack_cycle_days`; the wallet shows "Expired" after it |
+| `expiry_date` | `2027-09-23` | Validity period (01-09d 01.06 e): packing date + `repack_cycle_days`; the wallet shows "Expired" after it |
 | `exp` (protected) | `2027-09-23` | — set via `credential_valid_until`; after it the wallet will not present the credential |
 | `status`, `cnf` (protected) | | Status list; bound to the owner's wallet |
 
@@ -191,8 +213,8 @@ becomes its own credential.
 
 ## Open questions
 
-1. Which of the two rigger levels (senior, master; directive 01-09d) may repack tandem reserves.
-2. Do Swiss drop zones accept a repack under a foreign rig's shorter interval,
-   or always apply 12 months?
-3. Is Swiss Skydive willing to sign on behalf of riggers it licenses but does
+1. 01-09d lets both senior and master riggers pack reserves and does not
+   single out tandem reserves. Are there tandem-specific requirements, for
+   example from the tandem system manufacturer?
+2. Is Swiss Skydive willing to sign on behalf of riggers it licenses but does
    not employ?

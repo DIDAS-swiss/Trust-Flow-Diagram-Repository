@@ -45,7 +45,7 @@ jumper insured, and was the reserve repacked within the last year.
 | Training facility | — (existing process) | Trains the student, conducts the proficiency test, reports the result |
 | Swiss Skydive | Issuer, and verifier of the e-ID | Checks applications; issues and manages the licence, rigger licences, accident expert certificates and repack credentials |
 | Rigger | Holder of a rigger licence, in levels | Repacks the reserve and has the repack credential issued to the rig owner |
-| Tandem master | Holder of a tandem master credential | Flies tandem passengers; presents the credential before tandem loads |
+| Tandem pilot | Holder of a tandem licence (directive 01-05) | Flies tandem passengers; presents the tandem licence before tandem loads |
 | Accident expert | Holder of an accident expert certificate | Investigates accidents for Swiss Skydive, shows the certificate at the scene |
 | Insurer | Verifier of the licence, issuer of the proof of insurance | Sells cover on the strength of the licence ([`insurance/`](../insurance)) |
 | Drop zone | Verifier | Checks licence, insurance and repack together at manifest |
@@ -60,11 +60,11 @@ inside "the wallet checks the issuer" is shown in [`basic-flow/`](../basic-flow)
 | --- | --- | --- |
 | [Licence issuance](./licence-issuance.md) | `skydiving-licence` | Proficiency test passed → e-ID presented to Swiss Skydive → licence issued over OID4VCI |
 | [Licence lifecycle](./licence-lifecycle.md) | `skydiving-licence` | Adding a rating, correcting data, suspending and withdrawing through the status list |
-| [Tandem master](./tandem-master.md) | `skydiving-licence` | Swiss Skydive rating plus manufacturer system ratings, renewed every year on the activity report |
+| [Tandem pilot](./tandem-pilot.md) | `skydiving-licence` | Swiss Skydive rating plus manufacturer system ratings, renewed every year on the activity report |
 | [Specialist qualifications](./specialist-qualifications.md) | `skydiving-licence` | Rigger licences by level, accident expert certificates, and showing one at an accident |
 | [Skydiving insurance](../insurance/README.md) | `insurance/sport-liability-cover` | Licence presented to an insurer → proof of insurance issued |
 | [Reserve repack](./reserve-repack.md) | `reserve-repack` | Rigger signs in with the rigger licence, repacks, owner receives a repack credential valid for one year |
-| [Manifest check-in](./manifest-check-in.md) | `drop-zone-check-in` | Licence, insurance and repack checked in one manifest session; tandem master before tandem loads |
+| [Manifest check-in](./manifest-check-in.md) | `drop-zone-check-in` | Licence, insurance and repack checked in one manifest session; tandem licence before tandem loads |
 
 **[Implementing on swiyu](./swiyu-implementation.md)** checks these flows
 against the swiyu specifications and code as of September 2026 and proposes
@@ -76,9 +76,11 @@ The families are joined by their states, and the check derives the chain:
 
 ```
 basic-flow/trust-infrastructure
+    -> insurance/sport-liability-cover      via eid-held
     -> sport/skydiving-licence              via eid-held
+insurance/sport-liability-cover
+    -> sport/skydiving-licence              via insurance-cover-held  (01-03: no licence without it)
 sport/skydiving-licence
-    -> insurance/sport-liability-cover      via qualification-credential-held
     -> sport/reserve-repack                 via qualification-credential-held  (the rigger licence)
     -> sport/drop-zone-check-in             via qualification-credential-held
 insurance/sport-liability-cover
@@ -113,8 +115,10 @@ licence and insurance:
 
 Three things follow for the credential:
 
-- **The licence is annual.** It is issued for the season and expires on
-  **31 March** of the following year. It is not valid until withdrawn.
+- **The licence is annual.** It runs from issue to **31 March** of the
+  following year (directive 01-03 04.06) and is renewed only with ≥ 24 jumps
+  in 12 months, the fee paid and liability insurance of ≥ CHF 1 million in
+  force (04.07).
 - **The date on the row is the date of this year's licence**, not the date the
   holder first qualified.
 - **Today's check is a public lookup.** Whoever knows a name and a licence
@@ -123,13 +127,15 @@ Three things follow for the credential:
   consents to, which works offline and cannot be run against someone who is
   not present. The lookup can stay as a fallback for foreign drop zones.
 
-Other public facts:
+Other facts:
 
 | | |
 | --- | --- |
-| Issued by | Swiss Skydive, after the proficiency test of the Swiss Skydive Education System (SES), on application |
+| Issued by | Swiss Skydive, on application with the exam protocol 02-09 signed by the examiner (01-03 03.05) |
+| Allows | Jumping independently (01-03 04.02) |
+| Valid only | Once third-party liability insurance is in force (01-03 01.06) |
 | FAI | FAI Certificates of Proficiency keep one country and one number across levels. Whether Swiss Skydive prints A–D levels was not found |
-| Legal frame | The VLK (SR 748.941) regulates parachute jumps (jumpmaster, airspace, insurance). No state licence for sport skydivers was found; the licence is the association's |
+| Legal frame | The VLK (SR 748.941) regulates parachute jumps; art. 13 sets the liability insurance. Admission to Swiss jump operations: a valid Swiss Skydive licence, a progression sheet from a Swiss Skydive school, or a valid foreign licence (01-00d 05.10). The licence itself is the association's |
 
 ### The licence credential
 
@@ -146,7 +152,7 @@ Other public facts:
 | `valid_from` | `2026-09-19` | selective | Date |
 | `expiry_date` | `2027-03-31` | selective | Expire. The wallet shows "Expired" after it |
 | `exp` | `2027-03-31` | protected | — Set via `credential_valid_until`; an expired licence cannot be presented |
-| `endorsements` | `["wingsuit"]` | selective | — Assumption: only if Swiss Skydive records endorsements without rules of their own. Functions — tandem master, jumpmaster, AFF instructor, rigger — are separate credentials |
+| `endorsements` | `["wingsuit"]` | selective | — Assumption: only if Swiss Skydive records endorsements without rules of their own. Functions — tandem pilot, jumpmaster, AFF instructor, rigger, expert — are separate credentials |
 | `status` | status list reference | protected | — 2-bit list, for suspension and withdrawal during the season |
 | `cnf` | holder public key | protected | — Binds the licence to the wallet |
 
@@ -164,26 +170,36 @@ Deliberately **not** in the credential:
 
 ## Open questions for Swiss Skydive
 
-1. How does a training facility report a passed proficiency test today, and can
-   that report become the trigger for the credential offer?
+1. May the examiner record the exam protocol (02-09) online, signed in with
+   their own licence, instead of on paper?
 2. Which endorsements exist on the licence itself, as opposed to functions
-   with their own validation?
-3. Should the Aero-Club membership that active members also need be verified
-   at application, or is it already known to Swiss Skydive?
+   with their own directive and validity?
+3. Can the ≥ 24 jumps for renewal (01-03 04.07) be checked from a digital
+   logbook, or does it stay the skydiver's declaration?
 4. Do foreign drop zones need anything beyond the licence, such as an IPC
    certificate number, that should be a claim?
 
 ## Sources
 
-The semantics above were researched on 2026-09-23 and 2026-09-24. Primary
-sources are Swiss Skydive's public member lookup and a reserve data card of
-the kind in use. The Swiss Skydive directives are known by title from the
-list its Safety Management System gives (01-00 to 01-11, among them 01-03
-skydiver, 01-04 jumpmaster, 01-05 tandem, 01-06 AFF, 01-07 instructor, 01-08
-assistants with a foreign licence, 01-09 master and senior rigger, 01-10
-experts, 01-11 tandem operation), but their content could not be read and
-should be checked against the flows before anything is built.
+The semantics above were researched between 2026-09-23 and 2026-09-25.
+Primary sources are Swiss Skydive's public member lookup, a reserve data card
+of the kind in use, and the Swiss Skydive directives themselves:
 
+| Directive | Version read | Used in |
+| --- | --- | --- |
+| 01-00d Sicherheit | current | Equipment, AAD, admission to jump operations, rigging |
+| 01-03f Parachutiste (Fallschirmspringer) | March 2022 | [Licence issuance](./licence-issuance.md), [lifecycle](./licence-lifecycle.md) |
+| 01-04d Jumpmaster | March 2024 | Function list |
+| 01-05f Pilote Tandem | May 2024 | [Tandem pilot](./tandem-pilot.md) |
+| 01-09d Master- und Senior Rigger | June 2025 | [Specialist qualifications](./specialist-qualifications.md), [reserve repack](./reserve-repack.md) |
+| 01-10d Experten | February 2025 | [Specialist qualifications](./specialist-qualifications.md) |
+| 01-11d Tandembetrieb | March 2023 | [Tandem pilot](./tandem-pilot.md), [insurance](../insurance/README.md) |
+
+01-03 and 01-05 were read in French; the German versions prevail and could
+not be downloaded. 01-08d (assistants with a foreign licence) was not
+available.
+
+- Swiss Skydive directives: `https://swissskydive.org/dax/share/ssd/documents/<code>_<title>.pdf`, e.g. [01-09d](https://swissskydive.org/dax/share/ssd/documents/01-09d_Master_und_Senior_Rigger.pdf), [01-10d](https://swissskydive.org/dax/share/ssd/documents/01-10d_Experten.pdf), [01-11d](https://swissskydive.org/dax/share/ssd/documents/01-11d_Tandembetrieb.pdf), [01-03f](https://swissskydive.org/dax/share/ssd/documents/01-03f_Parachutistes.pdf), [01-05f](https://swissskydive.org/dax/share/ssd/documents/01-05f_Tandem.pdf)
 - Swiss Skydive: [Find a Member lookup](https://swissskydive.org/dax/apps/SSDService/?SSDProfiles), [document catalogue](https://swissskydive.org/dax/apps/SSDService/?SSDDownloads=)
 - Reserve data card: [Parachute Record Log card](https://xdsports.uk/images/thumbs/000/0002170_reserve-log-cards.png)
 - Swiss Skydive: [the way to the licence](https://home.swissskydive.org/der-weg-zur-fallschirmlizenz), [FAQ](https://home.swissskydive.org/faq), [Ausbildungskonzept 00-08d](https://swissskydive.org/dax/share/ssd/documents/00-08d_SSD_Ausbildungskonzept.pdf), [PAC 01-06f](https://swissskydive.org/dax/share/ssd/documents/01-06f_PAC.pdf), [Safety Management System 05-01d](https://swissskydive.org/dax/share/ssd/documents/05-01d_SafetyManagementSystem.pdf)

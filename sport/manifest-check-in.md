@@ -4,7 +4,7 @@ Before booking a jump, the skydiver presents the three things manifest checks
 today on paper — licence, insurance and reserve repack card — as three
 credentials in one manifest session. The drop zone checks all three without
 calling Swiss Skydive or the insurer, and cross-checks that they belong
-together. A tandem master additionally presents the tandem master credential.
+together. A tandem pilot additionally presents the tandem licence.
 
 Status: **draft**.
 
@@ -15,7 +15,7 @@ Status: **draft**.
 | Skydiving licence | [Licence issuance](./licence-issuance.md) | Swiss Skydive | Licence card / member-portal entry |
 | Proof of insurance | [Skydiving insurance](../insurance/README.md) | Swiss Skydive or an accepted insurer | Insurance certificate |
 | Reserve repack | [Reserve repack](./reserve-repack.md) | Swiss Skydive, rigger named | Looking at the data card in the rig |
-| Tandem master (tandem loads) | [Tandem master](./tandem-master.md) | Swiss Skydive | Rating card, manufacturer card |
+| Tandem licence (tandem loads) | [Tandem pilot](./tandem-pilot.md) | Swiss Skydive | Licence entry, manufacturer card |
 
 Manifest also looks at the logbook for currency. That stays with the
 logbook: a jump count that changes with every jump is not a credential.
@@ -27,6 +27,17 @@ licence number, rows such as `Skydiver Licence · expires 31.03.2027` and
 The reserve is checked by opening the data card. The credentials give the
 same answers with the jumper's consent, offline, and without the lookup
 being open to anyone who knows a name and a number.
+
+## Who may jump: the rules the check implements
+
+| Rule | § |
+| --- | --- |
+| Admitted: a valid Swiss Skydive licence, a progression sheet from a Swiss Skydive school, or a valid foreign licence | 01-00d 05.10 |
+| The Swiss licence is valid only with liability insurance in force | 01-03 01.06 |
+| Foreign skydivers: a recognised licence and liability of ≥ CHF 1 million; the person responsible for the day decides on admission from their experience (checklist 02-21) | 01-11d 03.06 |
+| Every rig carries a packing card signed by a senior or master rigger; systems past their service life are not maintained | 01-00d 10.03–04 |
+| AAD mandatory for students, tandem rigs and jumps above 5,000 m ASL | 01-00d 01.08, 01.10, 08.01 |
+| Tandems only by Swiss Skydive tandem pilots or reported foreign-licence assistants, under a Swiss Skydive school or tandem operation | 01-11d 03.07 |
 
 ## Three requests, one session
 
@@ -119,7 +130,7 @@ sequenceDiagram
 
 ## Tandem loads
 
-A tandem master presents the same three credentials, with two differences,
+A tandem pilot presents the same three credentials, with two differences,
 and a fourth credential:
 
 | Check | Solo | Tandem |
@@ -127,13 +138,13 @@ and a fourth credential:
 | Licence | ✅ | ✅ |
 | Insurance | Third-party liability | Cover that includes carrying passengers; drop zone minimum for commercial tandem |
 | Repack | The jumper's rig | The **tandem rig** on the load, often owned by the drop zone. Its repack must be signed by a rigger whose level covers tandem |
-| Tandem master | — | Credential current (`expiry_date` not passed), not suspended, and a manufacturer rating in `system_ratings` that matches the tandem system on the load |
+| Tandem licence | — | Current (`expiry_date` not passed) and **not suspended** (01-05 05.03). If the drop zone requires it, a manufacturer rating for the system on the load |
 
 Manufacturer currency (for example, a number of tandem jumps within 90 or 365
-days) is in the tandem master's logbook and the drop zone's own manifest
+days) is in the tandem pilot's logbook and the drop zone's own manifest
 records, not in the credential. The drop zone checks it as it does today.
 
-A tandem master may jump ten times a day. The drop zone keeps the verified
+A tandem pilot may jump ten times a day. The drop zone keeps the verified
 result for the day and does not ask again before every load.
 
 ## Where trust is decided
@@ -143,7 +154,7 @@ result for the day and does not ask again before every load.
 | The licence is genuine and in force | Drop zone | Swiss Skydive's DID, status list |
 | The cover is genuine, in force and belongs to this licence | Drop zone | Insurer's DID, status list, `exp`, matching `licence_number` |
 | The reserve was repacked within 12 months by a rigger allowed to | Drop zone | Swiss Skydive's DID, `expiry_date`; the rigger's level was checked when the repack was issued |
-| The tandem master may fly this tandem system | Drop zone | Tandem master credential, `system_ratings` |
+| The tandem pilot may fly tandems | Drop zone | Tandem licence, status |
 | The person is the holder | Manifest staff | Portrait; the key binding shows the wallet is the one the licence was issued to |
 | The rig on the back is the one repacked | Manifest staff | `container_serial` against the rig |
 | Currency, weather, wing loading, load capacity | Drop zone | Its own rules and records |

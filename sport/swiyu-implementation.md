@@ -110,9 +110,9 @@ Skydive domain with type metadata and an OCA bundle for the display:
 | Credential | `vct` (proposal) | Validity | Status list |
 | --- | --- | --- | --- |
 | Skydiving licence | `…/skydiving-licence/v1` | `expiry_date` and `exp` 31 March; a new credential (or wallet renewal) each season | 2-bit (suspend) |
-| Tandem master | `…/tandem-master/v1` | `expiry_date` 31 March, renewed on the annual function report | 2-bit |
-| Rigger licence | `…/rigger-licence/v1` | Per the rigger rules; renewed like other functions if they are | 2-bit |
-| Accident expert | `…/accident-expert/v1` | `expiry_date` and `exp` = end of appointment | 1-bit |
+| Tandem licence | `…/tandem-licence/v1` | `expiry_date` and `exp` 31 March, renewed on the reported activity (01-05) | 2-bit (suspension is in the directive) |
+| Rigger licence | `…/rigger-licence/v1` | No `exp`: unlimited (01-09d 07.02) | 2-bit |
+| Expert licence | `…/expert-licence/v1` | `expiry_date` and `exp` 48 months from election, then +12 months per renewal (01-10d 03) | 1-bit |
 | Proof of insurance | `…/skydiving-insurance/v1` | `expiry_date` and `exp` 31 March for annual cover, the day itself for day cover | 1-bit (cancellation) |
 | Reserve repack | `…/reserve-repack/v1` | `expiry_date` and `exp` = packing date + 12 months | 1-bit (faulty repack, stolen rig) |
 
@@ -137,7 +137,7 @@ documents.
 
 ### 5. Renewal and changes
 
-The licence, the annual insurance and the functions (tandem master and
+The licence, the annual insurance and the functions (tandem licence and
 similar) all run to 31 March, so every holder renews at least one credential
 per season. That makes wallet-initiated renewal the most valuable feature to
 switch on. Annual renewals and name changes are

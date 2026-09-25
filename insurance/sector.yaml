@@ -11,16 +11,20 @@ families:
     title: Sport liability and accident cover
     status: draft
     functions:
-      # The insurer is the relying party: it verifies a licence before it
-      # takes on the risk, and issues proof of cover afterwards.
+      # The insurer is the relying party: it verifies the person (last
+      # season's licence, or the e-ID for someone without one) before it takes
+      # on the risk, and issues proof of cover afterwards.
       primary: relationship-onboarding
       supporting: [eligibility-verification, contracting-and-signing, certification-and-attestation]
     states:
-      requires: [qualification-credential-held]
+      # Only the e-ID: Swiss Skydive also insures people without a licence,
+      # and Swiss Skydive directive 01-03 makes the insurance a precondition
+      # of the licence rather than the other way round.
+      requires: [eid-held]
       # Not customer-relationship-open: that state is what banking re-identification
       # requires, and a policy is not a bank relationship.
       establishes: [insurance-cover-held]
     flows:
       - id: skydiving-cover
-        title: Taking out skydiving insurance with the licence
+        title: Taking out skydiving liability insurance, with the licence where there is one
         status: draft

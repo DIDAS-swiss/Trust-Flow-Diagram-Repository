@@ -21,13 +21,16 @@ the drop zone it is checked together with the licence and the reserve repack
 
 Status: **draft**.
 
-**Requires** `qualification-credential-held` · **Establishes** `insurance-cover-held`
+**Requires** `eid-held` · **Establishes** `insurance-cover-held`
 
 ### Today
 
 | | | Source |
 | --- | --- | --- |
-| Legal minimum | The VLK (SR 748.941) requires third-party liability insurance for damage on the ground of at least CHF 1 million, and the insurance certificate must be carried on the jump | VLK, read from a search excerpt; article not verified |
+| Legal minimum | Third-party liability for damage on the ground of at least **CHF 1 million** (VLK art. 13) | Swiss Skydive directive 01-03 04.07; 01-11 03.06 |
+| Licence depends on it | "The licence is valid once liability insurance … has been concluded" — and it is a condition of every annual renewal | 01-03 01.06, 04.07 |
+| Foreign skydivers | Admitted to Swiss jump operations with a recognised licence and liability of at least CHF 1 million | 01-11 03.06 |
+| Tandem operations | Need parachute liability for tandem equipment, passenger insurance, accident insurance and business liability | 01-11 03.09 |
 | Where skydivers buy it | Swiss Skydive sells **day insurance** and **annual insurance** online; cover starts when payment is complete. Annual insurance requires active Swiss Skydive membership, which in turn requires Aero-Club membership | Swiss Skydive FAQ |
 | Insurer and product | **AXA** parachute insurance. The annual product shows as "Skydiving third party liability insurance **CHF 3 Mio**" | Swiss Skydive *Find a Member* lookup |
 | Term | The annual insurance expires on **31 March**, the same day as the licence, whenever in the season it was bought | Swiss Skydive *Find a Member* lookup |
@@ -40,11 +43,14 @@ The flow shows it that way. An insurer selling directly would run the same
 flow with its own DID, and each drop zone would have to accept that DID as
 well.
 
-Presenting the licence is the normal path, and the one this flow shows: it
-fills in the person and links the policy to the licence. It is not a
-precondition, since Swiss Skydive also insures people without a licence.
-They present the e-ID instead and the proof carries no `licence_number`; the
-drop zone then checks their foreign licence separately.
+**The order is insurance first, licence second.** Swiss Skydive's own rule
+makes the licence depend on the insurance, not the other way round. In
+practice the two are bought together each season: the skydiver presents
+last season's licence to buy the insurance (which fills in the person and
+links the policy to the licence number), and the licence renewal then checks
+the new proof of insurance. Someone without a Swiss licence — a first-time
+licence candidate or a foreign skydiver — presents the e-ID instead; the
+proof then carries no `licence_number`.
 
 ### Flow
 
@@ -69,7 +75,7 @@ sequenceDiagram
         participant Trust as 🛡️ Base & Trust Registry
     end
 
-    Note over Jumper,Trust: Phase 1 — Present the licence
+    Note over Jumper,Trust: Phase 1 — Present last season's licence (or the e-ID)
     Jumper->>Browser: "Day insurance for Saturday" or "annual insurance"
     Browser->>Shop: Start
     Shop->>Verifier: Verification (DCQL): licence —<br/>licence_number, family_name, given_name, birth_date
@@ -84,8 +90,8 @@ sequenceDiagram
     Verifier->>Verifier: Signature, key binding, status valid (reject suspended)
     Verifier-->>Shop: Licensed skydiver
     opt Tandem cover
-        Shop->>Verifier: Second verification: tandem master credential
-        Verifier-->>Shop: Tandem master, valid until 2027-03-31
+        Shop->>Verifier: Second verification: tandem licence
+        Verifier-->>Shop: Tandem licence, valid until 2027-03-31
     end
 
     Note over Jumper,Trust: Phase 2 — Contract

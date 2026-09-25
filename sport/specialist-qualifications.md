@@ -1,83 +1,102 @@
-# Specialist qualifications: rigger licences and accident experts
+# Specialist qualifications: rigger licences and expert licences
 
-Swiss Skydive issues two kinds of qualification beyond the skydiving licence,
-each as its own credential:
+Swiss Skydive issues two further kinds of licence, each as its own credential:
 
-- a **rigger licence**, in levels, which says what work on a rig the holder may
-  do and sign for, and
-- an **accident expert certificate**, which says the holder is appointed to
-  investigate skydiving accidents and incidents for Swiss Skydive.
+- a **rigger licence** — senior rigger or master rigger, with a rating for
+  round canopies, ram-air canopies or both — which says what work on a
+  parachute system the holder may do and certify (directive **01-09d**,
+  valid from June 2025), and
+- an **expert licence** — parachute expert, accident expert or material
+  expert — held by the people the delegates' assembly elects to examine,
+  inspect schools and investigate accidents (directive **01-10d**, valid from
+  February 2025).
 
-Status: **draft**. The two rigger levels and the "expert" function are named
-in the Swiss Skydive directives listed by its Safety Management System:
-**01-09d Master- und Senior Rigger** and **01-10d Experten**. The directives
-themselves could not be read; what each level permits is taken by analogy
-from the FAA senior and master rigger certificates until they are.
-
-Part of the `skydiving-licence` family. The rigger licence builds on the skydiving licence; the accident expert certificate does not have to.
+Status: **draft**. Part of the `skydiving-licence` family.
 
 **Requires** `eid-held` · **Establishes** `qualification-credential-held`
 
-## Why separate credentials, not ratings on the licence
+## Why separate credentials, not entries on the skydiving licence
 
-| | Rating inside the licence | Separate credential |
+| | Entry inside the skydiving licence | Separate credential |
 | --- | --- | --- |
-| Level raised | Re-issue the licence | Re-issue only the rigger licence |
-| Accident expert appointed for a term | Licence needs an `exp` it does not otherwise have | The certificate carries its own `exp` |
-| What a verifier sees | Must request the licence and look inside it | Requests exactly the qualification it needs |
-| Withdrawing one qualification | Revoke and re-issue the whole licence | Revoke only that credential; the licence is untouched |
+| Different validity | The rigger licence is unlimited, the expert licence runs 48 months, the skydiving licence to 31 March — one `exp` cannot hold all three | Each carries its own |
+| What a verifier sees | Must request the skydiving licence and look inside it | Requests exactly the licence it needs |
+| Withdrawing one | Revoke and re-issue the skydiving licence | Revoke only that credential |
 
-Every qualification that lets the holder take responsibility for someone
-else's safety gets its own credential: rigger, accident expert and
-[tandem master](./tandem-master.md). Swiss Skydive treats these as functions
-with their own rules and annual validation, which is the same line.
+Every licence that lets its holder take responsibility for someone else's
+safety is its own credential: rigger, expert and
+[tandem](./tandem-pilot.md).
 
-## Rigger licence
+## Rigger licence (01-09d)
 
-### Levels
+### The rules
 
-| `rigger_level` | Directive | May do (by analogy with FAA 14 CFR 65.125, to confirm against 01-09d) |
+| Topic | Rule | § |
 | --- | --- | --- |
-| `senior-rigger` | 01-09d | Inspect, pack and maintain; minor repairs. Signs reserve repacks |
-| `master-rigger` | 01-09d | As senior rigger, plus major repairs and alterations; trains and examines riggers |
+| Basis | Swiss Skydive has no airworthiness system of its own; everything rests on the manufacturers' instructions, the Poynter manual and the FAA *Parachute Rigger Handbook* | 01.01–02 |
+| Senior rigger | Of age (> 18), proof of English. Rating **R** (round canopies), **F** (ram-air) or **R + F**. Training: 25 supervised reserve packs, assembling. Exam: theory (≥ 75 %, ≥ 20 % of questions in English) and practical | 02, 05.01, 06.01 |
+| Master rigger | Senior rigger for ≥ 3 years with ≥ 100 reserve packs. Exam: theory and a professional repair of a main or reserve and of a harness/container | 03, 06.02 |
+| Senior rigger may | Pack reserves; minor and major repairs on **main** canopies; **certify airworthiness** | 04.01 |
+| Master rigger may | Everything a senior rigger may; minor and major repairs on main **and reserve** systems; carry out STCs | 04.02 |
+| Who examines | The **material expert** (01-10d 01.01 c) | |
+| Validity | **Unlimited.** The annual fee keeps the rigger on the bulletin list and in the **Swiss Skydive rigger directory** | 07.02 |
+| Withdrawal | Swiss Skydive may refuse or withdraw a licence on well-founded doubts about mental or character fitness | 07.01.02 |
+| Seal | Each rigger has symbols (numbers/letters) assigned by Swiss Skydive, pressed with a seal press or an alternative SSD seal | 01.04 d, 01.06 |
+| Rigger book | All rigger work recorded completely and chronologically, kept for ≥ 5 years | 01.07 |
+| Foreign riggers | Senior with < 100 packs in 5 years: Swiss exam. Senior with more, and master: introduced by a Swiss master rigger, confirmed in the rigger book; Swiss Skydive then issues the licence | 08 |
 
-The claim carries the level; what a level permits is published by Swiss
-Skydive and applied by the rigger service at the time of signing (see
-[reserve repack](./reserve-repack.md)). That keeps the credential stable when
-the rules move.
+### The credential
 
-| Claim | Example | Notes |
+| Claim | Example | From the rules |
 | --- | --- | --- |
-| `vct` | `https://swissskydive.org/vc/rigger-licence/v1` | Placeholder URL |
-| `rigger_licence_number` | `R-0471` | |
-| `rigger_level` | `senior-rigger` | |
-| `type_endorsements` | `["tandem-vector", "tandem-sigma"]` | Optional. Rig types the rigger is signed off on, where the rules need it |
-| `seal_symbol` | `K7` | The rigger's personal seal symbol, pressed into the seal and written on the data card. Carried into every repack credential |
-| `licence_number` | `4711` | Links to the skydiving licence |
-| `family_name`, `given_name`, `birth_date` | | From the skydiving licence |
-| `issue_date` | `2026-09-23` | |
-| `exp` | — | Only if rigger licences expire or need periodic proof of activity |
-| `status`, `cnf` | | Suspension and withdrawal; holder binding |
+| `vct` | `https://swissskydive.org/vc/rigger-licence/v1` | — (placeholder URL) |
+| `rigger_licence_number` | `R-0471` | The rigger's ID number, which goes on every packing card (01.06 g) |
+| `rigger_level` | `senior-rigger` or `master-rigger` | 02, 03 |
+| `rigger_rating` | `["R", "F"]` | Round, ram-air, or both (02.02) |
+| `seal_symbol` | `K7` | Symbols assigned by Swiss Skydive (01.06) |
+| `family_name`, `given_name` | | |
+| `issue_date` | `2025-06-14` | |
+| `listed_until` | `2027-03-31` | Optional: annual fee paid, listed in the rigger directory (07.02). Not a validity limit |
+| `status`, `cnf` (protected) | | 2-bit list: suspension and withdrawal |
 
-### Accident expert certificate
+No `exp`: the licence is unlimited. The directory listing is the only thing
+that lapses, and it lapses without affecting the licence.
 
-| Claim | Example | Notes |
+## Expert licence (01-10d)
+
+### The rules
+
+| Topic | Rule | § |
 | --- | --- | --- |
-| `vct` | `https://swissskydive.org/vc/accident-expert/v1` | Placeholder URL |
-| `expert_id` | `UE-012` | |
-| `role` | `accident-expert` | |
-| `mandate` | `Swiss Skydive accident and incident investigation` | What the appointment covers |
-| `family_name`, `given_name`, `portrait` | | Portrait (`data:image/jpeg;base64,…`), because the certificate is shown in person at an accident site |
-| `valid_from`, `exp` | `2026-01-01`, `2028-12-31` | Assumption: appointments run for a term |
-| `status`, `cnf` | | Revoked when the appointment ends early |
+| Kinds | **Parachute expert**; **accident expert** (always also a parachute expert, not the other way round); **material expert** | 01.00 |
+| All experts | Report irregularities by function holders; may examine in every area in which they hold a licence | 01.01 |
+| Parachute expert | School inspections and investigations, admission and instructor exams, writes the directives | 01.01 a |
+| Accident expert | Investigates parachute accidents for Swiss Skydive as expert witness; writes reports for Swiss Skydive and outside bodies; advises police and investigating authorities on securing evidence | 01.01 b |
+| Material expert | Supports the other experts; examines riggers and packers; writes directive 01-09 | 01.01 c |
+| Nomination | Parachute and accident expert: valid licence, ≥ 5 years active instructor, valid AFF or tandem rating, no withdrawal or written reprimand in 10 years. Material expert: master rigger (or foreign equivalent) for ≥ 5 years, same record | 02.01 |
+| Election | Proposals by 30 November; interview with the board; secret ballot at the delegates' assembly | 02.02 |
+| Validity | **48 months** from election and expert contract; then renewed by **12 months** at a time on proof of expert activity in the past calendar year | 03.01–02 |
 
-## Flow A — Issuing or raising a rigger licence
+### The credential
+
+| Claim | Example | From the rules |
+| --- | --- | --- |
+| `vct` | `https://swissskydive.org/vc/expert-licence/v1` | — (placeholder URL) |
+| `expert_types` | `["parachute-expert", "accident-expert"]` | 01.00; an accident expert always also carries `parachute-expert` |
+| `licence_number` | `1234` | The expert's skydiving licence |
+| `family_name`, `given_name`, `portrait` | | Portrait (`data:image/jpeg;base64,…`), because the licence is shown in person at an accident |
+| `elected_on` | `2026-04-25` | Delegates' assembly |
+| `valid_from`, `expiry_date` | `2026-04-25`, `2030-04-24` | 48 months, then 12 months per renewal |
+| `exp` (protected) | `2030-04-24` | Set via `credential_valid_until` |
+| `status`, `cnf` (protected) | | 1-bit list: withdrawal |
+
+## Flow A — Rigger licence
 
 ```mermaid
 %%{init: {"theme": "default", "themeVariables": {"fontFamily": "Inter, Arial"}}}%%
 sequenceDiagram
     actor Candidate as 👤 Rigger candidate
-    actor Examiner as 🧵 Examiner (master rigger)
+    actor ME as 🧵 Material expert
 
     box rgb(220,235,255) Candidate's device
         participant Wallet as 🪪 swiyu Wallet
@@ -86,7 +105,7 @@ sequenceDiagram
     box rgb(220,255,220) Swiss Skydive
         participant Portal as 🖥️ Member area
         participant Verifier as ✅ swiyu Verifier
-        participant Register as 🗂️ Qualification register
+        participant Register as 🗂️ Licence register
         participant Issuer as 🏷️ swiyu Issuer
     end
 
@@ -94,36 +113,36 @@ sequenceDiagram
         participant Trust as 🛡️ Base & Trust Registry
     end
 
-    Note over Candidate,Trust: Phase 1 — Course and exam
-    Candidate->>Examiner: Rigger course, practical and theory exam for senior rigger
-    Examiner->>Portal: Sign in with own rigger licence (OID4VP, master-rigger)
-    Portal->>Register: Record exam passed: candidate, level, date, examiner
+    Note over Candidate,Trust: Phase 1 — Training and exam
+    Candidate->>Candidate: 25 supervised reserve packs, assembling (rigger book)
+    Candidate->>ME: Theory (≥ 75 %, part in English) and practical exam, rating F
+    ME->>Portal: Sign in with own expert licence (OID4VP, material-expert)
+    ME->>Portal: Record exam passed: candidate, level, rating, date
+    Portal->>Register: Exam record, examiner verified
 
     Note over Candidate,Trust: Phase 2 — Application
-    Candidate->>Portal: Apply for senior-rigger
-    Portal->>Verifier: Request skydiving licence<br/>(+ senior rigger licence when applying for master rigger)
-    Verifier-->>Candidate: QR code
+    Candidate->>Portal: Apply for senior rigger
+    Portal->>Verifier: Verification: e-ID (age > 18, name)
     Candidate->>Wallet: Scan, consent
     Wallet->>Verifier: VP token + key binding
-    Verifier->>Trust: Swiss Skydive key, status lists
-    Verifier-->>Portal: Licence 4711 valid, no rigger licence yet
-    Portal->>Register: Match exam record, check prerequisites for senior rigger
+    Verifier->>Trust: e-ID issuer key, status list
+    Verifier-->>Portal: Of age, name matches the exam record
+    Portal->>Register: Assign seal symbols, rigger number
 
     Note over Candidate,Trust: Phase 3 — Issuance (OID4VCI)
-    Register->>Issuer: Offer rigger licence, rigger_level = senior-rigger
+    Register->>Issuer: Offer rigger licence: senior-rigger, rating F,<br/>seal K7, no credential_valid_until
     Issuer-->>Candidate: Credential offer
     Candidate->>Wallet: Accept
     Wallet->>Trust: Resolve issuer DID, trust statement
-    Wallet->>Issuer: Token and credential request + proof of possession
-    Issuer-->>Wallet: Rigger licence, senior rigger
+    Wallet->>Issuer: Token (DPoP), credential request + proof of possession
+    Issuer-->>Wallet: Rigger licence
 ```
 
-The examiner's own rigger licence is what makes the exam record trustworthy:
-only a master rigger may record a rigger exam. The same pattern — a qualification
-credential that lets its holder sign for others — is what the reserve repack
-flow uses.
+For master rigger the flow is the same, with the senior rigger licence
+presented in phase 2 and the 3 years and 100 packs checked from it and from the
+rigger book.
 
-## Flow B — Appointing an accident expert and showing the certificate at an accident
+## Flow B — Accident expert at an accident
 
 ```mermaid
 %%{init: {"theme": "default", "themeVariables": {"fontFamily": "Inter, Arial"}}}%%
@@ -135,7 +154,7 @@ sequenceDiagram
     end
 
     box rgb(220,255,220) Swiss Skydive
-        participant Board as 🏛️ Safety board
+        participant Board as 🏛️ Board / secretariat
         participant Issuer as 🏷️ swiyu Issuer
     end
 
@@ -148,46 +167,36 @@ sequenceDiagram
         participant Check as ✅ Verifier app
     end
 
-    Note over Expert,Check: Phase 1 — Appointment
-    Board->>Board: Appoint expert for 2026–2028
-    Board->>Issuer: Offer accident expert certificate, exp = 2028-12-31
+    Note over Expert,Check: Phase 1 — Election and licence
+    Board->>Board: Elected at the delegates' assembly, expert contract signed
+    Board->>Issuer: Offer expert licence: parachute + accident expert,<br/>credential_valid_until = election + 48 months
     Issuer-->>Expert: Credential offer
     Expert->>Wallet: Accept
     Wallet->>Issuer: OID4VCI, proof of possession
-    Issuer-->>Wallet: Accident expert certificate
+    Issuer-->>Wallet: Expert licence
 
     Note over Expert,Check: Phase 2 — At the scene
-    Expert->>DZ: "I have been sent by Swiss Skydive"
-    DZ->>Check: Request accident expert certificate<br/>(name, portrait, role, mandate)
+    Expert->>DZ: "Swiss Skydive accident expert"
+    DZ->>Check: Request expert licence<br/>(name, portrait, expert_types)
     Check-->>Expert: QR code
     Expert->>Wallet: Scan, consent
     Wallet->>Check: VP token + key binding
     Check->>Trust: Swiss Skydive key, status list
-    Check->>Check: Signature, not expired, not revoked,<br/>issuer is Swiss Skydive
-    Check-->>DZ: ✅ Appointed accident expert + portrait
-    DZ->>Expert: Access to equipment, AAD log, video, manifest records
+    Check->>Check: Signature, not expired, not revoked,<br/>"accident-expert" in expert_types
+    Check-->>DZ: ✅ Accident expert + portrait
+    DZ->>Expert: Access to equipment, AAD data, video, manifest records
 ```
 
-At the scene the drop zone or the police decide on access. The certificate
-answers only "is this person appointed by Swiss Skydive"; what they may see
-and take is governed by Swiss Skydive's rules and, where the Swiss
-Transportation Safety Investigation Board (STSB / SUST) or the police
-investigate, by theirs.
+The licence answers "is this person Swiss Skydive's accident expert". What
+they may see and secure is governed by the police and, for accidents
+involving the aircraft, the Swiss Transportation Safety Investigation Board
+(STSB / SUST); the expert's role there is to advise (01-10d 01.01 b).
 
-## Assumptions and open questions
+## Open questions
 
-1. **Levels.** Senior and master rigger are Swiss Skydive's levels (01-09d).
-   What each permits, which covers tandem rigs, and whether type endorsements
-   are needed must be read from 01-09d.
-2. **"Experten" (01-10d)** may cover more than accident experts, for example
-   examiners. The accident expert certificate here is one function of that
-   directive, not necessarily all of it.
-3. **Expiry.** Does a rigger licence lapse without activity? Is an accident
-   expert appointed for a term?
-4. **Verifier at the scene.** A police officer is unlikely to have a verifier
-   app today. Until then the certificate is shown on the wallet screen, which
-   is no better than a card; the verifiable check needs a verifier on the
-   drop zone's side.
-5. **Flow B mixes two kinds of work** — certifying the expert and granting
-   access at the scene. If accident investigation grows further flows, the
-   scene check becomes its own family.
+1. Should the rigger directory listing (annual fee) be visible to a verifier,
+   or stay in Swiss Skydive's register?
+2. Where do *Fallschirmwart* and *Fallschirmpacker*, which the material expert
+   examines (01-10d 01.01 c), fit relative to senior and master rigger?
+3. A police officer is unlikely to have a verifier app today. The check at
+   the scene needs a verifier on the drop zone's side.

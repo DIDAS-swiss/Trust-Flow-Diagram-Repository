@@ -55,7 +55,7 @@ Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certi
 Flows for vaccination records held in the patient's wallet: issuing a dose, proving protection while disclosing four claims out of eighteen, check-in against an e-ID and an insurance card, a prescription redeemed once, and correcting a record. Modelled in LikeC4 and bound to the eHealth Suisse exchange formats.
 
 ### [`sport/`](./sport)
-Flows for skydiving: the Swiss Skydive licence issued with the e-ID, tandem master, rigger licences by level and accident expert certificates, a reserve repack issued by a rigger and valid for one year, and licence, insurance and repack presented together at a drop zone.
+Flows for skydiving: the Swiss Skydive licence issued with the e-ID, tandem licence, senior and master rigger licences and expert licences, a reserve repack issued by a rigger and valid for one year, and licence, insurance and repack presented together at a drop zone.
 
 ### [`insurance/`](./insurance)
 Flows in which an insurer is the relying party. So far: skydiving cover taken out by presenting the licence, with a proof of insurance issued in return.

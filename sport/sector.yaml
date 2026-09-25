@@ -16,14 +16,17 @@ families:
     status: draft
     functions:
       # One family for everything Swiss Skydive certifies about a person: the
-      # licence, tandem master, rigger licences by level, accident experts. The
+      # licence, tandem licence, rigger licences, experts. The
       # accident expert flow also shows the certificate checked at a scene,
       # which is access work; it becomes its own family if accident
       # investigation grows further flows.
       primary: certification-and-attestation
       supporting: [identity-proofing, records-management, eligibility-verification, access-management]
     states:
-      requires: [eid-held]
+      # Directive 01-03 01.06: the licence is valid only once third-party
+      # liability insurance of at least CHF 1 million is in force, and 04.07
+      # makes it a renewal condition. So insurance comes first.
+      requires: [eid-held, insurance-cover-held]
       establishes: [qualification-credential-held]
     flows:
       - id: licence-issuance
@@ -32,8 +35,8 @@ families:
       - id: licence-lifecycle
         title: Adding a rating, suspending and withdrawing a licence
         status: draft
-      - id: tandem-master
-        title: Tandem master rating with manufacturer system ratings, renewed every year
+      - id: tandem-pilot
+        title: Tandem licence under directive 01-05, renewed every year on reported activity
         status: draft
       - id: rigger-licence
         title: Issuing or raising a rigger licence by level
@@ -71,5 +74,5 @@ families:
       establishes: [access-granted]
     flows:
       - id: manifest-check-in
-        title: Licence, insurance and repack at manifest, tandem master before tandem loads
+        title: Licence, insurance and repack at manifest, tandem licence before tandem loads
         status: draft

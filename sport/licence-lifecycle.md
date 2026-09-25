@@ -10,7 +10,8 @@ An SD-JWT VC cannot be edited. Every change is therefore one of two moves:
 
 | Change | Move |
 | --- | --- |
-| New season: licence fee paid, conditions met | New credential valid until the next 31 March, or wallet-initiated renewal. The old one expires by itself on 31 March, no revocation needed |
+| New season: conditions of 01-03 04.07 met | New credential valid until the next 31 March, or wallet-initiated renewal. The old one expires by itself on 31 March, no revocation needed |
+| New season: too few jumps | No renewal until the practical exam is repeated (01-03 04.08) |
 | Name changed, endorsement added | Issue a new credential and revoke the old one, or let the wallet renew it |
 | Suspension after an incident, pending review | Set the old credential's status to *suspended*; clear it if the review ends well |
 | Licence withdrawn | Set the status to *revoked* |
@@ -40,8 +41,11 @@ sequenceDiagram
 
     participant DZ as 🪂 Drop zone verifier
 
-    Note over Jumper,DZ: S — New season
+    Note over Jumper,DZ: S — New season (01-03 04.07)
     Jumper->>Register: Pay licence fee for the season
+    Register->>Wallet: Verification: proof of insurance ≥ CHF 1 million, in force
+    Wallet-->>Register: Proof of insurance
+    Register->>Register: ≥ 24 jumps in the last 12 months (logbook, reported),<br/>or practical exam passed in the last 12 months
     Register->>Issuer: Licence credential, valid_from = payment date,<br/>credential_valid_until = next 31 March
     Issuer-->>Jumper: Credential offer, or renewal on the wallet's request
     Jumper->>Wallet: Accept
@@ -86,6 +90,25 @@ sequenceDiagram
   found faulty, in which case they are revoked individually.
 - A new licence credential after a **name change** keeps the licence number,
   so the proof of insurance still matches.
+
+## Renewal rules
+
+Directive 01-03 (04.06–04.08) sets them:
+
+- The licence runs from issue to **31 March** of the following year.
+- To renew it, on the day of renewal the skydiver must have made **at least
+  24 jumps in the past 12 months**, or passed the practical exam in the past
+  12 months; must **pay the licence fee**; and must hold **third-party
+  liability insurance of at least CHF 1 million** (VLK art. 13).
+- Without the jumps, the skydiver reports to the jump director and repeats
+  the practical exam. The examiner confirms the result in the logbook —
+  "exam failed, licence not valid" or "exam passed, licence validated" — and
+  fills in the exam protocol 02-09.
+
+The jump count is the one piece Swiss Skydive cannot see today without the
+skydiver's word; it is in the logbook. A digital logbook whose entries are
+confirmed by the people 01-03 01.05 allows (licensed skydivers, instructors,
+experts, pilots, jump directors) would let the register check it.
 
 ## What swiyu does with each state
 
