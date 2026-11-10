@@ -27,3 +27,6 @@ families:
         title: High school certificate issuance
       - id: university-immatriculation
         title: University immatriculation
+      - id: non-eid-matura-certificate-issuance
+        title: Non-eID Matura certificate issuance (proposed)
+        status: draft
