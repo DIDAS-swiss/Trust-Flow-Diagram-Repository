@@ -7,8 +7,7 @@ noga:
   section_title: Education
   scheme: NOGA 2025
 families:
-  # The first family keeps its flows directly under the sector directory.
-  # Families added later have their own subdirectory.
+  # One family so far, so the flows sit directly under the sector directory.
   - id: certificates-and-enrolment
     title: Certificates and enrolment
     status: in-progress
@@ -28,19 +27,8 @@ families:
         title: High school certificate issuance
       - id: university-immatriculation
         title: University immatriculation
-  - id: matura-credential-without-eid
-    title: Matura credential without the e-ID
-    directory: Matura credential without e-ID
-    status: draft
-    states:
-      # The student is identified with the school account, so the family does
-      # not require eid-held, unlike certificates-and-enrolment.
-      requires: []
-      establishes: [secondary-education-credential-held]
-    functions:
-      primary: certification-and-attestation
-      supporting: [eligibility-verification, records-management]
-    flows:
-      - id: matura-credential-issuance
+      - id: matura-credential-issuance-without-eid
+        # Extends high-school-certificate-issuance. The student is identified
+        # with the school account, so this flow alone does not need eid-held.
         title: Issuing a Matura credential without the e-ID (DIDAS proposal)
         status: specified

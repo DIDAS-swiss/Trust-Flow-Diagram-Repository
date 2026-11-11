@@ -1,5 +1,5 @@
 ---
-id: matura-credential-issuance
+id: matura-credential-issuance-without-eid
 title: Issuing a Matura credential without the e-ID
 kind: flow
 interaction_scope: multi-party
@@ -32,13 +32,17 @@ use_cases:
 school account, not the e-ID. A governing authority sets the rules for the
 credential and keeps the list of schools authorised to issue it.
 
-This differs from the existing
-[High school Certificate Issuance](../High%20school%20Certificate%20Issuance.svg)
-flow, which uses the e-ID. Use case:
+This flow extends the
+[High school Certificate Issuance](./High%20school%20Certificate%20Issuance.svg)
+flow of the same family. It differs in two places: the student is identified
+with the school account instead of the e-ID, and a governing authority keeps
+the list of schools that may issue the credential. Use case:
 [#121 Authenticate a Matura qualification for admission](https://github.com/DIDAS-swiss/use-case-repository/issues/121).
 
-This flow abstracts registration, issuance and verification as single steps.
-[`basic-flow`](../../basic-flow/README.md) shows what happens inside them.
+The flow is not built on the [`basic-flow`](../basic-flow/README.md) reference
+model. Its trust set-up, with a governing authority and a list of authorised
+issuers, has no counterpart there, and which trust infrastructure carries the
+credential is not decided.
 
 ## Diagram
 
