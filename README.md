@@ -43,11 +43,13 @@ This flow is modeled with [LikeC4](https://likec4.dev) and published as an inter
 
 See [`basic-flow/README.md`](./basic-flow/README.md) for what the model contains and how it's built and deployed.
 
+[`basic-flow/Unlinkable e-ID use/`](./basic-flow/Unlinkable%20e-ID%20use/) shows one e-ID used at six verifiers in different sectors, each receiving only the attributes it requests, with no link between the presentations through the e-ID.
+
 ### [`banking/`](./banking)
 Flows for KYC onboarding, re-identification, and re-identification of a user who was onboarded as a minor and has since turned 18.
 
 ### [`education/`](./education)
-Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC.
+Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC, and a DIDAS proposal for issuing a Matura credential without the e-ID.
 
 ### [`health/`](./health)
 Flows for vaccination records held in the patient's wallet: issuing a dose, proving protection while disclosing four claims out of eighteen, check-in against an e-ID and an insurance card, a prescription redeemed once, and correcting a record. Modelled in LikeC4 and bound to the eHealth Suisse exchange formats.
