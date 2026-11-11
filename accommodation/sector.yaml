@@ -1,0 +1,25 @@
+sector: accommodation
+title: Accommodation
+noga:
+  division: "55"
+  division_title: Accommodation
+  section: I
+  section_title: Accommodation and food service activities
+  scheme: NOGA 2025
+families:
+  # One family so far, so the flows sit directly under the sector directory.
+  - id: guest-registration
+    title: Guest registration
+    status: draft
+    functions:
+      primary: regulatory-compliance
+      supporting: [identity-proofing, records-management]
+    states:
+      # The presentation is the unlinkable presentation block in basic-flow,
+      # which establishes the state this family requires.
+      requires: [identity-verified]
+      establishes: [statutory-identification-recorded]
+    flows:
+      - id: hotel-check-in
+        title: Hotel check-in
+        status: specified

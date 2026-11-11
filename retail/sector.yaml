@@ -1,0 +1,28 @@
+sector: retail
+title: Retail
+noga:
+  division: "47"
+  division_title: Retail trade
+  section: G
+  section_title: Wholesale and retail trade
+  scheme: NOGA 2025
+families:
+  # One family so far, so the flows sit directly under the sector directory.
+  - id: age-restricted-sale
+    title: Age-restricted sale
+    status: draft
+    functions:
+      primary: eligibility-verification
+      supporting: [regulatory-compliance]
+    states:
+      # The presentation is the unlinkable presentation block in basic-flow,
+      # which establishes the state this family requires.
+      requires: [age-attribute-proven]
+      establishes: [restricted-sale-permitted]
+    flows:
+      - id: coop-beer-sale
+        title: Coop beer sale
+        status: specified
+      - id: cigarette-vending-machine
+        title: Cigarette vending machine
+        status: specified

@@ -20,20 +20,23 @@ families:
         title: Credential issuance
       - id: verification
         title: Credential verification
-  - id: unlinkable-e-id-use
-    title: Unlinkable e-ID use across verifiers
+  - id: unlinkable-presentation
+    title: Unlinkable presentation of the e-ID
     directory: Unlinkable e-ID use
     status: draft
-    # Cross-sector: the six verifiers sit in different NOGA divisions (hotels,
-    # retail, telecommunications and others). The family is kept next to the
-    # reference model whose privacy properties it shows, not under one sector.
+    # A reusable block: sector flows use it for their presentation step and
+    # require the state it establishes. The six-verifier walkthrough shows it
+    # used by verifiers in five sectors.
     functions:
       primary: eligibility-verification
-      supporting: [identity-proofing, regulatory-compliance]
+      supporting: [identity-proofing]
     states:
       requires: [eid-held]
       establishes: [age-attribute-proven, identity-verified]
     flows:
-      - id: unlinkable-e-id-use
+      - id: unlinkable-presentation
+        title: Unlinkable presentation of the e-ID
+        status: specified
+      - id: six-verifier-walkthrough
         title: Unlinkable e-ID use at a nightclub, hotel, Coop, vending machine, adult website and Swisscom
         status: specified
