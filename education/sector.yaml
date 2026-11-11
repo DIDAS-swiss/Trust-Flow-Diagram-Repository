@@ -27,3 +27,8 @@ families:
         title: High school certificate issuance
       - id: university-immatriculation
         title: University immatriculation
+      - id: matura-credential-issuance-without-eid
+        # Extends high-school-certificate-issuance. The student is identified
+        # with the school account, so this flow alone does not need eid-held.
+        title: Issuing a Matura credential without the e-ID (DIDAS proposal)
+        status: specified

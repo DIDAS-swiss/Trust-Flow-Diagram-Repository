@@ -63,6 +63,18 @@ states:
     definition: >-
       A threshold age has been demonstrated without disclosing identity.
 
+  - id: restricted-sale-permitted
+    title: Restricted sale permitted
+    definition: >-
+      The buyer has met the age or eligibility condition for a restricted
+      product, and the seller may hand it over.
+
+  - id: statutory-identification-recorded
+    title: Statutory identification recorded
+    definition: >-
+      The relying party has recorded the identity data that a statutory
+      identification duty requires of it.
+
   - id: secondary-education-credential-held
     title: Secondary education credential held
     definition: >-

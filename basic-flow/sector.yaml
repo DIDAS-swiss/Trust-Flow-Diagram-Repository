@@ -20,3 +20,23 @@ families:
         title: Credential issuance
       - id: verification
         title: Credential verification
+  - id: unlinkable-presentation
+    title: Unlinkable presentation of the e-ID
+    directory: Unlinkable e-ID use
+    status: draft
+    # A reusable block: sector flows use it for their presentation step and
+    # require the state it establishes. The six-verifier walkthrough shows it
+    # used by verifiers in five sectors.
+    functions:
+      primary: eligibility-verification
+      supporting: [identity-proofing]
+    states:
+      requires: [eid-held]
+      establishes: [age-attribute-proven, identity-verified]
+    flows:
+      - id: unlinkable-presentation
+        title: Unlinkable presentation of the e-ID
+        status: specified
+      - id: six-verifier-walkthrough
+        title: Unlinkable e-ID use at a nightclub, hotel, Coop, vending machine, adult website and Swisscom
+        status: specified

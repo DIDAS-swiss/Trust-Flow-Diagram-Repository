@@ -17,6 +17,10 @@ trust-flows-e-id/
 ├── basic-flow/     reference flow: the trust infrastructure itself
 ├── banking/        KYC, re-identification, 18-year-old re-identification
 ├── education/      issuance of a Maturitätszeugnis, university onboarding
+├── retail/         age-restricted sale: beer, vending machine
+├── food-and-beverage/  venue entry
+├── accommodation/  hotel guest registration
+├── telecommunications/  SIM registration
 └── health/         vaccination records, consultation, prescription
 ```
 
@@ -43,11 +47,16 @@ This flow is modeled with [LikeC4](https://likec4.dev) and published as an inter
 
 See [`basic-flow/README.md`](./basic-flow/README.md) for what the model contains and how it's built and deployed.
 
+[`basic-flow/Unlinkable e-ID use/`](./basic-flow/Unlinkable%20e-ID%20use/) holds a reusable block, the unlinkable presentation of the e-ID, and a walkthrough of one e-ID used at six verifiers. The sector flows in `retail/`, `food-and-beverage/`, `accommodation/` and `telecommunications/` build on the block, and the classification check derives that composition from their state interfaces.
+
 ### [`banking/`](./banking)
 Flows for KYC onboarding, re-identification, and re-identification of a user who was onboarded as a minor and has since turned 18.
 
 ### [`education/`](./education)
-Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC.
+Flows for issuance of a Maturitätszeugnis (upper-secondary school leaving certificate) and for university onboarding using the e-ID and Maturitätszeugnis VC, and a DIDAS proposal for issuing a Matura credential without the e-ID.
+
+### [`retail/`](./retail), [`food-and-beverage/`](./food-and-beverage), [`accommodation/`](./accommodation), [`telecommunications/`](./telecommunications)
+Short sector flows that use the unlinkable presentation block from `basic-flow/`: an age check for beer at a checkout and at a cigarette vending machine, entry to a nightclub, hotel guest registration and SIM registration. Each adds the requested claims, the legal basis and the outcome.
 
 ### [`health/`](./health)
 Flows for vaccination records held in the patient's wallet: issuing a dose, proving protection while disclosing four claims out of eighteen, check-in against an e-ID and an insurance card, a prescription redeemed once, and correcting a record. Modelled in LikeC4 and bound to the eHealth Suisse exchange formats.

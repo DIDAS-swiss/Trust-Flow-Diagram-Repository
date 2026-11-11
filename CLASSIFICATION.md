@@ -60,6 +60,10 @@ wrong within a year of being written.
 | `banking/` | 64, Financial service activities, except insurance and pension funding | L, Financial and insurance activities |
 | `education/` | 85, Education | Q, Education |
 | `health/` | 86, Human health activities | R, Human health and social work activities |
+| `retail/` | 47, Retail trade | G, Wholesale and retail trade |
+| `accommodation/` | 55, Accommodation | I, Accommodation and food service activities |
+| `food-and-beverage/` | 56, Food and beverage service activities | I, Accommodation and food service activities |
+| `telecommunications/` | 61, Telecommunication | K, Telecommunication, computer programming, consulting, computing infrastructure and other information service activities |
 | `basic-flow/` | none, because it is the reference model rather than a sector | n/a |
 
 A directory name stays short and readable. `health/`, not `human-health-activities/`.

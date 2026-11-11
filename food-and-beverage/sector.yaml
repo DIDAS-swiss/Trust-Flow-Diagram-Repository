@@ -1,0 +1,25 @@
+sector: food-and-beverage
+title: Food and beverage
+noga:
+  division: "56"
+  division_title: Food and beverage service activities
+  section: I
+  section_title: Accommodation and food service activities
+  scheme: NOGA 2025
+families:
+  # One family so far, so the flows sit directly under the sector directory.
+  - id: venue-entry
+    title: Venue entry
+    status: draft
+    functions:
+      primary: eligibility-verification
+      supporting: [access-management]
+    states:
+      # The presentation is the unlinkable presentation block in basic-flow,
+      # which establishes the state this family requires.
+      requires: [age-attribute-proven]
+      establishes: [access-granted]
+    flows:
+      - id: nightclub-entry
+        title: Nightclub entry
+        status: specified

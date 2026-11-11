@@ -136,6 +136,16 @@ divisions:
     title: Land transport and transport via pipelines
     section: H
     note: A concession or reduced-fare flow presented to a transport operator.
+  - code: "55"
+    title: Accommodation
+    section: I
+    note: Hotel check-in and guest registration.
+  - code: "56"
+    title: Food and beverage service activities
+    section: I
+    note: >-
+      Restaurants, bars and nightclubs. Age checks at the door or the bar belong
+      here; the same check at a shop counter belongs in 47.
   - code: "61"
     title: Telecommunication
     section: K
