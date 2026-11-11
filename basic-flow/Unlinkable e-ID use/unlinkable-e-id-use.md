@@ -174,11 +174,16 @@ that day, or for the BGEID in the referendum text.
    the swiyu issuer architecture (section 16.4.1) and a participation meeting in
    May 2025. That number was not found in the published swiyu specifications;
    the specified minimum is 10.
-3. **Holder binding at the door.** Without a portrait, the nightclub and the
-   vending machine rely on the guest presenting from their own device. This is
-   a design assumption and is not in the swiyu specification. Use case
-   [#5](https://github.com/DIDAS-swiss/use-case-repository/issues/5) records the
-   same question for unattended machines.
+3. **Holder binding without a portrait.** Each presentation carries a Key
+   Binding JWT, signed with the holder key named in the credential's `cnf`
+   claim and addressed to the verifier's `client_id`
+   ([Swiss Profile VC, § 4.1.2 and § 4.3](https://github.com/swiyu-admin-ch/swiyu-admin-ch.github.io/blob/df9b16895a2dee8a2287d2071be5b31d17237d92/_specifications/swiss-profile-vc.md#L165-L181)).
+   This flow treats that binding as sufficient for every verifier, in person
+   and online, when the presentation comes from the e-ID or from a credential
+   derived from it and bound directly to the same holder (DIDAS position).
+   No portrait is needed for it. Use case
+   [#5](https://github.com/DIDAS-swiss/use-case-repository/issues/5) raises the
+   question for unattended machines.
 4. **Linking outside the e-ID.** Time, place, IP address or payment data can
    still link visits. That is outside the e-ID and outside this flow.
 5. **Hotel.** AIG Art. 16 and VZAE Art. 18 set the registration duty for
