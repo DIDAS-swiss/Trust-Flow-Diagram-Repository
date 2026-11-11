@@ -195,6 +195,11 @@ that day, or for the BGEID in the referendum text.
    issuer, and the address.
 7. **Adult content.** The legal limit is 16 (StGB Art. 197). A site may still
    ask for 18. No use case exists for it yet in the use-case repository.
+   The content is a digital good, unlike the beer and cigarettes in steps 4
+   and 5, which are handed over only after the check. The same content can be
+   reached without the check, through a VPN, a site operated abroad or other
+   means. The age check therefore controls access through the checking site
+   only; it does not control access to the content (DIDAS reading).
 8. **Vending machines.** The TabPG amendment of 20 June 2025
    ([BBl 2025 2038](https://www.fedlex.admin.ch/eli/fga/2025/2038/de)) adds
    Art. 23a, an age-check system for sales through vending machines and the
